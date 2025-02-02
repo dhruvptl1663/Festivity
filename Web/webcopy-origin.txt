@@ -1,0 +1,372 @@
+Uri: https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\ajax\libs\webfont\1.6.26\webfont.js
+Content Type: text/javascript
+
+Uri: https://cdn.prod.website-files.com/66a5f61b61b9f0a48636c965/66a5f61b61b9f0a48636ca35_arrow_outward.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\66a5f61b61b9f0a48636c965\66a5f61b61b9f0a48636ca35_arrow_outward.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/66e5258893f281dac24798b8/66e59195adf8275599ab7092_Team2.jpg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\66e5258893f281dac24798b8\66e59195adf8275599ab7092_Team2.jpg
+Content Type: image/jpeg
+
+Uri: https://cdn.prod.website-files.com/66e6783cc86fe3f35ea19bd5/66f290e05c22221a1f3988d7_Favicon.png
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\66e6783cc86fe3f35ea19bd5\66f290e05c22221a1f3988d7_Favicon.png
+Content Type: image/png
+
+Uri: https://cdn.prod.website-files.com/66e6783cc86fe3f35ea19bd5/66f290e3ef2cef8aed0e6370_Webclip.png
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\66e6783cc86fe3f35ea19bd5\66f290e3ef2cef8aed0e6370_Webclip.png
+Content Type: image/png
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae2b8_Vectors-Wrapper.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae2b8_Vectors-Wrapper.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae2b9_Vectors-Wrapper.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae2b9_Vectors-Wrapper.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae2ba_Vectors-Wrapper.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae2ba_Vectors-Wrapper.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae2bb_Vectors-Wrapper.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae2bb_Vectors-Wrapper.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae2bd_Sticker-Mockup.jpg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae2bd_Sticker-Mockup.jpg
+Content Type: image/jpeg
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae2cf_tiktok-p-500.png
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae2cf_tiktok-p-500.png
+Content Type: image/png
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae2cf_tiktok.png
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae2cf_tiktok.png
+Content Type: image/png
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae2d1_instagram-p-500.png
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae2d1_instagram-p-500.png
+Content Type: image/png
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae2d1_instagram.png
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae2d1_instagram.png
+Content Type: image/png
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae35c_youtubeicon-p-500.png
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae35c_youtubeicon-p-500.png
+Content Type: image/png
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae35c_youtubeicon.png
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae35c_youtubeicon.png
+Content Type: image/png
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae45f_Hero.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae45f_Hero.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae461_Hero.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae461_Hero.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae463_Img-2.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae463_Img-2.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae464_Img-3.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae464_Img-3.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae466_Wave Cut Out.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae466_Wave Cut Out.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae472_img_UyX8.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae472_img_UyX8.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae476_img_b9ak.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae476_img_b9ak.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae477_img_xzMv.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae477_img_xzMv.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae481_img_ORsO.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae481_img_ORsO.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae482_img_1g1n.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae482_img_1g1n.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae483_img_RTH7.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae483_img_RTH7.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae484_img_PeBB.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae484_img_PeBB.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae486_img_KsHd.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae486_img_KsHd.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae488_img_3P5u.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae488_img_3P5u.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae489_svg_zmEu.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae489_svg_zmEu.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae48a_svg_viqt.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae48a_svg_viqt.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae48c_svg_4AKN.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae48c_svg_4AKN.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae48e_svg_YgBd.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae48e_svg_YgBd.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae492_svg_jcpq.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae492_svg_jcpq.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae493_svg_xL0N.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae493_svg_xL0N.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae494_svg_C5p7.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae494_svg_C5p7.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae495_svg_HFET.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae495_svg_HFET.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae498_svg_WWOx.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae498_svg_WWOx.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae49b_svg_uTAW.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae49b_svg_uTAW.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae49d_svg_9eqO.svg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae49d_svg_9eqO.svg
+Content Type: image/svg+xml
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae49e_img_b85b.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae49e_img_b85b.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae49f_img_knlO.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae49f_img_knlO.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae4a1_img_eSOy.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae4a1_img_eSOy.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae4a5_img_tzn6.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae4a5_img_tzn6.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae4a6_img_vHn2.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae4a6_img_vHn2.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae4a7_img_xK0t.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae4a7_img_xK0t.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae4a8_img_cz6y.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae4a8_img_cz6y.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae4b2_Team-2.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae4b2_Team-2.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae4b3_Team-1.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae4b3_Team-1.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae4b4_Team-3.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae4b4_Team-3.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae4b5_Team-4.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae4b5_Team-4.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae4b7_Img-123.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\hero_image.png
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae4b8_CLEAN-p-500.png
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae4b8_CLEAN-p-500.png
+Content Type: image/png
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae4b8_CLEAN-p-800.png
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae4b8_CLEAN-p-800.png
+Content Type: image/png
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/6706104d4f29e916e4cae4b8_CLEAN.png
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\6706104d4f29e916e4cae4b8_CLEAN.png
+Content Type: image/png
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/css/cleaners-webflow-template.webflow.34063d94c.css
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\css\cleaners-webflow-template.webflow.34063d94c.css
+Content Type: text/css
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2ad/js/webflow.2c0f15312.js
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2ad\js\webflow.2c0f15312.js
+Content Type: text/javascript
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae2da_Team3.jpg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae2da_Team3.jpg
+Content Type: image/jpeg
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae301_Team1.jpg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae301_Team1.jpg
+Content Type: image/jpeg
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae32b_Team4.jpg
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae32b_Team4.jpg
+Content Type: image/jpeg
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae351_sponge with leaf.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae351_sponge with leaf.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae351_sponge%2520with%2520leaf-p-1080.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae351_sponge%20with%20leaf-p-1080.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae351_sponge%2520with%2520leaf-p-500.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae351_sponge%20with%20leaf-p-500.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae351_sponge%2520with%2520leaf-p-800.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae351_sponge%20with%20leaf-p-800.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae377_sponges-p-1080.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae377_sponges-p-1080.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae377_sponges-p-500.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae377_sponges-p-500.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae377_sponges-p-800.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae377_sponges-p-800.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae377_sponges.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae377_sponges.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae39b_office room.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae39b_office room.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae39b_office%2520room-p-1080.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae39b_office%20room-p-1080.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae39b_office%2520room-p-500.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae39b_office%20room-p-500.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae39b_office%2520room-p-800.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae39b_office%20room-p-800.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae3ae_working desk.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae3ae_working desk.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae3ae_working%2520desk-p-1080.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae3ae_working%20desk-p-1080.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae3ae_working%2520desk-p-500.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae3ae_working%20desk-p-500.webp
+Content Type: image/webp
+
+Uri: https://cdn.prod.website-files.com/6706104d4f29e916e4cae2d7/6706104d4f29e916e4cae3ae_working%2520desk-p-800.webp
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\6706104d4f29e916e4cae2d7\6706104d4f29e916e4cae3ae_working%20desk-p-800.webp
+Content Type: image/webp
+
+Uri: https://cleaners-webflow-template.webflow.io/
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\index.htm
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/about
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\about.html
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/blog
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\blog.html
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/contact
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\contact.html
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/post/effective-daily-cleaning-routines
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\post\effective-daily-cleaning-routines.html
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/post/guide-to-keeping-your-home-spotless
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\post\guide-to-keeping-your-home-spotless.html
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/post/keep-your-office-clean-for-productivity
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\post\keep-your-office-clean-for-productivity.html
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/post/tips-for-a-healthier-home
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\post\tips-for-a-healthier-home.html
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/privacy-policy
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\privacy-policy.html
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/services
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\services.html
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/terms-conditions
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\terms-conditions.html
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/utilties/changelog
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\utilties\changelog.html
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/utilties/instructions
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\utilties\instructions.html
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/utilties/licenses
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\utilties\licenses.html
+Content Type: text/html
+
+Uri: https://cleaners-webflow-template.webflow.io/utilties/style-guide
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\utilties\style-guide.html
+Content Type: text/html
+
+Uri: https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=6706104d4f29e916e4cae2ad
+File Name: D:\Material\MCA\Sem 2\Software Project\cleaners-webflow-template.webflow.io\js\jquery-3.5.1.min.dc5e7f18c8.js
+Content Type: application/javascript
+
