@@ -2054,11 +2054,12 @@ textarea.w-input, textarea.w-select {
 }
 
 :root {
-  --light-gray: #e7e7e9;
-  --black: #050505;
-  --secondary: #c1dbe4;
+  --light-gray: #F7F8FF;
+  --black: #131314;
+  --secondary: #E1C1E4;
   --white: whitesmoke;
-  --primary: #c1e4c4;
+  --primary: #C1E4C4;
+  --primary-light: #DBFFDE;
   --primary-51\<deleted\|variable-22ba2fd1-e1c9-c606-a5a2-3447eb771393\>: #dbec62;
   --black-2\<deleted\|variable-e99a3d83-d809-4a12-b259-6cad688e1b34\>: #050505;
   --dark-gray-2\<deleted\|variable-73fc28ef-a8b3-b8e3-1597-31094373402a\>: #404040;
@@ -2474,7 +2475,7 @@ blockquote {
 
 .button-text {
   margin-bottom: 0;
-  font-size: 1.11vw;
+  font-size: 1vw;
   line-height: 1.89vw;
 }
 
@@ -2493,7 +2494,51 @@ blockquote {
   color: var(--black);
   text-transform: uppercase;
   cursor: pointer;
-  background-color: #f5f5f580;
+  background-color: var(--primary-light);
+  border-radius: 8.9vw;
+  justify-content: center;
+  align-items: center;
+  min-width: 12.22vw;
+  min-height: 2.8vw;
+  max-height: 2.8vw;
+  padding: .14vw 2.22vw;
+  transition: background-color .25s;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.button-with-circle-icon-loginbtn {
+  grid-column-gap: 1.11vw;
+  grid-row-gap: 1.11vw;
+  -webkit-backdrop-filter: blur(1rem);
+  backdrop-filter: blur(1rem);
+  color: var(--black);
+  cursor: pointer;
+  border: 1.5px solid var(--primary);
+  background-color: var(--light-);
+  border-radius: 8.9vw;
+  justify-content: center;
+  align-items: center;
+  min-width: 12.22vw;
+  min-height: 2.8vw;
+  max-height: 2.8vw;
+  padding: .14vw 2.22vw;
+  transition: background-color .25s;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.button-with-circle-icon-loginbtn:hover {
+  grid-column-gap: 1.11vw;
+  grid-row-gap: 1.11vw;
+  -webkit-backdrop-filter: blur(1rem);
+  backdrop-filter: blur(1rem);
+  color: var(--black);
+  cursor: pointer;
+  border: 1.5px solid var(--dark-gray);
+  background-color: var(--primary);
   border-radius: 8.9vw;
   justify-content: center;
   align-items: center;
@@ -2842,7 +2887,14 @@ blockquote {
   max-height: 100%;
   position: absolute;
   inset: 0%;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
 }
+
+.hidden {
+  opacity: 0;
+}
+
 
 .metrics-wrapper {
   grid-column-gap: 2.22vw;
@@ -3009,7 +3061,7 @@ blockquote {
 }
 
 .badge-post {
-  background-color: var(--white);
+  background-color: var(--primary-light);
   border-radius: 24px;
   justify-content: center;
   align-items: center;

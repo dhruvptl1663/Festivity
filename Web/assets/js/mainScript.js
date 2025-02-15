@@ -1,15 +1,46 @@
 
 //image slide animation home page
 
-
-
-  const images = [
-    "assets/party_showcase.png",
-      "assets/wedding_showcase.png",
-      "assets/corporate_showcase.png",
-      "assets/wedding_showcase.png",
-      "assets/corporate_showcase.png"
+const evnetImages = [
+  "assets/Images/HomePage/party_showcase.png",
+    "assets/Images/HomePage/wedding_showcase.png",
+    "assets/Images/HomePage/corporate_showcase.png",
+    "assets/Images/HomePage/wedding_showcase.png",
+    "assets/Images/HomePage/corporate_showcase.png"
 ];
+
+const packageImages = [
+  "assets/Images/HomePage/party_showcase.png",
+    "assets/Images/HomePage/wedding_showcase.png",
+    "assets/Images/HomePage/corporate_showcase.png",
+    "assets/Images/HomePage/wedding_showcase.png",
+    "assets/Images/HomePage/corporate_showcase.png"
+];
+
+
+let currentIndex = 0;
+const imageElementEvent = document.getElementById("featureImageEvent");
+const imageElementPackage = document.getElementById("featureImagePackage");
+
+setInterval(() => {
+  imageElementEvent.classList.add("hidden");
+
+  setTimeout(() => {
+      currentIndex = (currentIndex + 1) % evnetImages.length;
+      imageElementEvent.src = evnetImages[currentIndex];
+      imageElementEvent.classList.remove("hidden");
+  }, 400);
+}, 2000);
+
+setInterval(() => {
+  imageElementPackage.classList.add("hidden");
+
+  setTimeout(() => {
+      currentIndex = (currentIndex + 1) % packageImages.length;
+      imageElementPackage.src = packageImages[currentIndex];
+      imageElementPackage.classList.remove("hidden");
+  }, 400);
+}, 2000);
 
 
 document.querySelectorAll('.nav-link').forEach(link => {
