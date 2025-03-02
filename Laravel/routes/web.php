@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/',[MainController::class,'index']);
 Route::get('/events',[MainController::class,'events']);
@@ -19,4 +22,7 @@ Route::get('/signup', function () {
     return view('signup');
 })->name('signup');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Protected Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/index', [MainController::class, 'index'])->name('home');
+});
