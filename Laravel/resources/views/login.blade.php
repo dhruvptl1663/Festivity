@@ -52,7 +52,7 @@ backdrop-filter: blur(5px);
 
                 <div class="input_container" style="margin-bottom: 10px;">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none">
+                        fill="none" style="margin-bottom: 5px">
                         <path d="M7 8.5L9.94202 10.2394C11.6572 11.2535 12.3428 11.2535 14.058 10.2394L17 8.5"
                             stroke="#141B34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                         <path
@@ -64,7 +64,7 @@ backdrop-filter: blur(5px);
                 </div>
                 <div class="input_container" style="margin-bottom: 10px;">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none">
+                        fill="none" style="margin-bottom: 5px">
                         <path
                             d="M18 11.0041C17.4166 9.91704 16.273 9.15775 14.9519 9.0993C13.477 9.03404 11.9788 9 10.329 9C8.67911 9 7.18091 9.03404 5.70604 9.0993C3.95328 9.17685 2.51295 10.4881 2.27882 12.1618C2.12602 13.2541 2 14.3734 2 15.5134C2 16.6534 2.12602 17.7727 2.27882 18.865C2.51295 20.5387 3.95328 21.8499 5.70604 21.9275C6.42013 21.9591 7.26041 21.9834 8 22"
                             stroke="#141B34" stroke-width="1.5" stroke-linecap="round"></path>
