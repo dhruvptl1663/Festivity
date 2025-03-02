@@ -25,4 +25,5 @@ Route::get('/signup', function () {
 // Protected Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/index', [MainController::class, 'index'])->name('home');
+    Route::get('/profile', [MainController::class, 'profile'])->name('profile');
 });

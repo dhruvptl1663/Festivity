@@ -41,5 +41,10 @@ class MainController extends Controller
     {
         return view('signup');
     }
+
+    public function profile()
+    {
+        return view('profile');
+    }
    
 }
