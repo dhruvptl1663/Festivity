@@ -2519,7 +2519,7 @@ blockquote {
   color: var(--black);
   cursor: pointer;
   border: 1.5px solid var(--primary);
-  background-color: var(--light-);
+  background-color: var(--primary-light);
   border-radius: 8.9vw;
   justify-content: center;
   align-items: center;
@@ -2945,7 +2945,7 @@ blockquote {
 }
 
 .avatar-line {
-  background-color: var(--black);
+  background-color: var(--dark-gray);
   justify-content: flex-start;
   align-items: center;
   min-width: 2.2vw;
@@ -2979,8 +2979,8 @@ blockquote {
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  min-height: .07vw;
-  max-height: .07vw;
+  min-height: .05vw;
+  max-height: .05vw;
   margin-left: auto;
   margin-right: auto;
   display: flex;
@@ -3000,10 +3000,10 @@ blockquote {
   border-radius: 100%;
   justify-content: center;
   align-items: center;
-  min-width: 3.3vw;
-  max-width: 3.3vw;
-  min-height: 3.3vw;
-  max-height: 3.3vw;
+  min-width: 2.3vw;
+  max-width: 2.3vw;
+  min-height: 2.3vw;
+  max-height: 2.3vw;
   display: flex;
   overflow: hidden;
 }
@@ -4591,15 +4591,15 @@ blockquote {
   }
 
   .horizontal-line {
-    min-height: .0625rem;
-    max-height: .0625rem;
+    min-height: .05rem;
+    max-height: .05rem;
   }
 
   .avatar-wrapper {
-    min-width: 3rem;
-    max-width: 3rem;
-    min-height: 3rem;
-    max-height: 3rem;
+    min-width: 2rem;
+    max-width: 2rem;
+    min-height: 2rem;
+    max-height: 2rem;
   }
 
   .latest-posts-details-flex {

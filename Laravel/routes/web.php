@@ -1,9 +1,8 @@
 <?php
 
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DashboardController;
 
 Route::get('/',[MainController::class,'index']);
@@ -27,3 +26,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/index', [MainController::class, 'index'])->name('home');
     Route::get('/profile', [MainController::class, 'profile'])->name('profile');
 });
+
+
+// Show events
+Route::get('/events', [EventController::class, 'index'])->name('events');
+
