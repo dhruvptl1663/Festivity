@@ -44,16 +44,16 @@
                 </a>
                 <div class="submenu">
                     <div class="submenu-item">
-                        <a href="#" class="submenu-link">Price: High to Low</a>
+                        <a href="{{ route('events', ['sort' => 'price_high']) }}" class="submenu-link {{ request('sort') == 'price_high' ? 'active' : '' }}">Price: High to Low</a>
                     </div>
                     <div class="submenu-item">
-                        <a href="#" class="submenu-link">Price: Low to High</a>
+                        <a href="{{ route('events', ['sort' => 'price_low']) }}" class="submenu-link {{ request('sort') == 'price_low' ? 'active' : '' }}">Price: Low to High</a>
                     </div>
                     <div class="submenu-item">
-                        <a href="#" class="submenu-link">Newest</a>
+                        <a href="{{ route('events', ['sort' => 'newest']) }}" class="submenu-link {{ request('sort') == 'newest' ? 'active' : '' }}">Newest</a>
                     </div>
                     <div class="submenu-item">
-                        <a href="#" class="submenu-link">Customer Review</a>
+                        <a href="{{ route('events', ['sort' => 'rating']) }}" class="submenu-link {{ request('sort') == 'rating' ? 'active' : '' }}">Customer Review</a>
                     </div>
                 </div>
             </div>
