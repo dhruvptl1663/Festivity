@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\PackageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 
@@ -27,6 +28,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [MainController::class, 'profile'])->name('profile');
 });
 
+// Show packages
+Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
+Route::get('/packages/{package}', [PackageController::class, 'show'])->name('packages.show');
 
 // Show events
 Route::get('/events', [EventController::class, 'index'])->name('events');
