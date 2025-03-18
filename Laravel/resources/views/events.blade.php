@@ -224,10 +224,10 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             categories.forEach(cat => cat.classList.remove('selected'));
             this.classList.add('selected');
-            
+
             const categoryId = this.dataset.categoryId;
             eventsList.innerHTML = '<p>Loading events...</p>';
-            
+
             fetch(`/events/category/${categoryId}`)
                 .then(response => response.json())
                 .then(events => {
@@ -235,21 +235,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         eventsList.innerHTML = '<p>No events available for this category.</p>';
                         return;
                     }
-                    
+
                     const eventsHtml = events.map(event => `
                         <div role="listitem" class="w-dyn-item">
                             <a href="#" class="posts-card w-inline-block">
                                 <div class="latest-image-wrapper">
                                     ${event.rating ? `<div class="rating-badge">${starIcon} ${parseFloat(event.rating).toFixed(1)}</div>` : ''}
-                                    <img width="Auto" height="Auto" alt="" 
-                                         src="${storageUrl}/${event.image}" 
-                                         loading="eager" 
+                                    <img width="Auto" height="Auto" alt=""
+                                         src="${storageUrl}/${event.image}"
+                                         loading="eager"
                                          sizes="100vw"
                                          srcset="${storageUrl}/${event.image} 500w, ${storageUrl}/${event.image} 800w, ${storageUrl}/${event.image} 1080w, ${storageUrl}/${event.image} 1152w"
                                          class="image-absolute">
                                     <div class="posts-arrow-wrapper">
-                                        <img width="24" height="24" alt="" 
-                                             src="${arrowIconUrl}" 
+                                        <img width="24" height="24" alt=""
+                                             src="${arrowIconUrl}"
                                              loading="eager" class="arrow">
                                     </div>
                                 </div>
@@ -263,8 +263,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="horizontal-line"></div>
                                     <div class="posts-avatar-flex">
                                         <div class="avatar-wrapper">
-                                            <img width="Auto" height="Auto" alt="" 
-                                                 src="${storageUrl}/${event.decorator.decorator_icon}" 
+                                            <img width="Auto" height="Auto" alt=""
+                                                 src="${storageUrl}/${event.decorator.decorator_icon}"
                                                  loading="eager">
                                         </div>
                                         <div class="avatar-text-block">
@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </a>
                         </div>
                     `).join('');
-                    
+
                     eventsList.innerHTML = eventsHtml;
                 })
                 .catch(error => {
