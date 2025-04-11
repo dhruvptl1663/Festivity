@@ -1,6 +1,26 @@
-﻿<x-header />
+﻿<!DOCTYPE html>
+<!-- This site was created in Webflow. https://webflow.com --><!-- Last Published: Fri Oct 25 2024 11:45:14 GMT+0000 (Coordinated Universal Time) -->
+<html data-wf-domain="cleaners-webflow-template.webflow.io" data-wf-page="6706104d4f29e916e4cae2fc"
+    data-wf-site="6706104d4f29e916e4cae2ad" lang="en" data-wf-locale="en">
 
+<head>
+    <meta charset="utf-8">
+    <title>About Festivity</title>
+    
+    <link href="assets/css/style.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous">
+    <script src="ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
+    <script
+        type="text/javascript">WebFont.load({ google: { families: ["Inter:100,300,regular,500,600,700,100italic,300italic,italic,500italic,600italic,700italic"] } });</script>
+    <script
+        type="text/javascript">!function (o, c) { var n = c.documentElement, t = " w-mod-"; n.className += t + "js", ("ontouchstart" in o || o.DocumentTouch && c instanceof DocumentTouch) && (n.className += t + "touch") }(window, document);</script>
+    <link href="assets/Images/Brand/icon_logo_small.png" rel="shortcut icon" type="image/x-icon">
+    <link href="assets/Images/Brand/icon_logo_big.png" rel="apple-touch-icon">
+</head>
 
+<body>
+    <x-header />
     <!-- Title Starts -->
     <section class="section">
         <div class="w-layout-blockcontainer container padding-9rem w-container">
@@ -28,8 +48,8 @@
     <section id="Image-Parallax" class="section">
         <div class="container padding-13-5rem w-container">
             <div class="aboutlarge-image slide-up-animation"><img sizes="(max-width: 991px) 80vw, 96vw"
-                    srcset="assets/Images/Other/6706104d4f29e916e4cae461_Hero.webp 500w, assets/Images/Other/6706104d4f29e916e4cae461_Hero.webp 800w, assets/Images/Other/6706104d4f29e916e4cae461_Hero.webp 1080w, assets/Images/Other/6706104d4f29e916e4cae461_Hero.webp 1440w"
-                    alt="cleaning materials" src="assets/Images/Other/6706104d4f29e916e4cae461_Hero.webp" loading="lazy"
+                    srcset=""
+                    alt="cleaning materials" src="assets\Images\About\about5.jpg" loading="lazy"
                     class="image-parallax">
                 <div data-w-id="67b17dd9-10f1-566d-00e9-2f5dcc2fb679" class="trigger"></div>
             </div>
@@ -48,8 +68,9 @@
                     <h5>GET TO KNOW</h5>
                     <h2>Our Team</h2>
                 </div>
-                <p class="max-width-30rem">Meet the dedicated professionals behind our top-tier cleaning services. Relax
-                    on the weekends.</p>
+                <p class="max-width-30rem">Introduce your team members with photos and roles.
+
+                    Share their experience and passion for events.</p>
             </div>
             <div class="space-4rem"></div>
             <div data-delay="4000" data-animation="slide"
@@ -59,30 +80,30 @@
                 <div class="teams-mask w-slider-mask">
                     <div class="teams-slides w-slide">
                         <div class="teams-slider"><img sizes="(max-width: 479px) 80vw, (max-width: 991px) 280px, 19vw"
-                            srcset="assets/Images/Other/6706104d4f29e916e4cae4b3_Team-1.webp 500w, assets/Images/Other/6706104d4f29e916e4cae4b3_Team-1.webp 800w, assets/Images/Other/6706104d4f29e916e4cae4b3_Team-1.webp 1080w, assets/Images/Other/6706104d4f29e916e4cae4b3_Team-1.webp 1500w"
+                            srcset=""
                             alt="woman with colorful cleaning supplies"
-                                src="assets/Images/Other/6706104d4f29e916e4cae4b3_Team-1.webp" loading="eager"
+                                src="assets\Images\About\about1.jpg" loading="eager"
                                 class="teams-image">
                             <div class="teams-wrapper">
                                 <div class="teams-text-block">
-                                    <h4>Amy Lee</h4>
-                                    <h5>Cleaning Specialist</h5>
+                                    <h4>Siya Rao</h4>
+                                    <h5></h5>
                                 </div>
-                                <p>Amy ensures every space is spotless and clean.</p>
+                                <p>Your expertise and unique approach to event planning.</p>
                                 <div class="socials-wrapper"><a href="https://www.youtube.com/" target="_blank"
                                         class="w-inline-block"><img width="Auto" height="Auto" alt=""
                                             src="assets/Images/Icons/ic_youtube.png" loading="eager"
-                                            srcset="assets/Images/Icons/ic_youtuassets/Images/Icons/ic_youtube.pngc_youtube.png 512w"
+                                            srcset=""
                                             sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
                                             class="social-icon smaller"></a><a href="https://www.instagram.com/"
                                         target="_blank" class="w-inline-block"><img width="Auto" height="Auto" alt=""
                                             src="assets/Images/Icons/ic_instagram.png" loading="eager"
-                                            srcset="assets/Images/Icons/ic_instagrassets/Images/Icons/ic_instagram.pnginstagram.png 512w"
+                                            srcset=""
                                             sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
                                             class="social-icon smaller"></a><a href="https://www.tiktok.com/en/"
                                         target="_blank" class="w-inline-block"><img width="Auto" height="Auto" alt=""
                                             src="assets/Images/Icons/ic_tiktok.png" loading="eager"
-                                            srcset="assets/Images/Icons/ic_tiktassets/Images/Icons/ic_tiktok.pngic_tiktok.png 512w"
+                                            srcset=""
                                             sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
                                             class="social-icon smaller"></a></div>
                             </div>
@@ -90,30 +111,29 @@
                     </div>
                     <div class="teams-slides w-slide">
                         <div class="teams-slider"><img sizes="(max-width: 479px) 80vw, (max-width: 991px) 280px, 19vw"
-                            srcset="assets/Images/Other/6706104d4f29e916e4cae4b2_Team-2.webp 500w, assets/Images/Other/6706104d4f29e916e4cae4b2_Team-2.webp 800w, assets/Images/Other/6706104d4f29e916e4cae4b2_Team-2.webp 1080w, assets/Images/Other/6706104d4f29e916e4cae4b2_Team-2.webp 1500w"
-                            alt="woman with colorful cleaning supplies"
+                            srcset="assets\Images\About\about2.jpg"
                                 src="assets/Images/Other/6706104d4f29e916e4cae4b2_Team-2.webp" loading="eager"
                                 class="teams-image">
                             <div class="teams-wrapper">
                                 <div class="teams-text-block">
-                                    <h4>Eva Kim</h4>
-                                    <h5>Sanitation Technician</h5>
+                                    <h4>Priya Shah</h4>
+                                    <h5></h5>
                                 </div>
-                                <p>Eva provides top-notch disinfection services.</p>
+                                <p> We focus on your unique vision to create a one-of-a-kind event..</p>
                                 <div class="socials-wrapper"><a href="https://www.youtube.com/" target="_blank"
                                         class="w-inline-block"><img width="Auto" height="Auto" alt=""
                                             src="assets/Images/Icons/ic_youtube.png" loading="eager"
-                                            srcset="assets/Images/Icons/ic_youtuassets/Images/Icons/ic_youtube.pngc_youtube.png 512w"
+                                            srcset=""
                                             sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
                                             class="social-icon smaller"></a><a href="https://www.instagram.com/"
                                         target="_blank" class="w-inline-block"><img width="Auto" height="Auto" alt=""
                                             src="assets/Images/Icons/ic_instagram.png" loading="eager"
-                                            srcset="assets/Images/Icons/ic_instagrassets/Images/Icons/ic_instagram.pnginstagram.png 512w"
+                                            srcset="" 
                                             sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
                                             class="social-icon smaller"></a><a href="https://www.tiktok.com/en/"
                                         target="_blank" class="w-inline-block"><img width="Auto" height="Auto" alt=""
                                             src="assets/Images/Icons/ic_tiktok.png" loading="eager"
-                                            srcset="assets/Images/Icons/ic_tiktassets/Images/Icons/ic_tiktok.pngic_tiktok.png 512w"
+                                            srcset=""
                                             sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
                                             class="social-icon smaller"></a></div>
                             </div>
@@ -121,30 +141,31 @@
                     </div>
                     <div class="teams-slides w-slide">
                         <div class="teams-slider"><img sizes="(max-width: 479px) 80vw, (max-width: 991px) 280px, 19vw"
-                            srcset="assets/Images/Other/6706104d4f29e916e4cae4b4_Team-3.webp 500w, assets/Images/Other/6706104d4f29e916e4cae4b4_Team-3.webp 800w, assets/Images/Other/6706104d4f29e916e4cae4b4_Team-3.webp 1080w, assets/Images/Other/6706104d4f29e916e4cae4b4_Team-3.webp 1500w"
-                            alt="woman with colorful cleaning supplies"
+                            srcset="assets\Images\About\about3.jpg"
                                 src="assets/Images/Other/6706104d4f29e916e4cae4b4_Team-3.webp" loading="eager"
                                 class="teams-image">
                             <div class="teams-wrapper">
                                 <div class="teams-text-block">
-                                    <h4>Ana Cole</h4>
-                                    <h5>Residential CleaneR</h5>
+                                    <h4>Tara Sen</h4>
+                                    <h5></h5>
                                 </div>
-                                <p>Ana is known for her meticulous cleaning.</p>
+                                <p>With numerous successful events, we guarantee excellence in every detail.
+
+                                </p>
                                 <div class="socials-wrapper"><a href="https://www.youtube.com/" target="_blank"
                                         class="w-inline-block"><img width="Auto" height="Auto" alt=""
                                             src="assets/Images/Icons/ic_youtube.png" loading="eager"
-                                            srcset="assets/Images/Icons/ic_youtuassets/Images/Icons/ic_youtube.pngc_youtube.png 512w"
+                                            srcset=""
                                             sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
                                             class="social-icon smaller"></a><a href="https://www.instagram.com/"
                                         target="_blank" class="w-inline-block"><img width="Auto" height="Auto" alt=""
                                             src="assets/Images/Icons/ic_instagram.png" loading="eager"
-                                            srcset="assets/Images/Icons/ic_instagrassets/Images/Icons/ic_instagram.pnginstagram.png 512w"
+                                            srcset=""
                                             sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
                                             class="social-icon smaller"></a><a href="https://www.tiktok.com/en/"
                                         target="_blank" class="w-inline-block"><img width="Auto" height="Auto" alt=""
                                             src="assets/Images/Icons/ic_tiktok.png" loading="eager"
-                                            srcset="assets/Images/Icons/ic_tiktassets/Images/Icons/ic_tiktok.pngic_tiktok.png 512w"
+                                            srcset=""
                                             sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
                                             class="social-icon smaller"></a></div>
                             </div>
@@ -152,30 +173,29 @@
                     </div>
                     <div class="teams-slides w-slide">
                         <div class="teams-slider"><img sizes="(max-width: 479px) 80vw, (max-width: 991px) 280px, 19vw"
-                            srcset="assets/Images/Other/6706104d4f29e916e4cae4b5_Team-4.webp 500w, assets/Images/Other/6706104d4f29e916e4cae4b5_Team-4.webp 800w, assets/Images/Other/6706104d4f29e916e4cae4b5_Team-4.webp 1080w, assets/Images/Other/6706104d4f29e916e4cae4b5_Team-4.webp 1500w"
-                            alt="woman with colorful uniform"
+                            srcset="assets\Images\About\about4.jpg"
                                 src="assets/Images/Other/6706104d4f29e916e4cae4b5_Team-4.webp" loading="eager"
                                 class="teams-image">
                             <div class="teams-wrapper">
                                 <div class="teams-text-block">
-                                    <h4>Lily Ray</h4>
-                                    <h5>Quality Inspector</h5>
+                                    <h4>Reva Bajaj</h4>
+                                    <h5></h5>
                                 </div>
-                                <p>Lily oversees highest quality control.</p>
+                                <p>We handle everything from logistics to entertainment, experience..</p>
                                 <div class="socials-wrapper"><a href="https://www.youtube.com/" target="_blank"
                                         class="w-inline-block"><img width="Auto" height="Auto" alt=""
                                             src="assets/Images/Icons/ic_youtube.png" loading="eager"
-                                            srcset="assets/Images/Icons/ic_youtuassets/Images/Icons/ic_youtube.pngc_youtube.png 512w"
+                                            srcset=""
                                             sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
                                             class="social-icon smaller"></a><a href="https://www.instagram.com/"
                                         target="_blank" class="w-inline-block"><img width="Auto" height="Auto" alt=""
                                             src="assets/Images/Icons/ic_instagram.png" loading="eager"
-                                            srcset="assets/Images/Icons/ic_instagrassets/Images/Icons/ic_instagram.pnginstagram.png 512w"
+                                            srcset=""
                                             sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
                                             class="social-icon smaller"></a><a href="https://www.tiktok.com/en/"
                                         target="_blank" class="w-inline-block"><img width="Auto" height="Auto" alt=""
                                             src="assets/Images/Icons/ic_tiktok.png" loading="eager"
-                                            srcset="assets/Images/Icons/ic_tiktassets/Images/Icons/ic_tiktok.pngic_tiktok.png 512w"
+                                            srcset=""
                                             sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
                                             class="social-icon smaller"></a></div>
                             </div>
@@ -255,27 +275,7 @@
     </section>
     <!-- Features Ends -->
 
-
-    <x-footer />
-
-
-  
-    
-
-    <script>
-        // Set the current year in the footer
-        document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
-    <!-- Footer Ends -->         <h3>Visit Us</h3>
-                <div class="map-container">
-                    <iframe
-                        width="100%"
-                        height="100%"
-                        frameborder="0" style="border:0"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3169.019984282839!2d-122.0842496846923!3d37.42206597982571!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fb24c2f2b9e3b%3A0x2b0b7e1b2b0b7e1b!2sGoogleplex!5e0!3m2!1sen!2sus!4v1600000000000!5m2!1sen!2sus" allowfullscreen>
-                    </iframe>
-                </div>
-        
+      <x-footer />
     
     <script src="js/jquery-3.5.1.min.dc5e7f18c8.js?site=6706104d4f29e916e4cae2ad" type="text/javascript"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>

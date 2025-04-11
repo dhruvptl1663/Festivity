@@ -46,5 +46,10 @@ class MainController extends Controller
     {
         return view('profile');
     }
+
+    public function eventShow()
+    {
+        return view('event-details');
+    }
    
 }

@@ -47,7 +47,7 @@
         color: #1da1f2;
     }
     .map-container {
-    
+
         height: 200px;
         margin-top: 20px;
     }
@@ -90,12 +90,12 @@
     <div class="footer-content">
         <div class="footer-section">
             <h3>About Us</h3>
-            <p>We are a leading company in our industry, committed to providing top-notch services and products to our clients worldwide.</p>
+            <p>We specialize in stunning decorations and seamless event planning to turn your celebrations into unforgettable memories.</p>
         </div>
         <div class="footer-section">
             <h3>Contact Us</h3>
-            <p>Email: info@yourcompany.com</p>
-            <p>Phone: +1 (555) 123-4567</p>
+            <p>Email: info@festivity.com</p>
+            <p>Phone: +91 98565 58456</p>
             <div class="social-media">
                 <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
                 <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
@@ -122,6 +122,6 @@
         </div>
     </div>
     <div style="text-align: center; margin-top: 20px;">
-        <p>&copy; <span id="year"></span> Your Company Name. All rights reserved.</p>
+        <p>&copy; <span id="year"></span> Festivity. All rights reserved.</p>
     </div>
 </footer>
