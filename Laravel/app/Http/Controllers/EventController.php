@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Category;
+use App\Models\Feedback;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -31,7 +32,12 @@ class EventController extends Controller
                 $query->latest();
         }
 
-        $events = $query->get();
+        $events = $query->get()->map(function ($event) {
+            $feedbackCount = Feedback::where('event_id', $event->event_id)->count();
+            $event->reviews = $feedbackCount;
+            return $event;
+        });
+
         $categories = Category::all();
         return view('events', compact('events', 'categories'));
     }
@@ -92,5 +98,19 @@ class EventController extends Controller
                 ];
             });
         return response()->json($events);
+    }
+
+    public function show($id)
+    {
+        $event = Event::with([
+            'category', 
+            'decorator', 
+            'feedback' => function($query) {
+                $query->with('user')->orderBy('created_at', 'desc')->select(['feedback_id', 'user_id', 'event_id', 'rating', 'comment', 'created_at']);
+            }
+        ])->findOrFail($id);
+        $event->reviews = $event->reviews_count;
+        $event->rating_count = $event->rating_count;
+        return view('eventdetails', compact('event'));
     }
 }

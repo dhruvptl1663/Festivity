@@ -50,4 +50,14 @@ class Event extends Model
     {
         return $this->hasMany(Feedback::class, 'event_id');
     }
+
+    public function getReviewsCountAttribute()
+    {
+        return $this->feedback()->count();
+    }
+
+    public function getRatingCountAttribute()
+    {
+        return $this->feedback()->whereNotNull('rating')->count();
+    }
 }

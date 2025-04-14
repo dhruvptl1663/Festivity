@@ -23,7 +23,6 @@
 <!-- Filter Starts -->
 <section class="filter">
 
-
     <div class="category-container">
         @foreach($categories as $category)
             <a href="#" class="category" data-category-id="{{ $category->category_id }}">{{ $category->category_name }}</a>
@@ -82,7 +81,7 @@
                 @else
                     @foreach($events as $event)
                         <div role="listitem" class="w-dyn-item"><a
-                                href="post/guide-to-keeping-your-home-spotless.html"
+                                href="{{ route('eventdetails.show', ['id' => $event->event_id]) }}"
                                 class="posts-card w-inline-block">
                                 <div class="latest-image-wrapper">
                                     @if($event->rating)
@@ -238,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     const eventsHtml = events.map(event => `
                         <div role="listitem" class="w-dyn-item">
-                            <a href="#" class="posts-card w-inline-block">
+                            <a href="{{ route('eventdetails.show', ['id' => $event->event_id]) }}" class="posts-card w-inline-block">
                                 <div class="latest-image-wrapper">
                                     ${event.rating ? `<div class="rating-badge">${starIcon} ${parseFloat(event.rating).toFixed(1)}</div>` : ''}
                                     <img width="Auto" height="Auto" alt=""

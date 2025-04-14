@@ -7,10 +7,10 @@
     <meta charset="utf-8">
     <title>Festivity</title>
 
-    <link href="assets/css/style.css" rel="stylesheet" type="text/css">
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous">
-    <script src="ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
+    <script src="{{ asset('ajax/libs/webfont/1.6.26/webfont.js') }}" type="text/javascript"></script>
 
     <link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">
     <script
@@ -20,8 +20,8 @@
             var n = c.documentElement, t = " w-mod-";
             n.className += t + "js", ("ontouchstart" in o || o.DocumentTouch && c instanceof DocumentTouch) && (n.className += t + "touch")
         }(window, document);</script>
-    <link href="assets/Images/Brand/icon_logo_small.png" rel="shortcut icon" type="image/x-icon">
-    <link href="assets/Images/Brand/icon_logo_big.png" rel="apple-touch-icon">
+    <link href="{{ asset('assets/Images/Brand/icon_logo_small.png') }}" rel="shortcut icon" type="image/x-icon">
+    <link href="{{ asset('assets/Images/Brand/icon_logo_big.png') }}" rel="apple-touch-icon">
 </head>
 
 <body>
@@ -30,9 +30,9 @@
      data-w-id="06ab6c64-468c-b44e-1b8c-856deb96ba7f" role="banner" data-no-scroll="1" data-duration="400"
      data-doc-height="1"><a href="{{ URL::to('/')}}" aria-current="page"
                             class="logo-link-wrapper w-nav-brand w--current"><img width="Auto" height="Auto" alt="Logo"
-                                                                                  src="assets/Images/Brand/main_logo_big.png"
+                                                                                  src="{{ asset('assets/Images/Brand/main_logo_big.png') }}"
                                                                                   loading="eager"
-                                                                                  srcset="assets/Images/Brand/main_logo_small.png 500w, assets/Images/Brand/main_logo_medium.png 800w, assets/Images/Brand/main_logo_big.png 1015w"
+                                                                                  srcset="{{ asset('assets/Images/Brand/main_logo_small.png') }} 500w, {{ asset('assets/Images/Brand/main_logo_medium.png') }} 800w, {{ asset('assets/Images/Brand/main_logo_big.png') }} 1015w"
                                                                                   sizes="(max-width: 991px) 124.921875px, 11vw"
                                                                                   class="logo"></a>
     <div class="nav-container w-container">

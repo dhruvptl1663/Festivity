@@ -16,7 +16,8 @@ Route::get('/about',[MainController::class,'about']);
 Route::get('/contact',[MainController::class,'contact']);
 Route::get('/login',[MainController::class,'login']);
 Route::get('/signup',[MainController::class,'signup']);
-Route::get('/event-details',[MainController::class,'eventShow']);
+Route::get('/event/{id}', [EventController::class, 'show'])->name('event.show');
+Route::get('/eventdetails/{id}', [MainController::class, 'eventdetails'])->name('eventdetails.show');
 
 Auth::routes();
 Route::get('/login', function () {
@@ -48,4 +49,3 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact.index
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::get('/admin/contacts', [AdminContactController::class, 'index'])->middleware('auth');
-

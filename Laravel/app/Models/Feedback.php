@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Feedback extends Model
 {
@@ -22,7 +23,17 @@ class Feedback extends Model
         'comment',
     ];
 
-    public $timestamps = false; //to prevent error with timestamps column
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
+    ];
+
+    public $timestamps = false;
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value);
+    }
 
     public function user()
     {
