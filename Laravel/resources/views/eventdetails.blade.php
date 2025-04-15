@@ -68,6 +68,8 @@
                 style="cursor: pointer; transition: transform 0.3s ease;"
                 onmouseover="this.style.transform='scale(1.2)'"
                 onmouseout="this.style.transform='scale(1)'"
+                data-event-id="{{ $event->event_id }}"
+                onclick="addToCart(this)"
             >
         </div>
 
@@ -314,4 +316,69 @@ function toggleBookmark(icon) {
         showAlert(error.message || 'Failed to update bookmark. Please try again later.', false);
     });
 }
+
+// Cart functionality
+function addToCart(cartIcon) {
+    const eventId = cartIcon.dataset.eventId;
+    
+    if (!eventId) {
+        console.error('Event ID not found on the cart icon element.');
+        showAlert('Action failed: Missing event identifier.', false);
+        return;
+    }
+
+    // Get existing cart items from cookie
+    let cart = getCartItems();
+    
+    // Check if item is already in cart
+    const existingItem = cart.find(item => item.event_id === eventId);
+    
+    if (existingItem) {
+        // Remove from cart
+        cart = cart.filter(item => item.event_id !== eventId);
+        cartIcon.src = "{{ asset('assets/images/Icons/cart_gray.png') }}";
+        showAlert('Removed from cart', false);
+    } else {
+        // Add to cart
+        cart.push({
+            event_id: eventId,
+            event_title: "{{ $event->title }}",
+            event_price: "{{ $event->price }}"
+        });
+        cartIcon.src = "{{ asset('assets/images/Icons/cart_fill.png') }}";
+        showAlert('Added to cart', true);
+    }
+
+    // Save updated cart to cookie
+    saveCartItems(cart);
+}
+
+// Get cart items from cookie
+function getCartItems() {
+    const cartString = document.cookie.replace(/(?:(?:^|.*;)\s*cart\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+    return cartString ? JSON.parse(decodeURIComponent(cartString)) : [];
+}
+
+// Save cart items to cookie
+function saveCartItems(cart) {
+    const cartString = encodeURIComponent(JSON.stringify(cart));
+    document.cookie = `cart=${cartString}; path=/; max-age=31536000`; // Cookie expires in 1 year
+}
+
+// Check if item is in cart
+function isItemInCart(eventId) {
+    const cart = getCartItems();
+    return cart.some(item => item.event_id === eventId);
+}
+
+// Initialize cart icon state when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    const cartIcon = document.querySelector('img[src*="cart"]');
+    if (cartIcon) {
+        const eventId = cartIcon.dataset.eventId;
+        if (eventId && isItemInCart(eventId)) {
+            cartIcon.src = "{{ asset('assets/images/Icons/cart_fill.png') }}";
+        }
+    }
+});
 </script>
