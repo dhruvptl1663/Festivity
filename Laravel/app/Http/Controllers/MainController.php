@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Event;
+use App\Models\Bookmark;
 
 class MainController extends Controller
 {
@@ -50,10 +51,16 @@ class MainController extends Controller
 
    
     public function eventdetails($id)
-{
-    $event = Event::findOrFail($id);
-    return view('eventdetails', compact('event'));
-}
+    {
+        $event = Event::findOrFail($id);
+        $isBookmarked = auth()->check() 
+            ? Bookmark::where('user_id', auth()->id())
+                ->where('event_id', $id)
+                ->exists()
+            : false;
+    
+        return view('eventdetails', compact('event', 'isBookmarked'));
+    }
 
 
 }

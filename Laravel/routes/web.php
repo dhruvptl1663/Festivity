@@ -8,6 +8,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\admin\AdminLoginController;
 use App\Http\Controllers\admin\HomeController;
+use App\Http\Controllers\BookmarkController;
+use App\Http\Controllers\admin\AdminContactController;
 
 Route::get('/',[MainController::class,'index']);
 Route::get('/events',[MainController::class,'events']);
@@ -34,6 +36,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [MainController::class, 'profile'])->name('profile');
 });
 
+// Bookmark routes
+Route::post('/bookmarks/toggle', [BookmarkController::class, 'toggle'])->name('bookmarks.toggle');
+
 // Show packages
 Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
 Route::get('/packages/{package}', [PackageController::class, 'show'])->name('packages.show');
@@ -41,8 +46,6 @@ Route::get('/packages/{package}', [PackageController::class, 'show'])->name('pac
 // Show events
 Route::get('/events', [EventController::class, 'index'])->name('events');
 Route::get('/events/category/{categoryId}', [EventController::class, 'getEventsByCategory']);
-
-
 
 // contact event
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');

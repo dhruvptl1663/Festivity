@@ -60,4 +60,9 @@ class Event extends Model
     {
         return $this->feedback()->whereNotNull('rating')->count();
     }
+    
+public function bookmarks()
+{
+    return $this->hasMany(Bookmark::class, 'event_id');
+}
 }
