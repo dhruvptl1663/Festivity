@@ -39,27 +39,27 @@
 
         <nav role="navigation" class="nav-menu w-nav-menu">
             <div class="nav-link-wrapper" data-url="{{ URL::to('/') }}">
-                <p class="nav-link w-nav-link">Home</p>
+                <a href="{{ URL::to('/') }}" class="nav-link w-nav-link">Home</a>
                 <p class="nav-link move-down hide-on-tab w-nav-link">Home</p>
             </div>
 
             <div class="nav-link-wrapper" data-url="{{ URL::to('/events') }}">
-                <p class="nav-link w-nav-link">Events</p>
+                <a href="{{ URL::to('/events') }}" class="nav-link w-nav-link">Events</a>
                 <p class="nav-link move-down hide-on-tab w-nav-link">Events</p>
             </div>
 
             <div class="nav-link-wrapper" data-url="{{ URL::to('/packages') }}">
-                <p class="nav-link w-nav-link">Package</p>
+                <a href="{{ URL::to('/packages') }}" class="nav-link w-nav-link">Package</a>
                 <p class="nav-link move-down hide-on-tab w-nav-link">Package</p>
             </div>
 
             <div class="nav-link-wrapper" data-url="{{ URL::to('/about') }}">
-                <p class="nav-link w-nav-link">About</p>
+                <a href="{{ URL::to('/about') }}" class="nav-link w-nav-link">About</a>
                 <p class="nav-link move-down hide-on-tab w-nav-link">About</p>
             </div>
 
             <div class="nav-link-wrapper" data-url="{{ URL::to('/contact') }}">
-                <p class="nav-link w-nav-link">Contact</p>
+                <a href="{{ URL::to('/contact') }}" class="nav-link w-nav-link">Contact</a>
                 <p class="nav-link move-down hide-on-tab w-nav-link">Contact</p>
             </div>
         </nav>

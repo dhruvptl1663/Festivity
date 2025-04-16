@@ -46,6 +46,20 @@
         {{ $event->description }}
     </div>
 
+    <!-- Decorator Information Section -->
+    <div style="left: 577.5px; top: 320px; position: absolute; display: flex; align-items: center; gap: 15px;">
+        <div class="posts-avatar-flex">
+            <div class="avatar-wrapper">
+                <img width="Auto" height="Auto" alt=""
+                     src="{{ asset('storage/' . $event->decorator->decorator_icon) }}"
+                     loading="eager">
+            </div>
+            <div class="avatar-text-block">
+                <h5 class="no-wrap">{{ $event->decorator->decorator_name ?? 'Unknown Decorator' }}</h5>
+            </div>
+        </div>
+    </div>
+
     <div style="position: absolute; top: 459.56px; right: 37.5px; display: flex; align-items: center; gap: 15px;">
         <div style="width: 28.13px; height: 25.51px; margin-right: 15px">
             <img
@@ -362,7 +376,7 @@ function getCartItems() {
 // Save cart items to cookie
 function saveCartItems(cart) {
     const cartString = encodeURIComponent(JSON.stringify(cart));
-    document.cookie = `cart=${cartString}; path=/; max-age=31536000`; // Cookie expires in 1 year
+    document.cookie = `cart=${cartString}; path=/; max-age=31536000`; 
 }
 
 // Check if item is in cart

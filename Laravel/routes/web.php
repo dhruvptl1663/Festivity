@@ -10,6 +10,7 @@ use App\Http\Controllers\admin\AdminLoginController;
 use App\Http\Controllers\admin\HomeController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\admin\AdminContactController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/',[MainController::class,'index']);
 Route::get('/events',[MainController::class,'events']);
@@ -52,3 +53,9 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact.index
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::get('/admin/contacts', [AdminContactController::class, 'index'])->middleware('auth');
+
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+});
