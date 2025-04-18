@@ -67,7 +67,7 @@ class BookmarkController extends Controller
                     'message' => 'Bookmark added successfully'
                 ]);
             } else {
-                // Event bookmark logic (original)
+                // Event bookmark logic
                 $bookmark = Bookmark::where('user_id', Auth::id())
                     ->where('event_id', $request->event_id)
                     ->first();
@@ -85,6 +85,9 @@ class BookmarkController extends Controller
                 $bookmark = new Bookmark();
                 $bookmark->user_id = Auth::id();
                 $bookmark->event_id = $request->event_id;
+                // Set decorator_id from the event
+                $event = \App\Models\Event::find($request->event_id);
+                $bookmark->decorator_id = $event ? $event->decorator_id : null;
                 $bookmark->save();
 
                 return response()->json([
