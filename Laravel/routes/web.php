@@ -62,3 +62,6 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::get('/packages/{package}', [PackageController::class, 'show'])->name('packages.show');
+
+// Cart routes
+Route::get('/cart', [MainController::class, 'cart'])->name('cart');

@@ -62,5 +62,9 @@ class MainController extends Controller
         return view('eventdetails', compact('event', 'isBookmarked'));
     }
 
+    public function cart()
+    {
+        return view('cart');
+    }
 
 }
