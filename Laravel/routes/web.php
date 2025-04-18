@@ -59,3 +59,6 @@ Route::get('/admin/contacts', [AdminContactController::class, 'index'])->middlew
 Route::middleware(['auth'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 });
+
+
+Route::get('/packages/{package}', [PackageController::class, 'show'])->name('packages.show');

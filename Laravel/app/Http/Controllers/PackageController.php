@@ -58,7 +58,19 @@ class PackageController extends Controller
 
     public function show(Package $package)
     {
-        $package->load(['decorator', 'packageEvents.event.category']);
-        return view('package-details', compact('package'));
+        // Load all necessary relationships including feedback
+        $package->load([
+            'decorator', 
+            'packageEvents.event.category',
+            'feedback'
+        ]);
+        
+        // Check if the package is bookmarked by the current user
+        $isBookmarked = false;
+        if (auth()->check()) {
+            $isBookmarked = auth()->user()->bookmarks()->where('package_id', $package->package_id)->exists();
+        }
+        
+        return view('packagedetails', compact('package', 'isBookmarked'));
     }
 }
