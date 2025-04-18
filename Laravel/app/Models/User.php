@@ -29,4 +29,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Feedback::class, 'user_id');
     }
+
+    // User has many bookmarks
+    public function bookmarks()
+    {
+        return $this->hasMany(\App\Models\Bookmark::class, 'user_id');
+    }
 }

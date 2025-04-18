@@ -109,20 +109,22 @@
                 style="cursor: pointer; transition: transform 0.3s ease;"
                 onmouseover="this.style.transform='scale(1.2)'"
                 onmouseout="this.style.transform='scale(1)'"
-                data-package-id="{{ $package->package_id }}"
+                data-package-id="{{ $package->package_id }}" {{-- Corrected attribute --}}
                 data-is-bookmarked="{{ $isBookmarked ? 'true' : 'false' }}"
                 onclick="toggleBookmark(this)">
         </div>
 
         <div style="width: 28.13px; height: 28.55px; margin-right: 15px">
             <img
+                id="cart-icon" {{-- Added ID for easier selection --}}
                 src="{{ asset('assets/images/Icons/cart_gray.png') }}"
                 alt="Cart Icon"
                 style="cursor: pointer; transition: transform 0.3s ease;"
                 onmouseover="this.style.transform='scale(1.2)'"
                 onmouseout="this.style.transform='scale(1)'"
-                data-package-id="{{ $package->package_id }}"
-                onclick="addToCart(this)">
+                data-package-id="{{ $package->package_id }}" {{-- Corrected attribute --}}
+                onclick="addToCart(this)"
+            >
         </div>
 
         <button style="
@@ -289,6 +291,20 @@
     </div>
 </div>
 
+<!-- ADDED: Custom Alert HTML Structure -->
+<div id="customAlert" class="custom-alert">
+    <svg class="alert-icon" viewBox="0 0 24 24">
+        <!-- Using a generic checkmark/error icon placeholder, you might want to swap this -->
+        <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+         <!-- Alternative Error Icon Path (Example) -->
+        <!-- <path fill="currentColor" d="M11 15h2v2h-2v-2zm0-8h2v6h-2V7zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/> -->
+    </svg>
+    <span id="alertMessage"></span>
+</div>
+
+{{-- Assuming you have a footer component --}}
+{{-- <x-footer /> --}}
+
 <style>
     /* --- Swiper Styles --- */
     .swiper {
@@ -362,7 +378,7 @@
     .rating-icon {
         width: 16px;
         height: 16px;
-        fill: #212529;
+        fill: #212529; /* Changed fill to match eventdetails */
     }
 
     /* --- Decorator Avatar Styles --- */
@@ -409,6 +425,54 @@
      div[onmouseover]:hover {
         /* Styles defined inline */
     }
+
+    /* ADDED: Custom Alert CSS from eventdetails.blade.php */
+    .custom-alert {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        opacity: 0;
+        transform: translateY(100%);
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Separate transitions */
+        z-index: 1000;
+        max-width: 400px;
+        visibility: hidden; /* Start hidden */
+    }
+
+    .custom-alert.show {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible; /* Become visible */
+    }
+
+    .custom-alert.success {
+        background: #4CAF50; /* Green */
+        color: white;
+    }
+
+    .custom-alert.error {
+        background: #F44336; /* Red */
+        color: white;
+    }
+
+    .alert-icon {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+    }
+
+    #alertMessage {
+        line-height: 1.4;
+    }
+
 </style>
 
 <script>
@@ -434,6 +498,17 @@
         } else {
             console.error('Swiper library is not loaded');
         }
+
+        // Initialize cart icon state when page loads
+        const cartIcon = document.getElementById('cart-icon'); // Use ID selector
+        if (cartIcon) {
+            const packageId = cartIcon.dataset.packageId;
+            if (packageId && isItemInCart(packageId)) {
+                cartIcon.src = "{{ asset('assets/images/Icons/cart_fill.png') }}";
+            } else {
+                cartIcon.src = "{{ asset('assets/images/Icons/cart_gray.png') }}"; // Ensure default state
+            }
+        }
     });
 </script>
 
@@ -441,69 +516,179 @@
     // Ensure CSRF token is available if not already globally defined
     const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '{{ csrf_token() }}'; // Fallback
 
-    function toggleBookmark(icon) {
-        const packageId = icon.dataset.packageId;
-        const isBookmarked = icon.dataset.isBookmarked === 'true';
+    // --- REPLACED showAlert FUNCTION ---
+    let alertTimeoutId = null; // Variable to hold the timeout ID
 
-        fetch(`/packages/${packageId}/toggle-bookmark`, {
+    function showAlert(message, isSuccess) {
+        const alert = document.getElementById('customAlert');
+        const alertMessage = document.getElementById('alertMessage');
+        // Optional: Change the icon based on success/error if you have different SVG paths
+        // const alertIcon = alert.querySelector('.alert-icon path');
+
+        // Clear any existing timeout to prevent premature hiding if called again quickly
+        if (alertTimeoutId) {
+            clearTimeout(alertTimeoutId);
+        }
+
+        // Set the class for styling (success or error)
+        alert.className = `custom-alert ${isSuccess ? 'success' : 'error'}`;
+        // if (alertIcon) {
+        //     alertIcon.setAttribute('d', isSuccess ? 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z' : 'M11 15h2v2h-2v-2zm0-8h2v6h-2V7zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'); // Example path change
+        // }
+
+        // Update the message text
+        alertMessage.textContent = message;
+
+        // Force reflow to ensure the transition plays correctly if the class was just removed
+        void alert.offsetWidth;
+
+        // Add the 'show' class to trigger the animation
+        alert.classList.add('show');
+
+        // Automatically hide the alert after 3 seconds
+        alertTimeoutId = setTimeout(() => {
+            alert.classList.remove('show');
+            alertTimeoutId = null; // Clear the timeout ID
+        }, 3000);
+    }
+    // --- END OF REPLACED showAlert FUNCTION ---
+
+
+    // Bookmark functionality (Uses the new showAlert)
+    function toggleBookmark(icon) {
+        // Check if user is authenticated
+        const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
+        if (!isAuthenticated) {
+            window.location.href = "{{ route('login') }}";
+            return;
+        }
+
+        const packageId = icon.dataset.packageId; // Make sure this matches the data attribute
+        if (!packageId) {
+            console.error('Package ID not found on the icon element.');
+            showAlert('Action failed: Missing package identifier.', false); // Uses new alert
+            return;
+        }
+
+        fetch("{{ route('bookmarks.toggle') }}", {
             method: 'POST',
             headers: {
-                'X-CSRF-TOKEN': csrfToken,
                 'Content-Type': 'application/json',
-                'Accept': 'application/json', // Good practice
+                'X-CSRF-TOKEN': csrfToken
             },
+            body: JSON.stringify({ package_id: packageId }) // Send package_id
         })
         .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+             if (!response.ok) {
+                // Try to parse error message from JSON response
+                return response.json().then(data => {
+                    throw new Error(data.message || `HTTP error! status: ${response.status}`);
+                }).catch(() => {
+                    // Fallback if parsing fails
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                });
             }
             return response.json();
         })
         .then(data => {
-            icon.src = data.bookmarked ? '{{ asset('assets/images/Icons/like_red.png') }}' : '{{ asset('assets/images/Icons/like_gray.png') }}';
-            icon.dataset.isBookmarked = data.bookmarked ? 'true' : 'false';
-            // Optional: Provide user feedback (e.g., a small temporary message)
-        })
-        .catch(error => {
-             console.error('Error toggling bookmark:', error);
-             alert('Could not update bookmark. Please try again.'); // User feedback
-        });
-    }
-
-    function addToCart(cartIcon) {
-        const packageId = cartIcon.dataset.packageId;
-
-        fetch('/cart/packages', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({ package_id: packageId })
-        })
-        .then(response => {
-             if (!response.ok) {
-                // Try to parse error message if server sends JSON error
-                 return response.json().then(err => { throw err; });
-             }
-             return response.json();
-         })
-        .then(data => {
-            if (data.success) {
-                alert(data.message || 'Package added to cart successfully!'); // Use server message if available
-                // Optional: Update cart icon indicator somewhere on the page
+            if (data.is_bookmarked !== undefined && data.message) {
+                icon.src = data.is_bookmarked
+                    ? "{{ asset('assets/images/Icons/like_red.png') }}"
+                    : "{{ asset('assets/images/Icons/like_gray.png') }}";
+                icon.dataset.isBookmarked = data.is_bookmarked;
+                showAlert(data.message, data.status === 'bookmarked'); // Use new alert, check status for success type
             } else {
-                alert(data.message || 'Error adding package to cart'); // Use server message
+                console.error('Invalid response format received:', data);
+                throw new Error('Received an invalid response from the server.');
             }
         })
         .catch(error => {
-            console.error('Error adding to cart:', error);
-            // Check if error object has a message property
-            const errorMessage = error?.message || 'Could not add item to cart. Please try again.';
-            alert(errorMessage);
+            console.error('Bookmark toggle error:', error);
+            showAlert(error.message || 'Failed to update bookmark. Please try again later.', false); // Use new alert
         });
     }
 
+    // Cart functionality (Uses the new showAlert)
+    function addToCart(cartIcon) {
+        const packageId = cartIcon.dataset.packageId; // Make sure this matches the data attribute
+
+        if (!packageId) {
+            console.error('Package ID not found on the cart icon element.');
+            showAlert('Action failed: Missing package identifier.', false); // Uses new alert
+            return;
+        }
+
+        // Get existing cart items from cookie
+        let cart = getCartItems();
+
+        // Check if item is already in cart
+        const existingItemIndex = cart.findIndex(item => item.package_id === packageId);
+
+        if (existingItemIndex > -1) {
+            // Remove from cart
+            cart.splice(existingItemIndex, 1); // Use splice for removal
+            cartIcon.src = "{{ asset('assets/images/Icons/cart_gray.png') }}";
+            showAlert('Removed from cart', false); // Use new alert (false indicates removal/less positive action)
+        } else {
+            // Add to cart
+            cart.push({
+                // Store relevant package details - adapt if needed
+                package_id: packageId,
+                package_title: "{{ $package->title }}", // Ensure variable is escaped if needed
+                package_price: "{{ $package->price }}",
+                // Add image if needed for cart display later
+                // package_image: "{{ $package->packageEvents->first()?->event->image ? asset('storage/' . $package->packageEvents->first()->event->image) : '' }}"
+            });
+            cartIcon.src = "{{ asset('assets/images/Icons/cart_fill.png') }}";
+            showAlert('Added to cart', true); // Use new alert (true indicates success/positive action)
+        }
+
+        // Save updated cart to cookie
+        saveCartItems(cart);
+    }
+
+    // Get cart items from cookie
+    function getCartItems() {
+        const cartCookie = document.cookie.split('; ').find(row => row.startsWith('cart='));
+        if (cartCookie) {
+            try {
+                // Decode the cookie value and parse JSON
+                const cartString = decodeURIComponent(cartCookie.split('=')[1]);
+                return JSON.parse(cartString);
+            } catch (e) {
+                console.error("Error parsing cart cookie:", e);
+                // Clear corrupted cookie
+                document.cookie = 'cart=; path=/; max-age=0';
+                return [];
+            }
+        }
+        return [];
+    }
+
+    // Save cart items to cookie
+    function saveCartItems(cart) {
+        // Ensure cart is an array
+        if (!Array.isArray(cart)) {
+            console.error("Attempted to save non-array to cart cookie");
+            return;
+        }
+        try {
+            const cartString = encodeURIComponent(JSON.stringify(cart));
+            // Set cookie to expire in 1 year (adjust as needed)
+            const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString();
+            document.cookie = `cart=${cartString}; path=/; expires=${expires}; SameSite=Lax`; // Added SameSite=Lax for security
+        } catch (e) {
+            console.error("Error saving cart cookie:", e);
+            showAlert("Could not update cart. Storage might be full.", false);
+        }
+    }
+
+    // Check if item is in cart
+    function isItemInCart(packageId) {
+        const cart = getCartItems();
+        return cart.some(item => item.package_id === packageId);
+    }
+
+    // Note: Initialization of cart icon state is moved to DOMContentLoaded above
 
 </script>

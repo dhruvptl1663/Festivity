@@ -11,9 +11,19 @@ class BookmarkController extends Controller
 {
     public function toggle(Request $request)
     {
+        // Accept either event_id or package_id
         $request->validate([
-            'event_id' => 'required|exists:events,event_id'
+            'event_id' => 'nullable|exists:events,event_id',
+            'package_id' => 'nullable|exists:packages,package_id',
         ]);
+
+        if (!$request->event_id && !$request->package_id) {
+            return response()->json([
+                'error' => 'Missing identifier',
+                'message' => 'No event_id or package_id provided',
+                'is_bookmarked' => false
+            ], 400);
+        }
 
         try {
             // Check if user is logged in
@@ -25,34 +35,64 @@ class BookmarkController extends Controller
                 ], 401);
             }
 
-            // First find the bookmark
-            $bookmark = Bookmark::where('user_id', Auth::id())
-                ->where('event_id', $request->event_id)
-                ->first();
+            // Determine if it's an event or package bookmark
+            if ($request->package_id) {
+                // Package bookmark logic
+                $bookmark = Bookmark::where('user_id', Auth::id())
+                    ->where('package_id', $request->package_id)
+                    ->whereNull('event_id')
+                    ->first();
 
-            if ($bookmark) {
-                // Delete using the bookmark_id
-                Bookmark::where('bookmark_id', $bookmark->bookmark_id)
-                    ->delete();
-                
+                if ($bookmark) {
+                    Bookmark::where('bookmark_id', $bookmark->bookmark_id)->delete();
+                    return response()->json([
+                        'status' => 'removed',
+                        'is_bookmarked' => false,
+                        'message' => 'Bookmark removed successfully'
+                    ]);
+                }
+
+                $bookmark = new Bookmark();
+                $bookmark->user_id = Auth::id();
+                $bookmark->package_id = $request->package_id;
+                $bookmark->event_id = null;
+                // Set decorator_id from the package
+                $package = \App\Models\Package::find($request->package_id);
+                $bookmark->decorator_id = $package ? $package->decorator_id : null;
+                $bookmark->save();
+
                 return response()->json([
-                    'status' => 'removed',
-                    'is_bookmarked' => false,
-                    'message' => 'Bookmark removed successfully'
+                    'status' => 'added',
+                    'is_bookmarked' => true,
+                    'message' => 'Bookmark added successfully'
+                ]);
+            } else {
+                // Event bookmark logic (original)
+                $bookmark = Bookmark::where('user_id', Auth::id())
+                    ->where('event_id', $request->event_id)
+                    ->first();
+
+                if ($bookmark) {
+                    Bookmark::where('bookmark_id', $bookmark->bookmark_id)
+                        ->delete();
+                    return response()->json([
+                        'status' => 'removed',
+                        'is_bookmarked' => false,
+                        'message' => 'Bookmark removed successfully'
+                    ]);
+                }
+
+                $bookmark = new Bookmark();
+                $bookmark->user_id = Auth::id();
+                $bookmark->event_id = $request->event_id;
+                $bookmark->save();
+
+                return response()->json([
+                    'status' => 'added',
+                    'is_bookmarked' => true,
+                    'message' => 'Bookmark added successfully'
                 ]);
             }
-
-            // Create new bookmark
-            $bookmark = new Bookmark();
-            $bookmark->user_id = Auth::id();
-            $bookmark->event_id = $request->event_id;
-            $bookmark->save();
-
-            return response()->json([
-                'status' => 'added',
-                'is_bookmarked' => true,
-                'message' => 'Bookmark added successfully'
-            ]);
 
         } catch (\Exception $e) {
             return response()->json([
