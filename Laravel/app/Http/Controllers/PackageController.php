@@ -70,7 +70,15 @@ class PackageController extends Controller
         if (auth()->check()) {
             $isBookmarked = auth()->user()->bookmarks()->where('package_id', $package->package_id)->exists();
         }
+
+        // Check if the package is in cart
+        $isInCart = false;
+        if (auth()->check()) {
+            $isInCart = \App\Models\Cart::where('user_id', auth()->id())
+                ->where('package_id', $package->package_id)
+                ->exists();
+        }
         
-        return view('packagedetails', compact('package', 'isBookmarked'));
+        return view('packagedetails', compact('package', 'isBookmarked', 'isInCart'));
     }
 }

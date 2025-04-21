@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Bookmark;
+use App\Models\Cart;
 
 class MainController extends Controller
 {
@@ -58,8 +59,14 @@ class MainController extends Controller
                 ->where('event_id', $id)
                 ->exists()
             : false;
-    
-        return view('eventdetails', compact('event', 'isBookmarked'));
+
+        $isInCart = auth()->check()
+            ? Cart::where('user_id', auth()->id())
+                ->where('event_id', $id)
+                ->exists()
+            : false;
+
+        return view('eventdetails', compact('event', 'isBookmarked', 'isInCart'));
     }
 
     public function cart()

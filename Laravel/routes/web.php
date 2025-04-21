@@ -11,6 +11,7 @@ use App\Http\Controllers\admin\HomeController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\admin\AdminContactController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\CartController;
 
 Route::get('/',[MainController::class,'index']);
 Route::get('/events',[MainController::class,'events']);
@@ -40,6 +41,9 @@ Route::middleware(['auth'])->group(function () {
 // Bookmark routes
 Route::post('/bookmarks/toggle', [BookmarkController::class, 'toggle'])->name('bookmarks.toggle');
 
+// Cart routes
+Route::post('/cart/toggle', [CartController::class, 'toggle'])->name('cart.toggle');
+
 // Show packages
 Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
 Route::get('/packages/{package}', [PackageController::class, 'show'])->name('packages.show');
@@ -54,14 +58,8 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 
 Route::get('/admin/contacts', [AdminContactController::class, 'index'])->middleware('auth');
 
-
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 });
 
-
 Route::get('/packages/{package}', [PackageController::class, 'show'])->name('packages.show');
-
-// Cart routes
-Route::get('/cart', [MainController::class, 'cart'])->name('cart');

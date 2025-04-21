@@ -116,14 +116,14 @@
 
         <div style="width: 28.13px; height: 28.55px; margin-right: 15px">
             <img
-                id="cart-icon" {{-- Added ID for easier selection --}}
-                src="{{ asset('assets/images/Icons/cart_gray.png') }}"
+                id="cart-icon"
+                src="{{ auth()->check() && $isInCart ? asset('assets/images/Icons/cart_fill.png') : asset('assets/images/Icons/cart_gray.png') }}"
                 alt="Cart Icon"
                 style="cursor: pointer; transition: transform 0.3s ease;"
                 onmouseover="this.style.transform='scale(1.2)'"
                 onmouseout="this.style.transform='scale(1)'"
-                data-package-id="{{ $package->package_id }}" {{-- Corrected attribute --}}
-                onclick="addToCart(this)"
+                data-package-id="{{ $package->package_id }}"
+                onclick="toggleCart(this)"
             >
         </div>
 
@@ -608,87 +608,50 @@
         });
     }
 
-    // Cart functionality (Uses the new showAlert)
-    function addToCart(cartIcon) {
-        const packageId = cartIcon.dataset.packageId; // Make sure this matches the data attribute
+    function toggleCart(icon) {
+    if (!{{ auth()->check() ? 'true' : 'false' }}) {
+        window.location.href = "{{ route('login') }}";
+        return;
+    }
 
-        if (!packageId) {
-            console.error('Package ID not found on the cart icon element.');
-            showAlert('Action failed: Missing package identifier.', false); // Uses new alert
-            return;
-        }
+    const packageId = icon.dataset.packageId;
+    if (!packageId) {
+        console.error('Package ID not found on the icon element.');
+        showAlert('Action failed: Missing package identifier.', false);
+        return;
+    }
 
-        // Get existing cart items from cookie
-        let cart = getCartItems();
-
-        // Check if item is already in cart
-        const existingItemIndex = cart.findIndex(item => item.package_id === packageId);
-
-        if (existingItemIndex > -1) {
-            // Remove from cart
-            cart.splice(existingItemIndex, 1); // Use splice for removal
-            cartIcon.src = "{{ asset('assets/images/Icons/cart_gray.png') }}";
-            showAlert('Removed from cart', false); // Use new alert (false indicates removal/less positive action)
-        } else {
-            // Add to cart
-            cart.push({
-                // Store relevant package details - adapt if needed
-                package_id: packageId,
-                package_title: "{{ $package->title }}", // Ensure variable is escaped if needed
-                package_price: "{{ $package->price }}",
-                // Add image if needed for cart display later
-                // package_image: "{{ $package->packageEvents->first()?->event->image ? asset('storage/' . $package->packageEvents->first()->event->image) : '' }}"
+    fetch("{{ route('cart.toggle') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ package_id: packageId })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.message || 'Server error occurred.');
             });
-            cartIcon.src = "{{ asset('assets/images/Icons/cart_fill.png') }}";
-            showAlert('Added to cart', true); // Use new alert (true indicates success/positive action)
         }
-
-        // Save updated cart to cookie
-        saveCartItems(cart);
-    }
-
-    // Get cart items from cookie
-    function getCartItems() {
-        const cartCookie = document.cookie.split('; ').find(row => row.startsWith('cart='));
-        if (cartCookie) {
-            try {
-                // Decode the cookie value and parse JSON
-                const cartString = decodeURIComponent(cartCookie.split('=')[1]);
-                return JSON.parse(cartString);
-            } catch (e) {
-                console.error("Error parsing cart cookie:", e);
-                // Clear corrupted cookie
-                document.cookie = 'cart=; path=/; max-age=0';
-                return [];
-            }
+        return response.json();
+    })
+    .then(data => {
+        if (data.is_in_cart !== undefined && data.message) {
+            icon.src = data.is_in_cart
+                ? "{{ asset('assets/images/Icons/cart_fill.png') }}"
+                : "{{ asset('assets/images/Icons/cart_gray.png') }}";
+            icon.dataset.isInCart = data.is_in_cart;
+            showAlert(data.message, data.is_in_cart);
+        } else {
+            throw new Error('Unexpected server response.');
         }
-        return [];
-    }
-
-    // Save cart items to cookie
-    function saveCartItems(cart) {
-        // Ensure cart is an array
-        if (!Array.isArray(cart)) {
-            console.error("Attempted to save non-array to cart cookie");
-            return;
-        }
-        try {
-            const cartString = encodeURIComponent(JSON.stringify(cart));
-            // Set cookie to expire in 1 year (adjust as needed)
-            const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString();
-            document.cookie = `cart=${cartString}; path=/; expires=${expires}; SameSite=Lax`; // Added SameSite=Lax for security
-        } catch (e) {
-            console.error("Error saving cart cookie:", e);
-            showAlert("Could not update cart. Storage might be full.", false);
-        }
-    }
-
-    // Check if item is in cart
-    function isItemInCart(packageId) {
-        const cart = getCartItems();
-        return cart.some(item => item.package_id === packageId);
-    }
-
-    // Note: Initialization of cart icon state is moved to DOMContentLoaded above
+    })
+    .catch(error => {
+        console.error('Cart toggle error:', error);
+        showAlert(error.message || 'Failed to update cart. Please try again.', false);
+    });
+}
 
 </script>
