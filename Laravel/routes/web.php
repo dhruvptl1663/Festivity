@@ -43,10 +43,11 @@ Route::post('/bookmarks/toggle', [BookmarkController::class, 'toggle'])->name('b
 
 // Cart routes
 Route::post('/cart/toggle', [CartController::class, 'toggle'])->name('cart.toggle');
+Route::get('/cart', [CartController::class, 'index'])->name('cart');
 
 // Show packages
 Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
-Route::get('/packages/{package}', [PackageController::class, 'show'])->name('packages.show');
+Route::get('/packagedetails/{package}', [PackageController::class, 'show'])->name('packagedetails');
 
 // Show events
 Route::get('/events', [EventController::class, 'index'])->name('events');
@@ -61,5 +62,3 @@ Route::get('/admin/contacts', [AdminContactController::class, 'index'])->middlew
 Route::middleware(['auth'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 });
-
-Route::get('/packages/{package}', [PackageController::class, 'show'])->name('packages.show');

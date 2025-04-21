@@ -18,6 +18,7 @@ class Cart extends Model
         'user_id',
         'event_id',
         'package_id',
+        'decorator_id',
     ];
 
     public $timestamps = false;
@@ -35,6 +36,11 @@ class Cart extends Model
     public function package()
     {
         return $this->belongsTo(Package::class, 'package_id');
+    }
+
+    public function decorator()
+    {
+        return $this->belongsTo(Decorator::class, 'decorator_id');
     }
 
 }

@@ -60,7 +60,7 @@
             </div>
         </div>
     </div>
-    </div> 
+    </div>
 </section>
 <!-- Filter Ends -->
 
@@ -75,7 +75,7 @@
                 @else
                     @foreach($packages as $package)
                     <div role="listitem" class="w-dyn-item">
-                        <a href="{{ route('packages.show', $package->package_id) }}" class="posts-card w-inline-block">
+                        <a href="{{ route('packagedetails', $package->package_id) }}" class="posts-card w-inline-block">
                             <div class="latest-image-wrapper">
                                 @if($package->rating)
                                     <div class="rating-badge">
@@ -90,10 +90,10 @@
                                         @foreach($package->packageEvents as $packageEvent)
                                             @if($packageEvent->event->image)
                                                 <div class="swiper-slide">
-                                                    <img width="Auto" height="Auto" 
+                                                    <img width="Auto" height="Auto"
                                                         alt="{{ $packageEvent->event->title }}"
-                                                        src="{{ asset('storage/' . $packageEvent->event->image) }}" 
-                                                        loading="eager" 
+                                                        src="{{ asset('storage/' . $packageEvent->event->image) }}"
+                                                        loading="eager"
                                                         class="image-absolute">
                                                 </div>
                                             @endif

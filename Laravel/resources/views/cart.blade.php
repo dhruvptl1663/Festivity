@@ -2,55 +2,50 @@
 
 <!-- Cart Section -->
 <div class="cart-container">
-    <h2 class="cart-title">Your Events Cart <span class="cart-count">2 items</span></h2>
+    <h2 class="cart-title">Your Events Cart <span class="cart-count">{{ $cartItems->count() }} items</span></h2>
 
     <!-- Cart Items Wrapper -->
     <div class="cart-items">
-        <!-- Event Card 1 -->
-        <div class="cart-card">
-            <div class="image-container">
-                <img src="https://via.placeholder.com/150x120/aabbcc/ffffff?text=Wedding" alt="Royal Wedding" class="cart-event-image">
-                <div class="availability-tag">In Stock</div>
-            </div>
+        @forelse($cartItems as $item)
+        <div class="cart-card" data-id="{{ $item['id'] }}" onclick="handleCardClick('{{ $item['type'] }}', {{ $item['id'] }})">
+        <div class="image-container">
+    @if($item['type'] === 'event')
+        <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['name'] }}" class="cart-event-image">
+    @else
+        <div class="package-image-slider">
+            @foreach($item['images'] as $index => $image)
+                <img src="{{ asset('storage/' . $image) }}" 
+                     alt="{{ $item['name'] }} - Event {{ $index + 1 }}" 
+                     class="cart-event-image package-slide" 
+                     data-index="{{ $index }}">
+            @endforeach
+        </div>
+    @endif
+</div>
             <div class="cart-details">
-                <h3 class="event-title">Royal Wedding Setup</h3>
-                <p class="event-location">📍 Grand Palace, Mumbai</p>
+                <h3 class="event-title">{{ $item['name'] }}</h3>
+                <p class="event-description">{{ $item['desc'] }}</p>
             </div>
             <div class="event-meta">
                 <div class="price-section">
-                    <span class="event-price">₹45,000</span>
-                    <span class="original-price">₹50,000</span>
+                    <span class="event-price">₹{{ number_format($item['price'], 0, '', ',') }}</span>
+                    @if($item['original_price'] > $item['price'])
+                    <span class="original-price">₹{{ number_format($item['original_price'], 0, '', ',') }}</span>
+                    @endif
                 </div>
-                <button class="remove-btn" aria-label="Remove Royal Wedding Setup">
+                <button class="remove-btn" aria-label="Remove {{ $item['name'] }}" 
+                        onclick="removeFromCart('{{ $item['type'] }}', {{ $item['id'] }})">
                     <svg class="trash-icon" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
                         <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                     </svg>
                 </button>
             </div>
         </div>
-
-        <!-- Event Card 2 -->
-        <div class="cart-card">
-            <div class="image-container">
-                <img src="https://via.placeholder.com/150x120/cbaacb/ffffff?text=Corporate" alt="Corporate Event" class="cart-event-image">
-                <div class="availability-tag limited">Limited Seats</div>
-            </div>
-            <div class="cart-details">
-                <h3 class="event-title">Corporate Annual Meet</h3>
-                <p class="event-location">📍 Taj Hotel, Delhi</p>
-            </div>
-            <div class="event-meta">
-                <div class="price-section">
-                    <span class="event-price">₹78,500</span>
-                    <span class="original-price">₹85,000</span>
-                </div>
-                <button class="remove-btn" aria-label="Remove Corporate Annual Meet">
-                    <svg class="trash-icon" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                    </svg>
-                </button>
-            </div>
+        @empty
+        <div class="cart-empty">
+            <p>Your cart is empty</p>
         </div>
+        @endforelse
     </div>
 
     <!-- Actions: Promo Code & Summary -->
@@ -71,15 +66,17 @@
             <div class="summary-grid">
                 <div class="summary-row">
                     <span>Subtotal:</span>
-                    <span>₹1,23,500</span>
+                    <span>₹{{ number_format($subtotal, 0, '', ',') }}</span>
                 </div>
+                @if($discount > 0)
                 <div class="summary-row">
                     <span>Discount:</span>
-                    <span class="discount">- ₹2,500</span>
+                    <span class="discount">- ₹{{ number_format($discount, 0, '', ',') }}</span>
                 </div>
+                @endif
                 <div class="summary-row total">
                     <span>Total:</span>
-                    <span>₹1,21,000</span>
+                    <span>₹{{ number_format($total, 0, '', ',') }}</span>
                 </div>
             </div>
             <button class="checkout-btn">
@@ -108,6 +105,26 @@
         --background-light: #F8FAFC;
         --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     }
+
+    .package-image-slider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.package-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.package-slide.active {
+    opacity: 1;
+}
 
     body {
        font-family: var(--font-family-base);
@@ -161,6 +178,7 @@
         border: 1px solid var(--border-color);
         transition: box-shadow 0.3s ease, transform 0.3s ease;
         overflow: hidden;
+        cursor: pointer;
     }
 
     .cart-card:hover {
@@ -578,5 +596,109 @@
          .arrow-icon { width: 18px; height: 18px; }
      }
 </style>
+
+<script>
+function updateCartCount() {
+    fetch('/cart/count', {
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const cartBadge = document.querySelector('.cart-badge');
+        if (cartBadge) {
+            cartBadge.textContent = data.count;
+        }
+    });
+}
+
+function removeFromCart(type, id) {
+    fetch('/cart/toggle', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            [type === 'event' ? 'event_id' : 'package_id']: id
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'removed') {
+            // Remove the item from the DOM
+            const item = document.querySelector(`[data-id="${id}"]`);
+            if (item) {
+                item.remove();
+            }
+            // Update the cart count
+            updateCartCount();
+        }
+    });
+}
+
+// Add event listener for cart toggle
+function handleCartToggle(type, id) {
+    fetch('/cart/toggle', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            [type === 'event' ? 'event_id' : 'package_id']: id
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'added') {
+            // Update the cart count
+            updateCartCount();
+        }
+    });
+}
+
+function handleCardClick(type, id) {
+    event.stopPropagation(); // Prevent event bubbling
+    
+    if (type === 'event') {
+        window.location.href = `/eventdetails/${id}`;
+    } else if (type === 'package') {
+        window.location.href = `/packagedetails/${id}`;
+    }
+}
+
+// Initialize package image sliders
+function initializeSliders() {
+    const sliders = document.querySelectorAll('.package-image-slider');
+    
+    sliders.forEach(slider => {
+        const slides = slider.querySelectorAll('.package-slide');
+        let currentSlide = 0;
+        
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        // Start the slideshow
+        showSlide(currentSlide);
+        setInterval(nextSlide, 2000); // Changed to 1.5 seconds
+    });
+}
+
+// Initialize sliders when page loads
+window.addEventListener('load', initializeSliders);
+</script>
 
 <x-footer />

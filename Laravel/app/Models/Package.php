@@ -34,6 +34,18 @@ class Package extends Model
         return $this->hasMany(PackageEvent::class, 'package_id');
     }
 
+    public function events()
+    {
+        return $this->hasManyThrough(
+            Event::class,
+            PackageEvent::class,
+            'package_id', // Foreign key on package_events table
+            'event_id',   // Foreign key on events table
+            'package_id', // Local key on packages table
+            'event_id'    // Local key on events table
+        );
+    }
+
     public function bookings()
     {
         return $this->hasMany(Booking::class, 'package_id');

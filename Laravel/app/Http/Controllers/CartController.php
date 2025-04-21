@@ -81,4 +81,56 @@ class CartController extends Controller
             ], 500);
         }
     }
+
+    public function index()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $cartItems = Cart::with(['event.category', 'package.decorator', 'package.events'])
+            ->where('user_id', Auth::id())
+            ->get()
+            ->map(function ($item) {
+                if ($item->event) {
+                    return [
+                        'type' => 'event',
+                        'id' => $item->event_id,
+                        'name' => $item->event->title,
+                        'desc' => $item->event->description,
+                        'image' => $item->event->image,
+                        'price' => $item->event->price,
+                        'original_price' => $item->event->price,
+                        'availability' => 'in_stock',
+                    ];
+                } else {
+                    $eventImages = $item->package->events->pluck('image')->toArray();
+                    return [
+                        'type' => 'package',
+                        'id' => $item->package_id,
+                        'name' => $item->package->title,
+                        'desc' => $item->package->description,
+                        'images' => $eventImages,
+                        'price' => $item->package->price,
+                        'original_price' => $item->package->price,
+                        'availability' => 'in_stock',
+                    ];
+                }
+            });
+
+        $subtotal = $cartItems->sum(function ($item) {
+            return $item['price'];
+        });
+
+        $discount = $cartItems->sum(function ($item) {
+            return $item['original_price'] - $item['price'];
+        });
+
+        return view('cart', [
+            'cartItems' => $cartItems,
+            'subtotal' => $subtotal,
+            'discount' => $discount,
+            'total' => $subtotal - $discount
+        ]);
+    }
 }
