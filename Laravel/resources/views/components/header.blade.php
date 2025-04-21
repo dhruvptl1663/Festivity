@@ -73,10 +73,8 @@
             <div class="cart-icon-wrapper">
                 <a href="{{ route('cart') }}" class="cart-icon">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-badge">{{ \App\Models\Cart::where('user_id', \Auth::id())->count() }}</span>
                 </a>
             </div>
-            <i class="fa badge fa-lg" value=8 style="margin-right: 40px;">&#xf07a;</i>
             <div class="dropdown" style="margin-top: 20px;">
                 <a href="{{ route('profile') }}" data-w-id="5636032a-1271-e473-ecbe-20e393bd2447"
                    class="button-with-circle-icon-loginbtn w-inline-block">
