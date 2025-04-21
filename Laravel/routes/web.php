@@ -12,6 +12,7 @@ use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\admin\AdminContactController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PromoCodeController;
 
 Route::get('/',[MainController::class,'index']);
 Route::get('/events',[MainController::class,'events']);
@@ -45,6 +46,9 @@ Route::post('/bookmarks/toggle', [BookmarkController::class, 'toggle'])->name('b
 Route::post('/cart/toggle', [CartController::class, 'toggle'])->name('cart.toggle');
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::delete('/cart/{id}', [CartController::class, 'delete'])->name('cart.delete');
+
+// Promo code route
+Route::post('/promo-code/apply', [PromoCodeController::class, 'apply'])->name('promo.apply');
 
 // Show packages
 Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');

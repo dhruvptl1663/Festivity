@@ -58,8 +58,8 @@
                 <svg class="gift-icon" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
                     <path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35L12 4l-1.5-1.65C10.16 1.54 9.05 1 8 1 6.34 1 5 2.34 5 4c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 12 7.4l3.38 4.6L17 10.83 14.92 8H20v6z"/>
                 </svg>
-                <input type="text" class="promo-input" placeholder="Enter promo code">
-                <button class="promo-apply-btn">Apply</button>
+                <input type="text" class="promo-input" id="promoInput" placeholder="Enter promo code">
+                <button type="button" class="promo-apply-btn" onclick="applyPromoCode()">Apply</button>
             </div>
         </div>
 
@@ -754,6 +754,80 @@ function deleteCartItem(id) {
     });
 }
 
+
+function applyPromoCode() {
+    console.log('Apply promo code clicked');
+    const promoCode = document.getElementById('promoInput').value;
+    console.log('Promo code:', promoCode);
+    
+    const subtotalElement = document.querySelector('.summary-row span:nth-child(2)');
+    console.log('Subtotal element:', subtotalElement);
+    
+    const subtotal = parseFloat(subtotalElement.textContent.replace('₹', '').replace(/,/g, ''));
+    console.log('Parsed subtotal:', subtotal);
+
+    fetch('/promo-code/apply', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            code: promoCode,
+            cart_total: subtotal
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Update the discount and total in the cart summary
+            const summaryGrid = document.querySelector('.summary-grid');
+            const totalRow = document.querySelector('.summary-row.total');
+            
+            // Remove existing discount row if any
+            const existingDiscountRow = document.querySelector('.summary-row .discount')?.closest('.summary-row');
+            if (existingDiscountRow) {
+                existingDiscountRow.remove();
+            }
+
+            // Add new discount row
+            const discountRow = document.createElement('div');
+            discountRow.className = 'summary-row';
+            discountRow.innerHTML = `
+                <span>Promo Discount:</span>
+                <span class="discount">- ₹${data.discount.toLocaleString()}</span>
+            `;
+            summaryGrid.insertBefore(discountRow, totalRow);
+
+            // Update total
+            const newTotal = subtotal - data.discount;
+            totalRow.querySelector('span:last-child').textContent = `₹${newTotal.toLocaleString()}`;
+
+            // Show success message
+            Swal.fire({
+                title: 'Success!',
+                text: data.message,
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: data.message,
+                icon: 'error'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error applying promo code:', error);
+        Swal.fire({
+            title: 'Error!',
+            text: 'Failed to apply promo code. Please try again.',
+            icon: 'error'
+        });
+    });
+}
 
 function updateCartTotals() {
     const cartItems = document.querySelectorAll('.cart-card');
