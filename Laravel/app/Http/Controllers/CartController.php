@@ -133,4 +133,42 @@ class CartController extends Controller
             'total' => $subtotal - $discount
         ]);
     }
+
+    public function delete($id)
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'error' => 'Authentication required',
+                'message' => 'Please login to manage cart'
+            ], 401);
+        }
+
+        try {
+            $cart = Cart::where('user_id', Auth::id())
+                ->where(function($query) use ($id) {
+                    $query->where('event_id', $id)
+                        ->orWhere('package_id', $id);
+                })
+                ->first();
+
+            if (!$cart) {
+                return response()->json([
+                    'error' => 'Not found',
+                    'message' => 'Cart item not found'
+                ], 404);
+            }
+
+            $cart->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Item removed from cart'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to delete cart item',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

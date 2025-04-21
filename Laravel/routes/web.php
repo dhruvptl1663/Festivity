@@ -44,6 +44,7 @@ Route::post('/bookmarks/toggle', [BookmarkController::class, 'toggle'])->name('b
 // Cart routes
 Route::post('/cart/toggle', [CartController::class, 'toggle'])->name('cart.toggle');
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
+Route::delete('/cart/{id}', [CartController::class, 'delete'])->name('cart.delete');
 
 // Show packages
 Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');

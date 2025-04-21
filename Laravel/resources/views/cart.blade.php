@@ -1,5 +1,7 @@
 @include('components.header')
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- Cart Section -->
 <div class="cart-container">
     <h2 class="cart-title">Your Events Cart <span class="cart-count">{{ $cartItems->count() }} items</span></h2>
@@ -7,7 +9,7 @@
     <!-- Cart Items Wrapper -->
     <div class="cart-items">
         @forelse($cartItems as $item)
-        <div class="cart-card" data-id="{{ $item['id'] }}" onclick="handleCardClick('{{ $item['type'] }}', {{ $item['id'] }})">
+        <div class="cart-card" data-id="{{ $item['id'] }}" data-price="{{ $item['price'] }}" onclick="handleCardClick('{{ $item['type'] }}', {{ $item['id'] }})">
         <div class="image-container">
     @if($item['type'] === 'event')
         <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['name'] }}" class="cart-event-image">
@@ -34,7 +36,7 @@
                     @endif
                 </div>
                 <button class="remove-btn" aria-label="Remove {{ $item['name'] }}" 
-                        onclick="removeFromCart('{{ $item['type'] }}', {{ $item['id'] }})">
+                        onclick="event.stopPropagation(); deleteCartItem('{{ $item['id'] }}')">
                     <svg class="trash-icon" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
                         <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                     </svg>
@@ -699,6 +701,88 @@ function initializeSliders() {
 
 // Initialize sliders when page loads
 window.addEventListener('load', initializeSliders);
+
+function deleteCartItem(id) {
+    Swal.fire({
+        title: 'Remove Item?',
+        text: 'Are you sure you want to remove this item from your cart?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, remove it',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/cart/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const cartCard = document.querySelector(`[data-id="${id}"]`);
+                    if (cartCard) cartCard.remove();
+
+                    const cartCount = document.querySelector('.cart-count');
+                    if (cartCount) {
+                        const currentCount = parseInt(cartCount.textContent.match(/\d+/)[0]);
+                        cartCount.textContent = `${currentCount - 1} items`;
+                    }
+
+                    updateCartTotals();
+
+                    Swal.fire({
+                        title: 'Removed!',
+                        text: 'Item removed from cart.',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire('Error', data.message || 'Failed to remove item from cart', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting cart item:', error);
+                Swal.fire('Error', 'An error occurred while removing the item', 'error');
+            });
+        }
+    });
+}
+
+
+function updateCartTotals() {
+    const cartItems = document.querySelectorAll('.cart-card');
+    if (cartItems.length === 0) {
+        // Show empty cart message
+        const emptyMessage = document.querySelector('.empty-cart');
+        if (!emptyMessage) {
+            const cartItemsContainer = document.querySelector('.cart-items');
+            const message = document.createElement('p');
+            message.className = 'empty-cart';
+            message.textContent = 'Your cart is empty';
+            cartItemsContainer.appendChild(message);
+        }
+    }
+
+    // Update the subtotal and total
+    const subtotalElement = document.querySelector('.summary-row span:nth-child(2)');
+    const totalElement = document.querySelector('.summary-row.total span:nth-child(2)');
+    if (subtotalElement && totalElement) {
+        const subtotal = Array.from(cartItems)
+            .reduce((sum, item) => {
+                const price = parseFloat(item.dataset.price || 0);
+                return sum + price;
+            }, 0);
+
+        subtotalElement.textContent = `₹${subtotal.toLocaleString()}`;
+        totalElement.textContent = `₹${subtotal.toLocaleString()}`;
+    }
+}
 </script>
 
 <x-footer />
