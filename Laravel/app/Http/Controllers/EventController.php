@@ -113,4 +113,113 @@ class EventController extends Controller
         $event->rating_count = $event->rating_count;
         return view('eventdetails', compact('event'));
     }
+
+    
+    // Admin methods
+    public function adminIndex()
+    {
+        $events = Event::with(['category', 'decorator'])->get();
+        return view('admin.events.index', compact('events'));
+    }
+
+    public function adminCreate()
+    {
+        $categories = Category::all();
+        return view('admin.events.create', compact('categories'));
+    }
+
+    public function adminStore(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category_id' => 'required|exists:categories,category_id',
+            'decorator_id' => 'required|exists:decorators,decorator_id',
+            'is_live' => 'boolean',
+            'price' => 'required|numeric',
+            'rating' => 'nullable|numeric|min:0|max:5'
+        ]);
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('public/images');
+            $imageName = str_replace('public/', '', $imagePath);
+        } else {
+            $imageName = null;
+        }
+
+        Event::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'image' => $imageName,
+            'category_id' => $request->category_id,
+            'decorator_id' => $request->decorator_id,
+            'is_live' => $request->is_live ?? false,
+            'price' => $request->price,
+            'rating' => $request->rating ?? 0.00
+        ]);
+
+        return redirect()->route('admin.events.index')->with('success', 'Event created successfully!');
+    }
+
+    public function adminEdit($id)
+    {
+        $event = Event::with('category')->findOrFail($id);
+        $categories = Category::all();
+        return view('admin.events.edit', compact('event', 'categories'));
+    }
+
+    public function adminUpdate(Request $request, $id)
+    {
+        $event = Event::findOrFail($id);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category_id' => 'required|exists:categories,category_id',
+            'decorator_id' => 'required|exists:decorators,decorator_id',
+            'is_live' => 'boolean',
+            'price' => 'required|numeric',
+            'rating' => 'nullable|numeric|min:0|max:5'
+        ]);
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('public/images');
+            $imageName = str_replace('public/', '', $imagePath);
+            $event->image = $imageName;
+        }
+
+        $event->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'decorator_id' => $request->decorator_id,
+            'is_live' => $request->is_live ?? false,
+            'price' => $request->price,
+            'rating' => $request->rating ?? $event->rating
+        ]);
+
+        return redirect()->route('admin.events.index')->with('success', 'Event updated successfully!');
+    }
+
+    // Status management methods
+    public function approve(Request $request, $id)
+    {
+        $event = Event::findOrFail($id);
+        $event->is_live = true;
+        $event->save();
+
+        return redirect()->back()->with('success', 'Event approved successfully!');
+    }
+
+    public function decline(Request $request, $id)
+    {
+        $event = Event::findOrFail($id);
+        $event->is_live = false;
+        $event->save();
+
+        return redirect()->back()->with('success', 'Event declined successfully!');
+    }
+
 }

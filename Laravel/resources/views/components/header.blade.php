@@ -40,7 +40,7 @@
                                                                                   srcset="{{ asset('assets/Images/Brand/main_logo_small.png') }} 500w, {{ asset('assets/Images/Brand/main_logo_medium.png') }} 800w, {{ asset('assets/Images/Brand/main_logo_big.png') }} 1015w"
                                                                                   sizes="(max-width: 991px) 124.921875px, 11vw"
                                                                                   class="logo"></a>
-    <div class="nav-container w-container">
+    <div class="nav-container w-container" style="display: flex; align-items: center; justify-content: space-between;">
 
         <nav role="navigation" class="nav-menu w-nav-menu">
             <div class="nav-link-wrapper" data-url="{{ URL::to('/') }}">
@@ -71,25 +71,21 @@
 
 
         @auth
+        <div style="display: flex; align-items: center; gap: 24px;">
             <div class="cart-icon-wrapper">
-                <a href="{{ route('cart') }}" class="cart-icon">
-                    <i class="fas fa-shopping-cart"></i>
+                <a href="{{ route('cart') }}" class="cart-icon" title="View Cart">
+                    <i class="fas fa-shopping-cart fa-lg"></i>
                 </a>
             </div>
-            <div class="dropdown" style="margin-top: 20px;">
-                <a href="{{ route('profile') }}" data-w-id="5636032a-1271-e473-ecbe-20e393bd2447"
+            <div class="dropdown">
+                <a href="{{ route('profile.show') }}" data-w-id="5636032a-1271-e473-ecbe-20e393bd2447"
                    class="button-with-circle-icon-loginbtn w-inline-block">
                     <p class="button-text">Hello, {{ Auth::user()->name }}</p>
                     <p class="button-text move-down hide-on-tab">Hello, {{ Auth::user()->name }}</p>
                     <div class="circle-absolute"></div>
                 </a>
-                <form method="POST" action="{{ route('logout') }}" class="d-inline" style="margin-left: 100px;">
-                    @csrf
-                    <button type="submit" class="dropdown-item">
-                        {{ __('Logout') }}
-                    </button>
-                </form>
             </div>
+        </div>
         @else
             <a href="{{ URL::to('/login')}}" data-w-id="5636032a-1271-e473-ecbe-20e393bd2447"
                class="button-with-circle-icon-loginbtn w-inline-block">

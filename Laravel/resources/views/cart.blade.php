@@ -1,6 +1,7 @@
 @include('components.header')
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <!-- Cart Section -->
 <div class="cart-container">
@@ -857,6 +858,147 @@ function updateCartTotals() {
         totalElement.textContent = `₹${subtotal.toLocaleString()}`;
     }
 }
+
+document.querySelector('.checkout-btn').addEventListener('click', async function() {
+    try {
+        // Get total amount from the total element
+        const totalElement = document.querySelector('.summary-row.total span:last-child');
+        if (!totalElement) {
+            throw new Error('Total amount element not found');
+        }
+        
+        const amount = parseFloat(totalElement.textContent.replace('₹', '').replace(',', ''));
+        if (isNaN(amount) || amount <= 0) {
+            throw new Error('Invalid amount');
+        }
+        
+        // Get promo code if applied
+        const promoInput = document.getElementById('promoInput');
+        const promoCode = promoInput ? promoInput.value.trim() : '';
+
+        console.log('Checkout initiated with amount:', amount);
+        console.log('Promo code:', promoCode);
+
+        // Show loading
+        const loading = Swal.fire({
+            title: 'Processing...',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // Get CSRF token from meta tag
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        if (!csrfToken) {
+            throw new Error('CSRF token not found');
+        }
+
+        // Create request headers
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('X-CSRF-TOKEN', csrfToken);
+
+        // Create request body
+        const body = JSON.stringify({
+            amount: amount,
+            promo_code: promoCode
+        });
+
+        // Make POST request
+        const response = await fetch('/payment/initiate', {
+            method: 'POST',
+            headers: headers,
+            body: body
+        });
+
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Response error:', errorText);
+            throw new Error(`Server returned status ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Response data:', data);
+
+        if (data.status !== 'success') {
+            throw new Error(data.message || 'Payment initiation failed');
+        }
+
+        // Initialize Razorpay payment
+        const options = {
+            key: data.key,
+            amount: data.amount,
+            currency: data.currency,
+            name: 'Festivity Booking',
+            description: 'Payment for Festivity Booking',
+            order_id: data.order_id,
+            handler: async function (response) {
+                try {
+                    const verifyResponse = await fetch('/payment/verify', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify({
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
+                            amount: amount,
+                            discount_amount: data.discount_amount
+                        })
+                    });
+
+                    const verifyData = await verifyResponse.json();
+                    
+                    if (verifyData.status === 'success') {
+                        await Swal.fire({
+                            title: 'Success!',
+                            text: 'Payment successful!',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                        
+                        window.location.href = '/booking/' + verifyData.booking_id;
+                    } else {
+                        throw new Error(verifyData.message || 'Payment verification failed');
+                    }
+                } catch (verifyError) {
+                    console.error('Payment verification error:', verifyError);
+                    await Swal.fire({
+                        title: 'Error!',
+                        text: verifyError.message || 'Payment verification failed',
+                        icon: 'error'
+                    });
+                }
+            },
+            prefill: {
+                name: '{{ Auth::user()->name }}',
+                email: '{{ Auth::user()->email }}'
+            },
+            theme: {
+                color: '#00C853'
+            }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+
+    } catch (error) {
+        console.error('Checkout error:', error);
+        await Swal.fire({
+            title: 'Error!',
+            text: error.message || 'Failed to initiate payment',
+            icon: 'error'
+        });
+    }
+});
 </script>
 
 <x-footer />

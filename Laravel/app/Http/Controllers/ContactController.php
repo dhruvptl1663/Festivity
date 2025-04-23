@@ -38,5 +38,16 @@ class ContactController extends Controller
 
         return back()->with('success', 'Your message has been sent successfully!');
     }
+    public function adminIndex()
+{
+    $contacts = Contact::latest()->get();
+    return view('admin.contacts.index', compact('contacts'));
+}
+
+public function adminShow($id)
+{
+    $contact = Contact::findOrFail($id);
+    return view('admin.contacts.show', compact('contact'));
+}
 }
 
