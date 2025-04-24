@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('content')
-<div class="main-content-admin">
+<div class="main-content-admin" style="margin-left:100px;">
     {{-- Increased container padding --}}
     <div class="container-fluid px-5 py-5">
         <div class="d-flex justify-content-between align-items-center mb-5"> {{-- Increased bottom margin --}}
@@ -115,7 +115,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 <style>
     .main-content-admin {
-        padding-top: 90px; 
+        padding-top: 90px;
     }
 
     /* --- Increased Button Icon Size --- */
