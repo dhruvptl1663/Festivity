@@ -151,3 +151,13 @@ Route::prefix('admin')->group(function () {
         });
       
     });
+
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    // Admin Dashboard
+    Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+    
+    // Admin Packages Routes
+    Route::get('/packages', [PackageController::class, 'adminIndex'])->name('admin.packages.index');
+    Route::post('/packages/{package}/approve', [PackageController::class, 'approve'])->name('admin.packages.approve');
+    Route::post('/packages/{package}/decline', [PackageController::class, 'decline'])->name('admin.packages.decline');
+});

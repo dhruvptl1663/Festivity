@@ -22,9 +22,6 @@
 
 
 
-
-    
-
     
     @stack('styles')
 </head>

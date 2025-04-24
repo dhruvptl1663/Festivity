@@ -180,4 +180,20 @@ class PackageController extends Controller
         $package->delete();
         return redirect()->route('admin.packages.index')->with('success', 'Package deleted successfully!');
     }
+
+    public function approve($id)
+{
+    $package = Package::findOrFail($id);
+    $package->is_live = true;
+    $package->save();
+    return redirect()->back()->with('success', 'Package approved successfully!');
+}
+
+public function decline($id)
+{
+    $package = Package::findOrFail($id);
+    $package->is_live = false;
+    $package->save();
+    return redirect()->back()->with('success', 'Package declined successfully!');
+}
 }
