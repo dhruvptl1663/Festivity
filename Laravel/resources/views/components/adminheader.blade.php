@@ -167,9 +167,9 @@
 
                          
                                 <li class="menu-item">
-                                    <a href="coupons.html" class="">
-                                        <div class="icon"><i class="icon-grid"></i></div>
-                                        <div class="text">Coupns</div>
+                                    <a href="{{ route('admin.coupon.index') }}" class="">
+                                        <div class="icon"><i class="icon-tag"></i></div>
+                                        <div class="text">Coupons</div>
                                     </a>
                                 </li>
                               

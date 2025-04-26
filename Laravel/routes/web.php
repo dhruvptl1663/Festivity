@@ -19,6 +19,8 @@ use App\Http\Controllers\AdminNotificationController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminContactController;
 use App\Http\Controllers\DecoratorController;
+use App\Http\Controllers\CouponController;
+
 
 
 Route::get('/decorator', [DecoratorController::class, 'index']);
@@ -75,6 +77,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/notifications/{notification}', [App\Http\Controllers\NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::get('/notifications/{notification}', [App\Http\Controllers\NotificationController::class, 'show'])->name('notifications.show');
     
+
     // Cart routes
     Route::post('/cart/toggle', [CartController::class, 'toggle'])->name('cart.toggle');
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
@@ -168,4 +171,10 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/packages', [PackageController::class, 'adminIndex'])->name('admin.packages.index');
     Route::post('/packages/{package}/approve', [PackageController::class, 'approve'])->name('admin.packages.approve');
     Route::post('/packages/{package}/decline', [PackageController::class, 'decline'])->name('admin.packages.decline');
+
+    // Admin Coupon Routes
+    Route::get('/coupon/create', [CouponController::class, 'create'])->name('admin.coupon.create');
+Route::get('/coupon', [CouponController::class, 'index'])->name('admin.coupon.index');
+Route::post('/coupon', [CouponController::class, 'store'])->name('admin.coupon.store');
+Route::delete('/coupon/{promo_id}', [CouponController::class, 'destroy'])->name('admin.coupons.destroy');
 });
