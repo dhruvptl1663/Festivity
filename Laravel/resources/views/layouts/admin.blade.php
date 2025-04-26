@@ -51,26 +51,27 @@
     </div>
 
     <!-- Add your admin JS files -->
-    <script src="{{ asset('dashboard/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/bootstrap-select.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/parallax.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.easypiechart.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.countTo.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.shuffle.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.slicknav.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.magnific-popup.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.fitvids.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.isotope.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/imagesloaded.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery waypoints.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.counterup.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.countdown.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/wow.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/validator.min.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easypiechart/2.1.7/jquery.easypiechart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-countTo/1.2.0/jquery.countTo.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.shuffle/0.1.1/jquery.shuffle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.slicknav/1.0.10/jquery.slicknav.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fitvids/1.2.0/jquery.fitvids.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imagesloaded/4.1.4/imagesloaded.pkgd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/counterup2/1.0.3/jquery.counterup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.countdown/2.2.0/jquery.countdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/validator/13.7.0/validator.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Keep your custom JS file -->
     <script src="{{ asset('dashboard/js/custom.js') }}"></script>
-    <script src="{{ asset('dashboard/js/sweetalert.min.js') }}"></script>
     
     @stack('scripts')
 </body>

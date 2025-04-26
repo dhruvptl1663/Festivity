@@ -16,4 +16,12 @@ class Contact extends Model
         'message',
         'image',
     ];
+
+    public function getImageUrlAttribute()
+    {
+        if ($this->image) {
+            return asset($this->image);
+        }
+        return null;
+    }
 }

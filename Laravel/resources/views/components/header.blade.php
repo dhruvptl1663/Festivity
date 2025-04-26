@@ -63,8 +63,8 @@
                 <p class="nav-link move-down hide-on-tab w-nav-link">About</p>
             </div>
 
-            <div class="nav-link-wrapper" data-url="{{ URL::to('/contact') }}">
-                <a href="{{ URL::to('/contact') }}" class="nav-link w-nav-link">Contact</a>
+            <div class="nav-link-wrapper" data-url="{{ URL::to('/contactus') }}">
+                <a href="{{ URL::to('/contactus') }}" class="nav-link w-nav-link">Contact</a>
                 <p class="nav-link move-down hide-on-tab w-nav-link">Contact</p>
             </div>
         </nav>

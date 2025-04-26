@@ -13,7 +13,7 @@
             <h1 data-w-id="2b428689-5a35-99ff-f397-e68c91393ae6" style="opacity:0">Contact</h1>
             <h5 data-w-id="2b428689-5a35-99ff-f397-e68c91393ae8" style="opacity:0" class="max-width-2rem">Get in touch with us! Fill out the form below, and we’ll get back to you soon.</h5>
         </div>
-        <div class="space-4rem"></div>
+        
     </div>
 </section>
 <!-- Title Ends -->
@@ -23,12 +23,11 @@
             
 
                 @if(session('success'))
-    <div class="alert alert-success" style="font-size: 25
-    px; font-weight: bold; color: green;">
+    <div class="alert alert-success" style="font-size: 25px; font-weight: bold; color: green;">
         {{ session('success') }}
     </div>
 @endif
-                <form id="contact-form" action="{{ route('contact.store') }}" method="POST" enctype="multipart/form-data">
+                <form id="contact-form" action="{{ route('contactus.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="field-wrapper">
                         <label for="name">Name</label>

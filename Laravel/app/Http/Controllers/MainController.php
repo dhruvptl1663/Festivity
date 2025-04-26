@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Bookmark;
 use App\Models\Cart;
+use App\Models\Contact; // Add this line
 
 class MainController extends Controller
 {
@@ -30,9 +31,31 @@ class MainController extends Controller
         return view('about');
     }
 
-    public function contact()
+    public function contactus()
     {
-        return view('contact');
+        return view('contactus');
+    }
+
+    public function storeContact(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'message' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('images/contact'), $imageName);
+            $validated['image'] = 'images/contact/' . $imageName;
+        }
+
+        Contact::create($validated);
+
+        return redirect()->route('contactus')->with('success', 'Your message has been sent successfully!');
     }
 
     public function login()
