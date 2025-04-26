@@ -13,6 +13,7 @@ class Notification extends Model
 
     protected $primaryKey = 'notification_id';
 
+    public $timestamps = false;  
     protected $fillable = [
         'user_id',
         'title',
@@ -22,11 +23,11 @@ class Notification extends Model
 
     protected $casts = [
         'is_read' => 'boolean',
-        'created_at' => 'datetime',
+        'created_at' => 'datetime:Asia/Kolkata',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 }

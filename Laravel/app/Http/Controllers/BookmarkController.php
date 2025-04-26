@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Log;
 
 class BookmarkController extends Controller
 {
+    public function index()
+    {
+        $bookmarks = Bookmark::where('user_id', Auth::id())->get();
+        return view('bookmarks.index', compact('bookmarks'));
+    }
+
     public function toggle(Request $request)
     {
         // Accept either event_id or package_id

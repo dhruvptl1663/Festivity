@@ -35,4 +35,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\Bookmark::class, 'user_id');
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'user_id', 'user_id');
+    }
 }

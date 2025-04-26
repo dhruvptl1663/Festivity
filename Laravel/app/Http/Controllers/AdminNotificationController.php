@@ -36,7 +36,12 @@ class AdminNotificationController extends Controller
 
     public function show(Notification $notification)
     {
+        // Load the user relationship
+        $notification->load('user');
+        
+        // Update the read status
         $notification->update(['is_read' => true]);
+        
         return view('Admin.notifications.show', compact('notification'));
     }
 
@@ -44,6 +49,6 @@ class AdminNotificationController extends Controller
     {
         $notification->delete();
         return redirect()->route('admin.notifications.index')
-            ->with('success', 'Notification deleted successfully');
+            ->with('error', 'Notification deleted successfully');
     }
 }

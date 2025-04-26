@@ -13,25 +13,204 @@
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous">
     <script src="{{ asset('ajax/libs/webfont/1.6.26/webfont.js') }}" type="text/javascript"></script>
 
-    <link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">
-    <script
-        type="text/javascript">WebFont.load({google: {families: ["Inter:100,300,regular,500,600,700,100italic,300italic,italic,500italic,600italic,700italic"]}});</script>
-    <script
-        type="text/javascript">!function (o, c) {
-            var n = c.documentElement, t = " w-mod-";
-            n.className += t + "js", ("ontouchstart" in o || o.DocumentTouch && c instanceof DocumentTouch) && (n.className += t + "touch")
-        }(window, document);</script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/solid.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/brands.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/solid.min.js"></script>
+
     <link href="{{ asset('assets/Images/Brand/icon_logo_small.png') }}" rel="shortcut icon" type="image/x-icon">
     <link href="{{ asset('assets/Images/Brand/icon_logo_big.png') }}" rel="apple-touch-icon">
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css">
     <!-- Swiper JS -->
     <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+    <style>
+        .menu-icon-wrapper {
+            margin-left: 20px;
+            cursor: pointer;
+            position: relative;
+            z-index: 100;
+        }
+
+        .menu-trigger {
+            background: none;
+            border: none;
+            padding: 12px;
+            color: #1a1a1a;
+            font-size: 1.25rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .menu-trigger i {
+            font-size: 1.25rem;
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+        }
+
+        .menu-trigger:hover {
+            color:rgb(0, 0, 0);
+            transform: scale(1.05);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+            border-radius: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+        }
+
+        .menu-dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 12px;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+            padding: 16px 0;
+            min-width: 240px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-top: 2px solid #C1E4C4;
+        }
+
+        .menu-icon-wrapper:hover .menu-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item i {
+            font-size: 1.25rem !important;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: "Font Awesome 6 Free" !important;
+            font-weight: 900 !important;
+        }
+
+        .menu-item:hover i {
+            color: #C1E4C4;
+            transform: scale(1.1);
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color:rgb(28, 195, 42);
+            transform: translateX(6px);
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: #C1E4C4;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.2s ease;
+        }
+
+        .menu-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* Modern Icons */
+        .menu-item.bookmark i {
+            content: "\f02e";
+        }
+
+        .menu-item.notifications i {
+            content: "\f0f3";
+        }
+
+        .menu-item i {
+            font-family: "Font Awesome 6 Free" !important;
+            font-weight: 900 !important;
+        }
+
+        /* Add subtle divider between items */
+        .menu-item:not(:last-child) {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        
+        .menu-item:hover {
+            border-bottom-color: rgba(0, 123, 255, 0.1);
+        }
+
+        .cart-icon-wrapper {
+            cursor: pointer;
+            position: relative;
+            z-index: 100;
+        }
+
+        .cart-icon {
+            background: none;
+            border: none;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #1a1a1a;
+        }
+
+        .cart-icon img {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cart-icon:hover {
+            color: #C1E4C4;
+            transform: scale(1.05);
+        }
+
+        .cart-icon:hover img {
+            filter: brightness(0.9);
+        }
+    </style>
 </head>
 
 <body>
 <!-- NavBar Starts -->
-<div data-animation="default" class="navbar w-nav" data-easing2="ease" data-easing="ease" data-collapse="medium"
+<div data-animation="default" class="navbar w-nav" data-easing2="ease" class="w-nav" data-easing="ease" data-collapse="medium"
      data-w-id="06ab6c64-468c-b44e-1b8c-856deb96ba7f" role="banner" data-no-scroll="1" data-duration="400"
      data-doc-height="1"><a href="{{ URL::to('/')}}" aria-current="page"
                             class="logo-link-wrapper w-nav-brand w--current"><img width="Auto" height="Auto" alt="Logo"
@@ -74,7 +253,7 @@
         <div style="display: flex; align-items: center; gap: 24px;">
             <div class="cart-icon-wrapper">
                 <a href="{{ route('cart') }}" class="cart-icon" title="View Cart">
-                    <i class="fas fa-shopping-cart fa-lg"></i>
+                    <img src="{{ asset('assets/Images/Icons/cart_fill.png') }}" alt="Cart" loading="lazy">
                 </a>
             </div>
             <div class="dropdown">
@@ -86,6 +265,24 @@
                 </a>
             </div>
         </div>
+
+        <div class="menu-icon-wrapper">
+            <button class="menu-trigger" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="menu-dropdown">
+                <a href="{{ route('bookmarks') }}" class="menu-item bookmark">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Bookmarks</span>
+                </a>
+                <a href="{{ route('notifications') }}" class="menu-item notifications">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+            </div>
+        </div>
+
         @else
             <a href="{{ URL::to('/login')}}" data-w-id="5636032a-1271-e473-ecbe-20e393bd2447"
                class="button-with-circle-icon-loginbtn w-inline-block">
