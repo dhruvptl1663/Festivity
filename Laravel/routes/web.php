@@ -20,13 +20,7 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminContactController;
 use App\Http\Controllers\DecoratorController;
 use App\Http\Controllers\CouponController;
-
-
-
-Route::get('/decorator', [DecoratorController::class, 'index']);
-
-// Admin Panel
-Route::get('/admin', [AdminController::class, 'index']);
+use App\Http\Controllers\AdminAdminController;
 
 // Public Routes
 Route::get('/', [MainController::class, 'index']);
@@ -167,6 +161,14 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     // Admin Dashboard
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
     
+    // Admin Management Routes
+    Route::get('/admins', [AdminAdminController::class, 'index'])->name('admin.admins.index');
+    Route::get('/admins/create', [AdminAdminController::class, 'create'])->name('admin.admins.create');
+    Route::post('/admins', [AdminAdminController::class, 'store'])->name('admin.admins.store');
+    Route::get('/admins/{admin}/edit', [AdminAdminController::class, 'edit'])->name('admin.admins.edit');
+    Route::put('/admins/{admin}', [AdminAdminController::class, 'update'])->name('admin.admins.update');
+    Route::delete('/admins/{admin}', [AdminAdminController::class, 'destroy'])->name('admin.admins.destroy');
+
     // Admin Packages Routes
     Route::get('/packages', [PackageController::class, 'adminIndex'])->name('admin.packages.index');
     Route::post('/packages/{package}/approve', [PackageController::class, 'approve'])->name('admin.packages.approve');
@@ -174,7 +176,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 
     // Admin Coupon Routes
     Route::get('/coupon/create', [CouponController::class, 'create'])->name('admin.coupon.create');
-Route::get('/coupon', [CouponController::class, 'index'])->name('admin.coupon.index');
-Route::post('/coupon', [CouponController::class, 'store'])->name('admin.coupon.store');
-Route::delete('/coupon/{promo_id}', [CouponController::class, 'destroy'])->name('admin.coupons.destroy');
+    Route::get('/coupon', [CouponController::class, 'index'])->name('admin.coupon.index');
+    Route::post('/coupon', [CouponController::class, 'store'])->name('admin.coupon.store');
+    Route::delete('/coupon/{promo_id}', [CouponController::class, 'destroy'])->name('admin.coupons.destroy');
 });

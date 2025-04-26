@@ -6,21 +6,20 @@
         <div class="col-12 col-xl-10">
             <div class="glass-card p-5 rounded-5">
                 <div class="header-bar mb-5">
-                    <h1 class="display-5 fw-bold text-purple mb-4">Edit User Profile</h1>
+                    <h1 class="display-5 fw-bold text-purple mb-4">Create New Admin</h1>
                     <div class="accent-line" style="width: 80px; height: 6px;"></div>
                 </div>
 
-                <form action="{{ route('admin.users.update', $user) }}" method="POST" class="needs-validation" novalidate>
+                <form action="{{ route('admin.admins.store') }}" method="POST" class="needs-validation" novalidate>
                     @csrf
-                    @method('PUT')
-
+                    
                     <!-- Name Field -->
                     <div class="form-floating mb-5">
                         <input type="text" class="form-control form-control-xl rounded-4 @error('name') is-invalid @enderror" 
-                               id="name" name="name" value="{{ $user->name }}" required
+                               id="name" name="name" placeholder=" " required
                                style="height: 70px; font-size: 1.25rem;">
                         <label for="name" class="text-muted fs-5">
-                            <i class="fas fa-user me-3 fa-lg"></i>User Name
+                            <i class="fas fa-user me-3 fa-lg"></i>Admin Name
                         </label>
                         @error('name')
                             <div class="invalid-feedback ps-5 fs-5">{{ $message }}</div>
@@ -30,7 +29,7 @@
                     <!-- Email Field -->
                     <div class="form-floating mb-5">
                         <input type="email" class="form-control form-control-xl rounded-4 @error('email') is-invalid @enderror" 
-                               id="email" name="email" value="{{ $user->email }}" required
+                               id="email" name="email" placeholder=" " required
                                style="height: 70px; font-size: 1.25rem;">
                         <label for="email" class="text-muted fs-5">
                             <i class="fas fa-envelope me-3 fa-lg"></i>Email Address
@@ -43,10 +42,10 @@
                     <!-- Password Field -->
                     <div class="form-floating mb-5">
                         <input type="password" class="form-control form-control-xl rounded-4 @error('password') is-invalid @enderror" 
-                               id="password" name="password" placeholder=" "
+                               id="password" name="password" placeholder=" " required
                                style="height: 70px; font-size: 1.25rem;">
                         <label for="password" class="text-muted fs-5">
-                            <i class="fas fa-lock me-3 fa-lg"></i>New Password (leave blank to keep current)
+                            <i class="fas fa-lock me-3 fa-lg"></i>Password
                         </label>
                         @error('password')
                             <div class="invalid-feedback ps-5 fs-5">{{ $message }}</div>
@@ -55,11 +54,11 @@
 
                     <!-- Action Buttons -->
                     <div class="d-flex justify-content-end gap-3 mt-5">
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-outline-purple-xl rounded-pill py-3 fs-4">
+                        <a href="{{ route('admin.admins.index') }}" class="btn btn-outline-purple-xl rounded-pill py-3 fs-4">
                             <i class="fas fa-times me-3 fa-lg"></i>Cancel
                         </a>
                         <button type="submit" class="btn btn-purple-xl rounded-pill py-3 fs-4">
-                            <i class="fas fa-save me-3 fa-lg"></i>Save Changes
+                            <i class="fas fa-plus-circle me-3 fa-lg"></i>Create Admin
                         </button>
                     </div>
                 </form>

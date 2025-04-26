@@ -60,28 +60,8 @@
                         </div>
                         <div class="center-item">
                             <ul class="menu-list">
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-user"></i></div>
-                                        <div class="text">Decorators</div>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="{{ route('admin.decorators.index') }}" class="">
-                                                <div class="icon"><i class="icon-users"></i></div>
-                                                <div class="text">All Decorators</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="{{ route('admin.decorators.create') }}" class="">
-                                                <div class="icon"><i class="icon-plus"></i></div>
-                                                <div class="text">Add New</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
 
-                                <li class="menu-item has-children">
+                            <li class="menu-item has-children">
                                     <a href="javascript:void(0);" class="menu-item-button">
                                         <div class="icon"><i class="icon-calendar"></i></div>
                                         <div class="text">Events</div>
@@ -112,6 +92,7 @@
                                      
                                     </ul>
                                 </li>
+
                                 <li class="menu-item has-children">
                                     <a href="javascript:void(0);" class="menu-item-button">
                                         <div class="icon"><i class="icon-file-plus"></i></div>
@@ -130,21 +111,77 @@
                                         </li>
                                     </ul>
                                 </li>
+
                                 <li class="menu-item has-children">
+                                 <a href="javascript:void(0);" class="menu-item-button">
+                                     <div class="icon"><i class="icon-user"></i></div>
+                                     <div class="text">Users</div>
+                                 </a>
+                                 <ul class="sub-menu">
+                                     <li class="sub-menu-item">
+                                         <a href="{{ route('admin.users.index') }}" class="">
+                                             <div class="text">View Users</div>
+                                         </a>
+                                     </li>
+                                 </ul>
+                                 <ul class="sub-menu">
+                                     <li class="sub-menu-item">
+                                         <a href="{{ route('admin.users.create') }}" class="">
+                                             <div class="text">Add User</div>
+                                         </a>
+                                     </li>
+                                 </ul>
+                             </li>
+
+                             <li class="menu-item has-children">
                                     <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-mail"></i></div>
-                                        <div class="text">Contact Messages</div>
+                                        <div class="icon"><i class="icon-user"></i></div>
+                                        <div class="text">Decorators</div>
                                     </a>
                                     <ul class="sub-menu">
                                         <li class="sub-menu-item">
-                                            <a href="{{ route('admin.contacts.index') }}" class="">
-                                                <div class="text">View All Messages</div>
+                                            <a href="{{ route('admin.decorators.index') }}" class="">
+                                                <div class="icon"><i class="icon-users"></i></div>
+                                                <div class="text">All Decorators</div>
+                                            </a>
+                                        </li>
+                                        <li class="sub-menu-item">
+                                            <a href="{{ route('admin.decorators.create') }}" class="">
+                                                <div class="icon"><i class="icon-plus"></i></div>
+                                                <div class="text">Add New</div>
                                             </a>
                                         </li>
                                     </ul>
                                 </li>
+                             
+                             <li class="menu-item has-children">
+                                 <a href="javascript:void(0);" class="menu-item-button">
+                                     <div class="icon"><i class="icon-user"></i></div>
+                                     <div class="text">Admin</div>
+                                 </a>
+                                 <ul class="sub-menu">
+                                     <li class="sub-menu-item">
+                                         <a href="{{ route('admin.admins.index') }}" class="">
+                                             <div class="text">View Admins</div>
+                                         </a>
+                                     </li>
+                                 </ul>
+                                 <ul class="sub-menu">
+                                     <li class="sub-menu-item">
+                                         <a href="{{ route('admin.admins.create') }}" class="">
+                                             <div class="text">Add Admin</div>
+                                         </a>
+                                     </li>
+                                 </ul>
+                             </li>
 
-
+                             <li class="menu-item">
+                                    <a href="{{ route('admin.coupon.index') }}" class="">
+                                        <div class="icon"><i class="icon-tag"></i></div>
+                                        <div class="text">Coupons</div>
+                                    </a>
+                                </li>
+                                
                                 <li class="menu-item has-children">
                                     <a href="javascript:void(0);" class="menu-item-button">
                                         <div class="icon"><i class="icon-bell"></i></div>
@@ -163,39 +200,23 @@
                                         </li>
                                     </ul>
                                 </li>
-                        
-
-                         
+                                
                                 <li class="menu-item">
-                                    <a href="{{ route('admin.coupon.index') }}" class="">
+                                    <a href="{{ route('admin.contacts.index') }}" class="">
                                         <div class="icon"><i class="icon-tag"></i></div>
-                                        <div class="text">Coupons</div>
+                                        <div class="text">Contact Messages</div>
                                     </a>
                                 </li>
-                              
 
-                             <li class="menu-item has-children">
-                                 <a href="javascript:void(0);" class="menu-item-button">
-                                     <div class="icon"><i class="icon-user"></i></div>
-                                     <div class="text">Users</div>
-                                 </a>
-                                 <ul class="sub-menu">
-                                     <li class="sub-menu-item">
-                                         <a href="{{ route('admin.users.index') }}" class="">
-                                             <div class="text">All Users</div>
-                                         </a>
-                                     </li>
-                                 </ul>
-                             </li>
-                                 
+                                
+
                                     </ul>
                                     </a>
                             
                                 </li>
 
 
-                              
-                            </ul>
+                                                          </ul>
                         </div>
                     </div>
                 </div>

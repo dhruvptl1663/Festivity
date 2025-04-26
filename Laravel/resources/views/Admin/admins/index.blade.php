@@ -1,14 +1,15 @@
 @extends('layouts.admin')
+
 @section('content')
 <div class="main-content-admin" style="margin-left:100px;">
     <div class="container-fluid px-5 py-5">
         <div class="d-flex justify-content-between align-items-center mb-5">
             <div>
-                <h1 class="h3 fw-bold mb-1 fs-2">Manage Users</h1>
-                <p class="text-muted mb-0 fs-5">Total {{ $users->count() }} users found</p>
+                <h1 class="h3 fw-bold mb-1 fs-2">Manage Admins</h1>
+                <p class="text-muted mb-0 fs-5">Total {{ $admins->count() }} admins found</p>
             </div>
-            <a href="{{ route('admin.users.create') }}" class="btn btn-primary px-4 py-2 btn-lg">
-                <i class="bi bi-plus-lg me-2"></i>Add New
+            <a href="{{ route('admin.admins.create') }}" class="btn btn-primary px-4 py-2 btn-lg">
+                <i class="bi bi-plus-lg me-2"></i>Add New Admin
             </a>
         </div>
 
@@ -21,7 +22,7 @@
         @endif
 
         <div class="row g-5">
-            @forelse($users as $user)
+            @forelse($admins as $admin)
             <div class="col-12 col-md-12 col-lg-6">
                 <div class="card h-100 border-0 shadow-sm overflow-hidden">
                     <div class="card-body p-4">
@@ -29,29 +30,29 @@
                             <div class="flex-shrink-0">
                                 <div class="avatar-icon d-flex align-items-center justify-content-center rounded-circle" 
                                      style="width: 40px; height: 40px; font-size: 16px;">
-                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                                    {{ strtoupper(substr($admin->name, 0, 1)) }}
                                 </div>
                             </div>
                             <div class="flex-grow-1">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <div>
-                                        <h5 class="mb-1 fw-semibold fs-4">{{ $user->name }}</h5>
-                                        <small class="text-muted fs-6">{{ $user->email }}</small>
+                                        <h5 class="mb-1 fw-semibold fs-4">{{ $admin->name }}</h5>
+                                        <small class="text-muted fs-6">{{ $admin->email }}</small>
                                     </div>
                                     <div class="btn-group gap-2">
-                                        <a href="{{ route('admin.users.edit', $user) }}"
+                                        <a href="{{ route('admin.admins.edit', $admin) }}"
                                            class="btn btn-icon btn-outline-primary"
-                                           aria-label="Edit user"
+                                           aria-label="Edit admin"
                                            data-bs-toggle="tooltip"
                                            title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('admin.admins.destroy', $admin) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
                                                     class="btn btn-icon btn-outline-danger"
-                                                    aria-label="Delete user"
+                                                    aria-label="Delete admin"
                                                     onclick="return confirm('Are you sure?')"
                                                     data-bs-toggle="tooltip"
                                                     title="Delete">
@@ -70,7 +71,7 @@
                 <div class="card border-dashed">
                     <div class="card-body text-center py-5">
                         <i class="bi bi-people display-2 text-muted"></i>
-                        <h5 class="mt-4 mb-0 text-muted fs-4">No users found</h5>
+                        <h5 class="mt-4 mb-0 text-muted fs-4">No admins found</h5>
                     </div>
                 </div>
             </div>
