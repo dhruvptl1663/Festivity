@@ -2,6 +2,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<!-- Flatpickr for Date/Time Picker -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <!-- Cart Section -->
 <div class="cart-container">
     <h2 class="cart-title">Your Events Cart <span class="cart-count">{{ $cartItems->count() }} items</span></h2>
@@ -27,6 +31,13 @@
             <div class="cart-details">
                 <h3 class="event-title">{{ $item['name'] }}</h3>
                 <p class="event-description">{{ $item['desc'] }}</p>
+                
+                <!-- Event Date/Time Picker -->
+                <div class="date-time-picker-container" onclick="event.stopPropagation();">
+                    <label for="event_datetime_{{ $item['id'] }}" class="datetime-label">Select Date & Time:</label>
+                    <input type="text" id="event_datetime_{{ $item['id'] }}" class="event-datetime-picker" 
+                           placeholder="Select date and time" data-itemid="{{ $item['id'] }}" data-itemtype="{{ $item['type'] }}" required>
+                </div>
             </div>
             <div class="event-meta">
                 <div class="price-section">
@@ -56,7 +67,7 @@
         <div class="promo-section">
             <div class="promo-input-group">
                 <svg class="gift-icon" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                    <path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35L12 4l-1.5-1.65C10.16 1.54 9.05 1 8 1 6.34 1 5 2.34 5 4c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 12 7.4l3.38 4.6L17 10.83 14.92 8H20v6z"/>
+                    <path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35L12 4l-1.5-1.65C10.16 1.54 9.05 1 8 1 6.34 1 5 2.34 5 4c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 12 7.4l3.38 4.6L17 10.83 14.92 8H20v6z"/>
                 </svg>
                 <input type="text" class="promo-input" id="promoInput" placeholder="Enter promo code">
                 <button type="button" class="promo-apply-btn" onclick="applyPromoCode()">Apply</button>
@@ -89,9 +100,100 @@
 </button>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('checkoutBtn').addEventListener('click', function() {
+    // Initialize date/time pickers for all items in cart
+    const datePickers = document.querySelectorAll('.event-datetime-picker');
+    
+    // Get tomorrow's date as the minimum selectable date
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 2); // At least 2 days in the future
+    
+    // Format min date for flatpickr
+    const minDate = tomorrow.toISOString().split('T')[0];
+    
+    // Initialize each date picker
+    datePickers.forEach(picker => {
+        // Add click handler to prevent event bubbling
+        picker.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        flatpickr(picker, {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            minDate: minDate,
+            maxDate: new Date().fp_incr(90), // Allow booking up to 90 days in advance
+            minuteIncrement: 30,
+            time_24hr: false,
+            position: "auto",
+            disableMobile: false,
+            onChange: function(selectedDates, dateStr, instance) {
+                // Store the selected date/time with the item
+                instance.element.setAttribute('data-selected-datetime', dateStr);
+            },
+            onOpen: function(selectedDates, dateStr, instance) {
+                // Add click handler to calendar to prevent event bubbling
+                setTimeout(() => {
+                    const calendar = document.querySelector('.flatpickr-calendar');
+                    if (calendar) {
+                        calendar.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                        });
+                    }
+                }, 100);
+            }
+        });
+    });
+    
+    // Function to validate dates and collect selections
+    function validateDatesAndGetSelections() {
+        const dateTimeSelections = [];
+        const dateTimePickers = document.querySelectorAll('.event-datetime-picker');
+        let allDatesSelected = true;
+        
+        dateTimePickers.forEach(picker => {
+            const itemId = picker.getAttribute('data-itemid');
+            const itemType = picker.getAttribute('data-itemtype');
+            const selectedDateTime = picker.getAttribute('data-selected-datetime');
+            
+            if (!selectedDateTime) {
+                allDatesSelected = false;
+                picker.classList.add('error-highlight');
+            } else {
+                picker.classList.remove('error-highlight');
+                dateTimeSelections.push({
+                    id: itemId,
+                    type: itemType,
+                    datetime: selectedDateTime
+                });
+            }
+        });
+        
+        return {
+            valid: allDatesSelected,
+            selections: dateTimeSelections
+        };
+    }
+    
+    // Handle checkout button click
+    document.getElementById('checkoutBtn').addEventListener('click', async function(e) {
+        e.preventDefault(); // Prevent default form submission
+
+        // Validate dates first
+        const validation = validateDatesAndGetSelections();
+        if (!validation.valid) {
+            // Show error message and return immediately
+            Swal.fire({
+                title: 'Missing Information',
+                text: 'Please select a date and time for all items in your cart',
+                icon: 'warning',
+                allowOutsideClick: false,
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
         // Show loading state
-        Swal.fire({
+        const loading = Swal.fire({
             title: 'Processing...',
             text: 'Please wait while we process your booking',
             allowOutsideClick: false,
@@ -101,71 +203,56 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Get promo code if applied
-        const promoInput = document.getElementById('promoInput');
-        const promoCode = promoInput ? promoInput.value : '';
+        try {
+            // Get promo code if applied
+            const promoInput = document.getElementById('promoInput');
+            const promoCode = promoInput ? promoInput.value : '';
 
-        // Get CSRF token from meta tag
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        
-        console.log('Submitting with promo code:', promoCode);
-        console.log('Using CSRF token:', csrfToken);
-        
-        // Send checkout request
-        fetch('/checkout/submit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                promo_code: promoCode
-            })
-        })
-        .then(response => {
-            // Even if response is not OK, try to parse the JSON response
-            // to get more details about the error
-            return response.json().then(data => {
-                if (!response.ok) {
-                    // If we got JSON with error details, throw it as an error object
-                    if (data && data.error) {
-                        throw new Error(data.error);
-                    }
-                    // Otherwise throw a generic error with the status
-                    throw new Error('Server error: ' + response.status);
-                }
-                return data;
-            }).catch(err => {
-                // If JSON parsing fails, throw the original response error
-                if (!response.ok) {
-                    throw new Error('Network response was not ok: ' + response.status);
-                }
-                throw err;
+            // Get CSRF token from meta tag
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            // Use the validated selections
+            const dateTimeSelections = validation.selections;
+
+            // Send checkout request
+            const response = await fetch('/checkout/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    promo_code: promoCode,
+                    date_time_selections: dateTimeSelections
+                })
             });
-        })
-        .then(data => {
+
+            // Parse response
+            const data = await response.json();
+
+            // Close loading dialog
+            loading.close();
+
             if (data.success) {
-                Swal.fire({
-                    title: 'Success!',
-                    text: data.message,
-                    icon: 'success',
-                    confirmButtonText: 'Continue'
-                }).then(() => {
-                    window.location.href = '/congratulations';
-                });
+                window.location.href = "/congratulations";
             } else {
-                Swal.fire({
-                    title: 'Error',
-                    text: data.error || 'Failed to process booking. Please try again.',
-                    icon: 'error'
-                });
+                throw new Error(data.message || 'An error occurred during checkout');
             }
-        })
-        .catch(err => {
-            console.error('Checkout error:', err);
-            Swal.fire('Error', 'Failed to process booking. Please try again.', 'error');
-        });
+        } catch (error) {
+            console.error('Error:', error);
+            // Close loading dialog
+            loading.close();
+            
+            // Show error message
+            Swal.fire({
+                title: 'Error',
+                text: error.message || 'An error occurred during checkout. Please try again.',
+                icon: 'error',
+                allowOutsideClick: false,
+                confirmButtonText: 'OK'
+            });
+        }
     });
 });
 </script>
@@ -176,6 +263,56 @@ document.addEventListener('DOMContentLoaded', function() {
 <style>
     *, *::before, *::after {
         box-sizing: border-box;
+    }
+    
+    /* Date Time Picker Styles */
+    .date-time-picker-container {
+        margin-top: 15px;
+        background: #f8f9fa;
+        padding: 10px 15px;
+        border-radius: 8px;
+        border-left: 3px solid var(--primary-blue);
+    }
+    
+    .datetime-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: #555;
+    }
+    
+    .event-datetime-picker {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        background-color: white;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+    
+    .event-datetime-picker:focus {
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 2px rgba(41, 98, 255, 0.1);
+        outline: none;
+    }
+    
+    /* Flatpickr Calendar Customization */
+    .flatpickr-calendar {
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border: none;
+    }
+    
+    .flatpickr-day.selected {
+        background: var(--primary-blue);
+        border-color: var(--primary-blue);
+    }
+    
+    .flatpickr-day:hover {
+        background: rgba(41, 98, 255, 0.1);
     }
 
     :root {

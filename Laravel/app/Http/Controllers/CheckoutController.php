@@ -30,7 +30,11 @@ class CheckoutController extends Controller
         // Validate the request
         try {
             $request->validate([
-                'promo_code' => 'nullable|string|max:255'
+                'promo_code' => 'nullable|string|max:255',
+                'date_time_selections' => 'required|array',
+                'date_time_selections.*.id' => 'required',
+                'date_time_selections.*.type' => 'required|in:event,package',
+                'date_time_selections.*.datetime' => 'required|date_format:Y-m-d H:i'
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Validation failed', ['errors' => $e->errors()]);
@@ -102,6 +106,16 @@ class CheckoutController extends Controller
                 }
             }
 
+            // Get date/time selections from the request
+            $dateTimeSelections = $request->input('date_time_selections');
+            
+            // Create a lookup map for easier access
+            $dateTimeMap = [];
+            foreach ($dateTimeSelections as $selection) {
+                $key = $selection['type'] . '_' . $selection['id'];
+                $dateTimeMap[$key] = $selection['datetime'];
+            }
+            
             foreach ($cartItems as $item) {
                 Log::info('Processing cart item', ['item_id' => $item->id, 'event_id' => $item->event_id, 'package_id' => $item->package_id]);
                 
@@ -132,11 +146,26 @@ class CheckoutController extends Controller
                 // Create booking - only using fields that exist in the bookings table
                 $status = 'pending'; // Using a value we know is in the enum
                 
+                // Get the selected date and time for this item
+                $itemType = $item->event_id ? 'event' : 'package';
+                $itemId = $item->event_id ? $item->event_id : $item->package_id;
+                $lookupKey = $itemType . '_' . $itemId;
+                
+                // Get the event datetime from the map
+                $eventDatetime = null;
+                if (isset($dateTimeMap[$lookupKey])) {
+                    $eventDatetime = $dateTimeMap[$lookupKey];
+                    Log::info('Found event datetime', ['item' => $lookupKey, 'datetime' => $eventDatetime]);
+                } else {
+                    Log::warning('No datetime found for item', ['item' => $lookupKey]);
+                }
+                
                 // Use direct DB insertion to avoid any model-related issues
                 $booking_id = DB::table('bookings')->insertGetId([
                     'user_id' => $user_id,
                     'event_id' => $item->event_id,
                     'package_id' => $item->package_id,
+                    'event_datetime' => $eventDatetime,
                     'advance_paid' => $finalPrice,
                     'status' => $status,
                     'created_at' => now(),
