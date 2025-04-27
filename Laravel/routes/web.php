@@ -21,6 +21,7 @@ use App\Http\Controllers\AdminContactController;
 use App\Http\Controllers\DecoratorController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\AdminAdminController;
+use App\Http\Controllers\CheckoutController;
 
 // Public Routes
 Route::get('/', [MainController::class, 'index']);
@@ -76,6 +77,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/cart/toggle', [CartController::class, 'toggle'])->name('cart.toggle');
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
     Route::delete('/cart/{id}', [CartController::class, 'delete'])->name('cart.delete');
+    
+    // Checkout routes
+    Route::post('/checkout/submit', [CheckoutController::class, 'submit'])->name('checkout.submit');
+    Route::get('/congratulations', function () {
+        return view('congratulations');
+    })->name('congratulations');
     
     // Promo code route
     Route::post('/promo-code/apply', [PromoCodeController::class, 'apply'])->name('promo.apply');

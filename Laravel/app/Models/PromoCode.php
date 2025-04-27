@@ -25,6 +25,20 @@ class PromoCode extends Model
 
     public function isValid()
     {
-        return $this->expiry_date->isFuture();
+        return now()->lessThanOrEqualTo($this->expiry_date);
+    }
+
+    /**
+     * Calculate the discount for a given price based on this promo code.
+     * @param float $price
+     * @return float
+     */
+    public function calculateDiscount($price)
+    {
+        $discount = ($price * $this->discount_percentage) / 100;
+        if ($this->max_discount_amount !== null && $this->max_discount_amount > 0) {
+            $discount = min($discount, $this->max_discount_amount);
+        }
+        return round($discount, 2);
     }
 }

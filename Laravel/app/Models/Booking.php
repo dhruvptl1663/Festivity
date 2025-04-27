@@ -14,9 +14,15 @@ class Booking extends Model
     protected $primaryKey = 'booking_id';
 
     protected $fillable = [
+        'user_id',
         'event_id',
         'package_id',
+        'original_amount',
+        'discount_amount',
+        'final_amount',
         'status',
+        'created_at',
+        'updated_at',
     ];
 
     public $timestamps = false; //to prevent error with timestamps column
