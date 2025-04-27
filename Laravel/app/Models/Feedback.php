@@ -19,6 +19,7 @@ class Feedback extends Model
         'event_id',
         'package_id',
         'decorator_id',
+        'booking_id',
         'rating',
         'comment',
     ];
@@ -53,5 +54,10 @@ class Feedback extends Model
     public function decorator()
     {
         return $this->belongsTo(Decorator::class, 'decorator_id');
+    }
+    
+    public function booking()
+    {
+        return $this->belongsTo(Booking::class, 'booking_id');
     }
 }

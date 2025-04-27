@@ -19,6 +19,11 @@
                         <h2 class="h4 mb-1">{{ $user->name }}</h2>
                         <p class="text-muted mb-4">{{ $user->email }}</p>
                         
+                        <!-- My Orders Button -->
+                        <a href="{{ route('orders') }}" class="btn btn-primary w-100 mb-3">
+                            <i class="fas fa-shopping-bag me-2"></i>My Orders
+                        </a>
+                        
                         <!-- Logout Button -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

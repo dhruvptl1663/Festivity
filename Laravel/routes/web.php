@@ -22,6 +22,9 @@ use App\Http\Controllers\DecoratorController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\AdminAdminController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\BookingController;
 
 // Public Routes
 Route::get('/', [MainController::class, 'index']);
@@ -52,6 +55,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
 });
+
+Route::prefix('user')->middleware(['auth'])->group(function() {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::get('/orders', [OrdersController::class, 'index'])->name('orders');
+});
+
+// Feedback and booking management routes
+Route::post('/feedback/store', [FeedbackController::class, 'store'])->name('feedback.store')->middleware('auth');
+Route::post('/bookings/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel')->middleware('auth');
 
 // Protected Routes
 Route::middleware(['auth'])->group(function () {

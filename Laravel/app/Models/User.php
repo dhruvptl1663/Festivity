@@ -40,4 +40,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class, 'user_id', 'user_id');
     }
+    
+    // User has many bookings
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'user_id');
+    }
 }

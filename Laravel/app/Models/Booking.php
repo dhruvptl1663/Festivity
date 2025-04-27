@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Feedback;
 
 class Booking extends Model
 {
@@ -35,5 +36,20 @@ class Booking extends Model
     public function package()
     {
         return $this->belongsTo(Package::class, 'package_id');
+    }
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    
+    public function feedback()
+    {
+        return $this->hasOne(Feedback::class, 'booking_id');
+    }
+    
+    public function hasFeedback()
+    {
+        return Feedback::where('booking_id', $this->booking_id)->exists();
     }
 }

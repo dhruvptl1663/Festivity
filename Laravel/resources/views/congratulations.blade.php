@@ -23,7 +23,7 @@
             <!-- Button Group -->
             <div class="button-group">
                 <!-- View Bookings Button -->
-                <a href="" class="modern-home-button view-bookings">
+                <a href="{{ route('profile') }}" class="modern-home-button view-bookings">
                     <span class="button-content">
                         <span class="button-text">View My Bookings</span>
                         <span class="button-icon">
