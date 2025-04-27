@@ -11,10 +11,10 @@
         padding-top: 2rem; 
         padding-bottom: 3rem;
         /* Assuming a fixed sidebar width, adjust if needed */
-        margin-left: 100px; 
+        margin-left: 0px; 
         padding-left: 3rem; /* Replaces container-fluid px-5 */
         padding-right: 3rem; /* Replaces container-fluid px-5 */
-        margin-top: 90px;
+        margin-top: 60px;
     }
 
     .card {

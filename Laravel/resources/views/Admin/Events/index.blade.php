@@ -10,10 +10,10 @@
         padding-top: 2rem; 
         padding-bottom: 3rem;
         /* Assuming a fixed sidebar width, adjust if needed */
-        margin-left: 100px; 
+        margin-left: 0px; 
         padding-left: 3rem; /* Replaces container-fluid px-5 */
         padding-right: 3rem; /* Replaces container-fluid px-5 */
-        margin-top: 90px;
+        margin-top: 60px;
     }
 
     .card {
@@ -173,9 +173,7 @@
             <p class="text-muted mb-0">Total {{ $events->count() }} events found</p>
         </div>
         <div>
-            <a href="{{ route('admin.events.create') }}" class="btn btn-primary"> {{-- Updated button style --}}
-                <i class="bi bi-plus-lg me-1"></i>Add New Event
-            </a>
+           
         </div>
     </div>
 

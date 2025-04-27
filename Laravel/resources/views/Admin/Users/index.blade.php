@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('content')
-<div class="main-content-admin" style="margin-left:100px;">
+<div class="main-content-admin" style="margin-left:0px;">
     <div class="container-fluid px-5 py-5">
         <div class="d-flex justify-content-between align-items-center mb-5">
             <div>
