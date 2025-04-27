@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Bookmark;
+use App\Models\Event;
+use App\Models\Package;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -11,8 +13,22 @@ class BookmarkController extends Controller
 {
     public function index()
     {
-        $bookmarks = Bookmark::where('user_id', Auth::id())->get();
-        return view('bookmarks.index', compact('bookmarks'));
+        $user_id = Auth::id();
+        $bookmarks = Bookmark::where('user_id', $user_id)->get();
+        
+     
+        $eventIds = $bookmarks->where('event_id', '!=', null)
+            ->pluck('event_id')
+            ->toArray();
+        $events = Event::whereIn('event_id', $eventIds)->get();
+        
+        
+        $packageIds = $bookmarks->where('package_id', '!=', null)
+            ->pluck('package_id')
+            ->toArray();
+        $packages = Package::with('packageEvents.event')->whereIn('package_id', $packageIds)->get();
+        
+        return view('bookmarks', compact('bookmarks', 'events', 'packages'));
     }
 
     public function toggle(Request $request)
