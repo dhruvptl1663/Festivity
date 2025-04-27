@@ -8,32 +8,13 @@
         </div>
         <div class="card-body p-4">
             @if($bookings->count() > 0)
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Event/Package</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Price</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($bookings as $booking)
-                        <tr>
-                            <td>#{{ $booking->booking_id }}</td>
-                            <td>
-                                @if($booking->event_id)
-                                    <strong><a href="{{ route('eventdetails.show', $booking->event_id) }}" class="text-decoration-none">{{ $booking->event->title }}</a></strong>
-                                    <div class="small text-muted">Event</div>
-                                @elseif($booking->package_id)
-                                    <strong><a href="{{ route('packagedetails', $booking->package_id) }}" class="text-decoration-none">{{ $booking->package->title }}</a></strong>
-                                    <div class="small text-muted">Package</div>
-                                @endif
-                            </td>
-                            <td>
+            <div class="row g-4">
+                @foreach($bookings as $booking)
+                <div class="col-md-6 col-lg-4">
+                    <div class="order-card h-100">
+                        <div class="order-card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="order-id">Order #{{ $booking->booking_id }}</span>
                                 @if($booking->status == 'pending')
                                     <span class="badge bg-warning text-dark">Pending</span>
                                 @elseif($booking->status == 'accepted')
@@ -45,20 +26,62 @@
                                 @elseif($booking->status == 'cancelled')
                                     <span class="badge bg-secondary">Cancelled</span>
                                 @endif
-                            </td>
-                            <td>{{ $booking->created_at }}</td>
-                            <td>
-                                @php
-                                    $price = 0;
-                                    if($booking->event_id) {
-                                        $price = $booking->event->price;
-                                    } elseif($booking->package_id) {
-                                        $price = $booking->package->price;
-                                    }
-                                @endphp
-                                ₹{{ number_format($price, 2) }}
-                            </td>
-                            <td>
+                            </div>
+                        </div>
+                        
+                        <div class="order-card-body">
+                            <h5 class="order-title">
+                                @if($booking->event_id)
+                                    <a href="{{ route('eventdetails.show', $booking->event_id) }}" class="text-decoration-none text-dark">
+                                        {{ $booking->event->title }}
+                                    </a>
+                                    @if($booking->event->category)
+                                    <span class="badge bg-primary-subtle text-primary-emphasis ms-2">{{ $booking->event->category->category_name }}</span>
+                                    @endif
+                                @elseif($booking->package_id)
+                                    <a href="{{ route('packagedetails', $booking->package_id) }}" class="text-decoration-none text-dark">
+                                        {{ $booking->package->title }}
+                                    </a>
+                                    <span class="badge bg-info-subtle text-info-emphasis ms-2">Package Bundle</span>
+                                @endif
+                            </h5>
+                            
+                            <div class="order-details">
+                                <div class="detail-row">
+                                    <span class="detail-label"><i class="far fa-calendar-alt text-primary"></i> Order Date:</span>
+                                    <span class="detail-value">{{ date('d M Y', strtotime($booking->created_at)) }}</span>
+                                </div>
+                                
+                                <div class="detail-row">
+                                    <span class="detail-label"><i class="far fa-clock text-primary"></i> Event Date:</span>
+                                    <span class="detail-value">
+                                        @if($booking->event_datetime)
+                                            {{ date('d M Y h:i A', strtotime($booking->event_datetime)) }}
+                                        @else
+                                            <span class="text-muted">Not specified</span>
+                                        @endif
+                                    </span>
+                                </div>
+                                
+                                <div class="detail-row">
+                                    <span class="detail-label"><i class="fas fa-rupee-sign text-primary"></i> Price:</span>
+                                    <span class="detail-value fw-bold">
+                                        @php
+                                            $price = 0;
+                                            if($booking->event_id) {
+                                                $price = $booking->event->price;
+                                            } elseif($booking->package_id) {
+                                                $price = $booking->package->price;
+                                            }
+                                        @endphp
+                                        ₹{{ number_format($price, 2) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="order-card-footer">
+                            <div class="d-flex justify-content-end gap-2">
                                 @if($booking->status == 'completed' && !$booking->hasFeedback())
                                 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#feedbackModal{{ $booking->booking_id }}">
                                     <i class="fas fa-star me-1"></i> Rate & Review
@@ -72,17 +95,17 @@
                                 @endif
                                 
                                 @if($booking->status == 'pending' || $booking->status == 'accepted')
-                                <button type="button" class="btn btn-sm btn-danger ms-1" data-bs-toggle="modal" data-bs-target="#cancelModal{{ $booking->booking_id }}">
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal{{ $booking->booking_id }}">
                                     <i class="fas fa-times-circle me-1"></i> Cancel
                                 </button>
                                 @endif
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
             </div>
-
+            
             <!-- Feedback Modals -->
             @foreach($bookings as $booking)
             @if($booking->status == 'completed' && !$booking->hasFeedback())
@@ -198,7 +221,9 @@
             @endif
             @endforeach
             
-            {{ $bookings->links() }}
+            <div class="mt-4">
+                {{ $bookings->links() }}
+            </div>
             @else
             <div class="alert alert-info">
                 <i class="fas fa-info-circle me-2"></i>You don't have any bookings yet.
@@ -261,37 +286,85 @@
     font-weight: bold;
 }
 
-/* General Styling */
-.card {
-    border-radius: 10px;
-    overflow: hidden;
+/* Order Cards */
+.order-card {
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
+    overflow: hidden;
+    border: 1px solid #eee;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.card-header {
-    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+.order-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.order-card-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f2f2f2;
+    background-color: #fdfdfd;
+}
+
+.order-card-body {
+    padding: 20px;
+    flex: 1;
+}
+
+.order-card-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #f2f2f2;
+    background-color: #fdfdfd;
+}
+
+.order-id {
+    font-weight: 600;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.order-title {
+    margin-bottom: 15px;
+    font-weight: 600;
+    font-size: 1.15rem;
+    line-height: 1.4;
+}
+
+.order-details {
+    margin-top: 15px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #f0f0f0;
+}
+
+.detail-row:last-child {
     border-bottom: none;
 }
 
-.table-hover tbody tr:hover {
-    background-color: #f8f9fa;
+.detail-label {
+    color: #555;
 }
 
-.badge {
-    padding: 0.5em 0.8em;
-    font-weight: 500;
-    border-radius: 6px;
+.detail-label i {
+    margin-right: 5px;
+    width: 16px;
+    text-align: center;
 }
 
-.btn-primary {
-    background: #6366f1;
-    border: none;
+.detail-value {
+    color: #333;
 }
 
-.btn-primary:hover {
-    background: #4f46e5;
-}
-
+/* Modal styling from existing code */
 .modal-content {
     border-radius: 12px;
     border: none;
@@ -306,6 +379,20 @@
 .modal-footer {
     border-top: 1px solid #f0f0f0;
     padding: 1.25rem 1.5rem;
+}
+
+@media (max-width: 767.98px) {
+    .order-card {
+        margin-bottom: 20px;
+    }
+    
+    .detail-row {
+        flex-direction: column;
+    }
+    
+    .detail-value {
+        margin-top: 5px;
+    }
 }
 </style>
 
