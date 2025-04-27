@@ -37,7 +37,7 @@
 
                 <div class="section-menu-left">
                     <div class="box-logo">
-                        <a href="{{ url('/admin') }}">
+                        <a href="{{ url('admin.dashboard') }}">
                             <img width="auto" height="auto" alt="Logo" 
                             src="{{ asset('assets/Images/Brand/main_logo_small.png') }}" 
                             loading="eager" class="logo" style="height:45px;">
@@ -51,7 +51,7 @@
                             <div class="center-heading">Main Home</div>
                             <ul class="menu-list">
                                 <li class="menu-item">
-                                    <a href="{{ url('/admin') }}" class="">
+                                    <a href="{{ route('admin.dashboard') }}" class="">
                                         <div class="icon"><i class="icon-grid"></i></div>
                                         <div class="text">Dashboard</div>
                                     </a>
@@ -77,27 +77,14 @@
                                     </a>
                                 </li>
 
-
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
+                                <li class="menu-item">
+                                    <a href="{{ route('admin.bookings.index') }}" class="">
                                         <div class="icon"><i class="icon-file-plus"></i></div>
                                         <div class="text">Orders</div>
                                     </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="" class="">
-                                                <div class="icon"><i class="icon-file-plus"></i></div>
-                                                <div class="text">All Orders</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="" class="">
-                                                <div class="icon"><i class="icon-map-marker"></i></div>
-                                                <div class="text">Order Tracking</div>
-                                            </a>
-                                        </li>
-                                    </ul>
                                 </li>
+
+                                
 
                                 <li class="menu-item has-children">
                                     <a href="javascript:void(0);" class="menu-item-button">
