@@ -7,7 +7,7 @@
     <meta name="author" content="themesflat.com">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
-    <!-- Add your admin CSS files -->
+    <!-- CSS Files -->
     <link rel="stylesheet" type="text/css" href="{{ asset('dashboard/css/animate.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('dashboard/css/animation.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('dashboard/css/bootstrap.css') }}">
@@ -23,31 +23,24 @@
     @stack('styles')
 </head>
 
-<body class="body">
+<body class="body header-fixed">
     <div id="wrapper">
-        <div id="page" class="">
+        <div id="page" class="site-layout">
             <div class="layout-wrap">
-                <div class="header">
-                    <div class="container">
-                        <div class="logo">
-                            <a href="{{ url('/decorator') }}">
-                                <img src="{{ asset('assets/Images/Brand/main_logo_small.png') }}" alt="Festivity Logo" class="img-fluid" style="height: 45px;">
-                            </a>
-                        </div>
-                    </div>
-                </div>
                 @include('components.decoratorheader')
 
-                <div class="section-main">
-                    <div class="container">
-                        @yield('content')
+                <div id="main-content" class="main-content">
+                    <div class="main-content-inner">
+                        <div class="main-content-wrap">
+                            @yield('content')
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Add your admin JS files -->
+    <!-- JS Files -->
     <script src="{{ asset('dashboard/js/jquery.min.js') }}"></script>
     <script src="{{ asset('dashboard/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('dashboard/js/bootstrap-select.min.js') }}"></script>

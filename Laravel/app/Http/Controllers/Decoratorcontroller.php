@@ -4,12 +4,517 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Decorator;
+use App\Models\Event;
+use App\Models\Package;
+use App\Models\Booking;
+use App\Models\Feedback;
+use App\Models\Category;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class DecoratorController extends Controller
 {
-    public function index()
+    public function dashboard()
     {
-        $decorators = Decorator::latest()->paginate(10);
-        return view('decorator.index', compact('decorators'));
+        $decorator = Auth::guard('decorator')->user();
+        $decorator_id = $decorator->decorator_id;
+        
+        // Get stats for the dashboard
+        $totalEvents = Event::where('decorator_id', $decorator_id)->count();
+        $totalPackages = Package::where('decorator_id', $decorator_id)->count();
+        
+        $totalBookings = Booking::whereHas('event', function($q) use ($decorator_id) {
+                $q->where('decorator_id', $decorator_id);
+            })
+            ->orWhereHas('package', function($q) use ($decorator_id) {
+                $q->where('decorator_id', $decorator_id);
+            })
+            ->count();
+            
+        $pendingBookings = Booking::where('status', 'pending')
+            ->whereHas('event', function($q) use ($decorator_id) {
+                $q->where('decorator_id', $decorator_id);
+            })
+            ->orWhere(function($query) use ($decorator_id) {
+                $query->where('status', 'pending')
+                    ->whereHas('package', function($q) use ($decorator_id) {
+                        $q->where('decorator_id', $decorator_id);
+                    });
+            })
+            ->count();
+            
+        $completedBookings = Booking::where('status', 'completed')
+            ->whereHas('event', function($q) use ($decorator_id) {
+                $q->where('decorator_id', $decorator_id);
+            })
+            ->orWhere(function($query) use ($decorator_id) {
+                $query->where('status', 'completed')
+                    ->whereHas('package', function($q) use ($decorator_id) {
+                        $q->where('decorator_id', $decorator_id);
+                    });
+            })
+            ->count();
+            
+        $cancelledBookings = Booking::where('status', 'cancelled')
+            ->whereHas('event', function($q) use ($decorator_id) {
+                $q->where('decorator_id', $decorator_id);
+            })
+            ->orWhere(function($query) use ($decorator_id) {
+                $query->where('status', 'cancelled')
+                    ->whereHas('package', function($q) use ($decorator_id) {
+                        $q->where('decorator_id', $decorator_id);
+                    });
+            })
+            ->count();
+            
+        // Calculate total earnings
+        $totalEarnings = DB::table('bookings')
+            ->join('events', 'bookings.event_id', '=', 'events.event_id')
+            ->where('events.decorator_id', $decorator_id)
+            ->where('bookings.status', 'completed')
+            ->sum('advance_paid');
+            
+        $totalEarnings += DB::table('bookings')
+            ->join('packages', 'bookings.package_id', '=', 'packages.package_id')
+            ->where('packages.decorator_id', $decorator_id)
+            ->where('bookings.status', 'completed')
+            ->sum('advance_paid');
+            
+        // Get recent bookings
+        $recentBookings = Booking::whereHas('event', function($q) use ($decorator_id) {
+                $q->where('decorator_id', $decorator_id);
+            })
+            ->orWhereHas('package', function($q) use ($decorator_id) {
+                $q->where('decorator_id', $decorator_id);
+            })
+            ->with(['user', 'event', 'package'])
+            ->latest()
+            ->take(5)
+            ->get();
+        
+        // Get recent feedback
+        $recentFeedback = Feedback::where('decorator_id', $decorator_id)
+            ->with('user')
+            ->latest()
+            ->take(5)
+            ->get();
+            
+        return view('Decorator.index', compact(
+            'totalEvents', 
+            'totalPackages', 
+            'totalBookings', 
+            'pendingBookings', 
+            'completedBookings', 
+            'cancelledBookings',
+            'totalEarnings',
+            'recentBookings',
+            'recentFeedback'
+        ));
+    }
+    
+    public function profile()
+    {
+        $decorator = Auth::guard('decorator')->user();
+        return view('Decorator.profile', compact('decorator'));
+    }
+    
+    public function updateProfile(Request $request)
+    {
+        $decorator = Auth::guard('decorator')->user();
+        
+        $request->validate([
+            'decorator_name' => 'required|string|max:100',
+            'email' => 'required|email|max:100|unique:decorators,email,' . $decorator->decorator_id . ',decorator_id',
+            'decorator_icon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        
+        $decorator->decorator_name = $request->decorator_name;
+        $decorator->email = $request->email;
+        
+        if ($request->hasFile('decorator_icon')) {
+            // Delete old icon if exists
+            if ($decorator->decorator_icon && file_exists(public_path($decorator->decorator_icon))) {
+                unlink(public_path($decorator->decorator_icon));
+            }
+            
+            $iconFile = $request->file('decorator_icon');
+            $iconName = time() . '.' . $iconFile->getClientOriginalExtension();
+            $iconFile->move(public_path('images/decorators'), $iconName);
+            $decorator->decorator_icon = 'images/decorators/' . $iconName;
+        }
+        
+        if ($request->filled('password')) {
+            $request->validate([
+                'password' => 'required|min:6|confirmed',
+            ]);
+            $decorator->password = Hash::make($request->password);
+        }
+        
+        $decorator->save();
+        
+        return redirect()->route('decorator.profile')->with('success', 'Profile updated successfully');
+    }
+    
+    // Event management methods
+    public function events()
+    {
+        $decorator = Auth::guard('decorator')->user();
+        $events = Event::where('decorator_id', $decorator->decorator_id)
+            ->with('category')
+            ->latest()
+            ->paginate(10);
+            
+        return view('Decorator.Events.index', compact('events'));
+    }
+    
+    public function createEvent()
+    {
+        $categories = Category::all();
+        return view('Decorator.Events.create', compact('categories'));
+    }
+    
+    public function storeEvent(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category_id' => 'required|exists:categories,category_id',
+            'price' => 'required|numeric|min:0',
+        ]);
+        
+        $decorator = Auth::guard('decorator')->user();
+        
+        $event = new Event();
+        $event->title = $request->title;
+        $event->description = $request->description;
+        $event->category_id = $request->category_id;
+        $event->decorator_id = $decorator->decorator_id;
+        $event->price = $request->price;
+        $event->is_live = 0; // Default to not live
+        $event->rating = 0; // Default rating
+        
+        if ($request->hasFile('image')) {
+            $imageFile = $request->file('image');
+            $imageName = time() . '.' . $imageFile->getClientOriginalExtension();
+            $imageFile->move(public_path('images/events'), $imageName);
+            $event->image = 'images/events/' . $imageName;
+        }
+        
+        $event->save();
+        
+        return redirect()->route('decorator.events')->with('success', 'Event created successfully and pending approval');
+    }
+    
+    public function editEvent($event_id)
+    {
+        $decorator = Auth::guard('decorator')->user();
+        $event = Event::where('event_id', $event_id)
+            ->where('decorator_id', $decorator->decorator_id)
+            ->firstOrFail();
+            
+        $categories = Category::all();
+        
+        return view('Decorator.Events.edit', compact('event', 'categories'));
+    }
+    
+    public function updateEvent(Request $request, $event_id)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category_id' => 'required|exists:categories,category_id',
+            'price' => 'required|numeric|min:0',
+        ]);
+        
+        $decorator = Auth::guard('decorator')->user();
+        $event = Event::where('event_id', $event_id)
+            ->where('decorator_id', $decorator->decorator_id)
+            ->firstOrFail();
+            
+        $event->title = $request->title;
+        $event->description = $request->description;
+        $event->category_id = $request->category_id;
+        $event->price = $request->price;
+        $event->is_live = 0; // Reset to not live upon update
+        
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($event->image && file_exists(public_path($event->image))) {
+                unlink(public_path($event->image));
+            }
+            
+            $imageFile = $request->file('image');
+            $imageName = time() . '.' . $imageFile->getClientOriginalExtension();
+            $imageFile->move(public_path('images/events'), $imageName);
+            $event->image = 'images/events/' . $imageName;
+        }
+        
+        $event->save();
+        
+        return redirect()->route('decorator.events')->with('success', 'Event updated successfully and pending approval');
+    }
+    
+    public function destroyEvent($event_id)
+    {
+        $decorator = Auth::guard('decorator')->user();
+        $event = Event::where('event_id', $event_id)
+            ->where('decorator_id', $decorator->decorator_id)
+            ->firstOrFail();
+            
+        // Check if event has any bookings
+        $hasBookings = Booking::where('event_id', $event_id)->exists();
+        
+        if ($hasBookings) {
+            return redirect()->route('decorator.events')->with('error', 'Cannot delete event with active bookings');
+        }
+        
+        // Delete image if exists
+        if ($event->image && file_exists(public_path($event->image))) {
+            unlink(public_path($event->image));
+        }
+        
+        $event->delete();
+        
+        return redirect()->route('decorator.events')->with('success', 'Event deleted successfully');
+    }
+    
+    // Package management methods
+    public function packages()
+    {
+        $decorator = Auth::guard('decorator')->user();
+        $packages = Package::where('decorator_id', $decorator->decorator_id)
+            ->latest()
+            ->paginate(10);
+            
+        return view('Decorator.Packages.index', compact('packages'));
+    }
+    
+    public function createPackage()
+    {
+        $decorator = Auth::guard('decorator')->user();
+        $events = Event::where('decorator_id', $decorator->decorator_id)->get();
+        return view('Decorator.Packages.create', compact('events'));
+    }
+    
+    public function storePackage(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'events' => 'nullable|array',
+            'events.*' => 'exists:events,event_id',
+        ]);
+        
+        $decorator = Auth::guard('decorator')->user();
+        
+        $package = new Package();
+        $package->title = $request->title;
+        $package->description = $request->description;
+        $package->decorator_id = $decorator->decorator_id;
+        $package->price = $request->price;
+        $package->is_live = 0; // Default to not live
+        $package->rating = 0; // Default rating
+        $package->status = 'pending'; // Default status
+        
+        $package->save();
+        
+        // Associate events with package if selected
+        if ($request->has('events')) {
+            foreach ($request->events as $event_id) {
+                DB::table('package_events')->insert([
+                    'package_id' => $package->package_id,
+                    'event_id' => $event_id
+                ]);
+            }
+        }
+        
+        return redirect()->route('decorator.packages')->with('success', 'Package created successfully and pending approval');
+    }
+    
+    public function editPackage($package_id)
+    {
+        $decorator = Auth::guard('decorator')->user();
+        $package = Package::where('package_id', $package_id)
+            ->where('decorator_id', $decorator->decorator_id)
+            ->firstOrFail();
+            
+        $events = Event::where('decorator_id', $decorator->decorator_id)->get();
+        
+        // Get associated events
+        $packageEvents = DB::table('package_events')
+            ->where('package_id', $package_id)
+            ->pluck('event_id')
+            ->toArray();
+            
+        return view('Decorator.Packages.edit', compact('package', 'events', 'packageEvents'));
+    }
+    
+    public function updatePackage(Request $request, $package_id)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'events' => 'nullable|array',
+            'events.*' => 'exists:events,event_id',
+        ]);
+        
+        $decorator = Auth::guard('decorator')->user();
+        $package = Package::where('package_id', $package_id)
+            ->where('decorator_id', $decorator->decorator_id)
+            ->firstOrFail();
+            
+        $package->title = $request->title;
+        $package->description = $request->description;
+        $package->price = $request->price;
+        $package->is_live = 0; // Reset to not live upon update
+        $package->status = 'pending'; // Reset to pending upon update
+        
+        $package->save();
+        
+        // Update package events
+        DB::table('package_events')->where('package_id', $package_id)->delete();
+        
+        if ($request->has('events')) {
+            foreach ($request->events as $event_id) {
+                DB::table('package_events')->insert([
+                    'package_id' => $package->package_id,
+                    'event_id' => $event_id
+                ]);
+            }
+        }
+        
+        return redirect()->route('decorator.packages')->with('success', 'Package updated successfully and pending approval');
+    }
+    
+    public function destroyPackage($package_id)
+    {
+        $decorator = Auth::guard('decorator')->user();
+        $package = Package::where('package_id', $package_id)
+            ->where('decorator_id', $decorator->decorator_id)
+            ->firstOrFail();
+            
+        // Check if package has any bookings
+        $hasBookings = Booking::where('package_id', $package_id)->exists();
+        
+        if ($hasBookings) {
+            return redirect()->route('decorator.packages')->with('error', 'Cannot delete package with active bookings');
+        }
+        
+        // Delete package events associations
+        DB::table('package_events')->where('package_id', $package_id)->delete();
+        
+        $package->delete();
+        
+        return redirect()->route('decorator.packages')->with('success', 'Package deleted successfully');
+    }
+    
+    // Booking management methods
+    public function bookings()
+    {
+        $decorator = Auth::guard('decorator')->user();
+        $decorator_id = $decorator->decorator_id;
+        
+        $bookings = Booking::where(function($query) use ($decorator_id) {
+                $query->whereHas('event', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                });
+            })
+            ->orWhere(function($query) use ($decorator_id) {
+                $query->whereHas('package', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                });
+            })
+            ->with(['user', 'event', 'package'])
+            ->latest()
+            ->paginate(10);
+            
+        return view('Decorator.Bookings.index', compact('bookings'));
+    }
+    
+    public function showBooking($booking_id)
+    {
+        $decorator = Auth::guard('decorator')->user();
+        $decorator_id = $decorator->decorator_id;
+        
+        $booking = Booking::where('booking_id', $booking_id)
+            ->where(function($query) use ($decorator_id) {
+                $query->whereHas('event', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                })
+                ->orWhereHas('package', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                });
+            })
+            ->with(['user', 'event', 'package'])
+            ->firstOrFail();
+            
+        // Get feedback for this booking if exists
+        $feedback = Feedback::where('booking_id', $booking_id)->first();
+            
+        return view('Decorator.Bookings.show', compact('booking', 'feedback'));
+    }
+    
+    public function updateBookingStatus(Request $request, $booking_id)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,accepted,rejected,completed,cancelled',
+        ]);
+        
+        $decorator = Auth::guard('decorator')->user();
+        $decorator_id = $decorator->decorator_id;
+        
+        $booking = Booking::where('booking_id', $booking_id)
+            ->where(function($query) use ($decorator_id) {
+                $query->whereHas('event', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                })
+                ->orWhereHas('package', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                });
+            })
+            ->firstOrFail();
+        
+        $oldStatus = $booking->status;
+        $booking->status = $request->status;
+        
+        // If status changed to completed, mark it as completed
+        if ($request->status == 'completed') {
+            $booking->is_completed = 1;
+        }
+        
+        $booking->save();
+        
+        // If cancelling the booking, create a cancellation record
+        if ($request->status == 'cancelled' && $oldStatus != 'cancelled') {
+            DB::table('booking_cancellations')->insert([
+                'booking_id' => $booking_id,
+                'cancelled_by' => 'decorator',
+                'reason' => $request->get('reason', 'Cancelled by decorator'),
+                'refund_amount' => $booking->advance_paid * 0.5, // 50% refund policy
+                'cancelled_at' => now()
+            ]);
+        }
+        
+        return redirect()->route('decorator.bookings.show', $booking_id)
+            ->with('success', 'Booking status updated successfully');
+    }
+    
+    // Feedback methods
+    public function feedbacks()
+    {
+        $decorator = Auth::guard('decorator')->user();
+        $feedbacks = Feedback::where('decorator_id', $decorator->decorator_id)
+            ->with(['user', 'event', 'package', 'booking'])
+            ->latest()
+            ->paginate(10);
+            
+        return view('Decorator.Feedbacks.index', compact('feedbacks'));
     }
 }

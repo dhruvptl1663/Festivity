@@ -1,9 +1,9 @@
-<x-adminheader />
-<div class="main-content">
-    <div class="main-content-inner">
-        <div class="main-content-wrap">
-            <div class="tf-section mb-30">
-                <div class="wg-box">
+@extends('layouts.admin')
+
+@section('content')
+<div class="main-content-wrap">
+    <div class="tf-section mb-30">
+        <div class="wg-box">
                     <div class="flex items-center justify-between mb-4">
                         <h5><i class="fas fa-shopping-bag me-2"></i>Booking Management</h5>
                         <div class="flex gap-2">
@@ -55,7 +55,7 @@
                                         </div>
                                         <div class="flex-grow-1 ms-3">
                                             <h6 class="mb-1">Accepted</h6>
-                                            <h3 class="mb-0">{{ App\Models\Booking::where('status', 'accepted')->count() }}</h3>
+                                            <h3 class="mb-0">{{ $acceptedCount }}</h3>
                                         </div>
                                     </div>
                                 </div>
@@ -70,7 +70,7 @@
                                         </div>
                                         <div class="flex-grow-1 ms-3">
                                             <h6 class="mb-1">Rejected</h6>
-                                            <h3 class="mb-0">{{ App\Models\Booking::where('status', 'rejected')->count() }}</h3>
+                                            <h3 class="mb-0">{{ $rejectedCount }}</h3>
                                         </div>
                                     </div>
                                 </div>
@@ -115,7 +115,7 @@
                                         </div>
                                         <div class="flex-grow-1 ms-3">
                                             <h6 class="mb-1">Total</h6>
-                                            <h3 class="mb-0">{{ App\Models\Booking::count() }}</h3>
+                                            <h3 class="mb-0">{{ $pendingCount + $acceptedCount + $rejectedCount + $completedCount + $cancelledCount }}</h3>
                                         </div>
                                     </div>
                                 </div>
@@ -403,6 +403,104 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Make sure Bootstrap's dropdown is properly initialized
+        if (typeof bootstrap !== 'undefined') {
+            const dropdownElements = document.querySelectorAll('.dropdown-toggle');
+            dropdownElements.forEach(element => {
+                new bootstrap.Dropdown(element);
+            });
+        }
+        
+        // Form submission for all action forms
+        const statusUpdateForms = document.querySelectorAll('.status-update-form');
+        const cancelForms = document.querySelectorAll('.cancel-form');
+        
+        statusUpdateForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to update the status?')) {
+                    const button = this.querySelector('button[type="submit"]');
+                    if (button) {
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Updating...';
+                        button.disabled = true;
+                    }
+                    
+                    // Manual form submission
+                    const formData = new FormData(this);
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            console.error('Form submission failed');
+                            alert('An error occurred. Please try again.');
+                            if (button) {
+                                button.innerHTML = button.getAttribute('data-original-text') || '<i class="fas fa-check me-2"></i> Update Status';
+                                button.disabled = false;
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                        if (button) {
+                            button.innerHTML = button.getAttribute('data-original-text') || '<i class="fas fa-check me-2"></i> Update Status';
+                            button.disabled = false;
+                        }
+                    });
+                }
+            });
+        });
+        
+        cancelForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to cancel this booking? This will process a 50% refund.')) {
+                    const button = this.querySelector('button[type="submit"]');
+                    if (button) {
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Processing...';
+                        button.disabled = true;
+                    }
+                    
+                    // Manual form submission
+                    const formData = new FormData(this);
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            console.error('Form submission failed');
+                            alert('An error occurred. Please try again.');
+                            if (button) {
+                                button.innerHTML = button.getAttribute('data-original-text') || '<i class="fas fa-ban me-2"></i> Cancel Booking & Refund';
+                                button.disabled = false;
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                        if (button) {
+                            button.innerHTML = button.getAttribute('data-original-text') || '<i class="fas fa-ban me-2"></i> Cancel Booking & Refund';
+                            button.disabled = false;
+                        }
+                    });
+                }
+            });
+        });
+        
         // Status filter functionality with the new buttons
         const filterButtons = document.querySelectorAll('.btn-filter');
         let currentStatus = '';
@@ -417,6 +515,7 @@
                 
                 // Get the status value
                 currentStatus = this.getAttribute('data-status');
+                console.log('Filter clicked: ', currentStatus);
                 
                 // Filter the booking cards
                 filterBookings();
@@ -425,27 +524,60 @@
         
         // Search functionality
         const searchInput = document.getElementById('searchBooking');
-        searchInput.addEventListener('keyup', function() {
-            filterBookings();
-        });
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                filterBookings();
+            });
+        }
         
         // Function to filter bookings based on search term and status
         function filterBookings() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const bookingCards = document.querySelectorAll('[data-status]');
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+            const bookingCards = document.querySelectorAll('.col-md-6.col-lg-4');
+            let visibleCount = 0;
+            
+            console.log('Filtering with status:', currentStatus);
+            console.log('Total booking cards:', bookingCards.length);
+            
+            // Debug: Log all statuses on the page
+            const allStatuses = [];
+            bookingCards.forEach(card => {
+                allStatuses.push(card.getAttribute('data-status'));
+            });
+            console.log('All statuses on page:', allStatuses);
             
             bookingCards.forEach(card => {
                 const status = card.getAttribute('data-status');
-                const text = card.textContent.toLowerCase();
+                const cardText = card.textContent.toLowerCase();
                 
-                if ((currentStatus === '' || status === currentStatus) && text.includes(searchTerm)) {
+                let statusMatch = currentStatus === '' || status === currentStatus;
+                let searchMatch = searchTerm === '' || cardText.includes(searchTerm);
+                
+                if (statusMatch && searchMatch) {
                     card.style.display = '';
+                    visibleCount++;
+                    console.log('Showing card with status:', status);
                 } else {
                     card.style.display = 'none';
+                    console.log('Hiding card with status:', status, 'Status match:', statusMatch, 'Search match:', searchMatch);
                 }
             });
+            
+            // Show/hide no results message
+            const noResultsMessage = document.querySelector('.col-12 .alert-info');
+            if (noResultsMessage) {
+                if (visibleCount === 0) {
+                    noResultsMessage.style.display = '';
+                } else {
+                    noResultsMessage.style.display = 'none';
+                }
+            }
+            
+            console.log('Visible cards after filtering:', visibleCount);
         }
+        
+        // Initialize filtering on page load
+        filterBookings();
     });
 </script>
-
-<x-adminfooter />
+@endsection

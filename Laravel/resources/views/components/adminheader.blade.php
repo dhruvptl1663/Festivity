@@ -1,32 +1,4 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
-
-<head>
-    <title>Festivity</title>
-    <meta charset="utf-8">
-    <meta name="author" content="themesflat.com">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    
-    <!-- Add your admin CSS files -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('dashboard/css/animate.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('dashboard/css/animation.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('dashboard/css/bootstrap.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('dashboard/css/bootstrap-select.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('dashboard/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('dashboard/font/fonts.css') }}">
-    <link rel="stylesheet" href="{{ asset('dashboard/icon/style.css') }}">
-    <link href="{{ asset('assets/Images/Brand/icon_logo_small.png') }}" rel="shortcut icon" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="{{ asset('dashboard/css/sweetalert.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('dashboard/css/custom.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-    @stack('styles')
-</head>
-
-<body class="body">
-    <div id="wrapper">
-        <div id="page" class="">
-            <div class="layout-wrap">
+<!-- Admin Sidebar and Header Component -->
 
                 <!-- <div id="preload" class="preload-container">
     <div class="preloading">
@@ -37,7 +9,7 @@
 
                 <div class="section-menu-left">
                     <div class="box-logo">
-                        <a href="{{ url('admin.dashboard') }}">
+                        <a href="{{ route('admin.dashboard') }}">
                             <img width="auto" height="auto" alt="Logo" 
                             src="{{ asset('assets/Images/Brand/main_logo_small.png') }}" 
                             loading="eager" class="logo" style="height:45px;">
@@ -182,23 +154,33 @@
                     </div>
                 </div>
                 <div class="section-content-right">
-
-                    <div class="header-dashboard">
-                        <div class="wrap">
-                            <div class="header-left">
-                                <a href="index-2.html">
-                                    <img class="" id="logo_header_mobile" alt="" src="images/logo/logo.png"
-                                        data-light="images/logo/logo.png" data-dark="images/logo/logo.png"
-                                        data-width="154px" data-height="52px" data-retina="images/logo/logo.png">
-                                </a>
-                                <div class="button-show-hide">
-                                    <i class="icon-menu-left"></i>
-                                </div>
-
-
-                               
-
-                            </div>
+    <div class="header-dashboard">
+        <div class="wrap">
+            <div class="header-left">
+                <a href="{{ route('admin.dashboard') }}">
+                    <img class="" id="logo_header_mobile" alt="Festivity Logo" src="{{ asset('assets/Images/Brand/main_logo_small.png') }}"
+                        data-width="154px" data-height="52px">
+                </a>
+                <div class="button-show-hide">
+                    <i class="icon-menu-left"></i>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="icon-user mr-2"></i> {{ auth()->user()->name ?? 'Admin' }}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
                             <div class="header-grid">
                                 
                                 <div class="popup-wrap user type-header">

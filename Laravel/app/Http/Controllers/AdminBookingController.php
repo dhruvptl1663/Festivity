@@ -18,13 +18,14 @@ class AdminBookingController extends Controller
      */
     public function index()
     {
-        $bookings = Booking::with(['user', 'event.decorator', 'package.decorator', 'feedback'])->orderBy('created_at', 'desc')->get();
+        $bookings = Booking::with(['user', 'event.decorator', 'package.decorator', 'feedback', 'event.category'])->orderBy('created_at', 'desc')->get();
         $pendingCount = Booking::where('status', 'pending')->count();
-        $confirmedCount = Booking::where('status', 'confirmed')->count();
+        $acceptedCount = Booking::where('status', 'accepted')->count();
+        $rejectedCount = Booking::where('status', 'rejected')->count();
         $completedCount = Booking::where('status', 'completed')->count();
         $cancelledCount = Booking::where('status', 'cancelled')->count();
         
-        return view('Admin.bookings.index', compact('bookings', 'pendingCount', 'confirmedCount', 'completedCount', 'cancelledCount'));
+        return view('Admin.bookings.index', compact('bookings', 'pendingCount', 'acceptedCount', 'rejectedCount', 'completedCount', 'cancelledCount'));
     }
 
     /**
@@ -35,7 +36,7 @@ class AdminBookingController extends Controller
      */
     public function show($id)
     {
-        $booking = Booking::with(['user', 'event.decorator', 'package.decorator', 'feedback'])->findOrFail($id);
+        $booking = Booking::with(['user', 'event.decorator', 'package.decorator', 'feedback', 'event.category'])->findOrFail($id);
         return view('Admin.bookings.show', compact('booking'));
     }
 
@@ -71,8 +72,8 @@ class AdminBookingController extends Controller
     {
         $booking = Booking::findOrFail($id);
         
-        // Calculate 50% refund amount
-        $refundAmount = $booking->final_amount * 0.5;
+        // Set default refund amount since we don't have the actual column
+        $refundAmount = 0;
         
         // Update booking status
         $booking->status = 'cancelled';
@@ -82,6 +83,6 @@ class AdminBookingController extends Controller
         // This is a placeholder for actual refund logic
         
         return redirect()->route('admin.bookings.index')
-            ->with('success', 'Booking cancelled successfully. Refund of ₹' . number_format($refundAmount, 2) . ' will be processed.');
+            ->with('success', 'Booking cancelled successfully. Refund will be processed if applicable.');
     }
 }

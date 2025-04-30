@@ -227,6 +227,9 @@ Route::middleware(['web', 'auth:decorator'])->prefix('decorator')->group(functio
     Route::get('/profile', [DecoratorController::class, 'profile'])->name('decorator.profile');
     Route::post('/profile', [DecoratorController::class, 'updateProfile'])->name('decorator.profile.update');
     
+    // Decorator feedbacks
+    Route::get('/feedbacks', [DecoratorController::class, 'feedbacks'])->name('decorator.feedbacks');
+    
     // Event management
     Route::get('/events', [DecoratorController::class, 'events'])->name('decorator.events');
     Route::get('/events/create', [DecoratorController::class, 'createEvent'])->name('decorator.events.create');

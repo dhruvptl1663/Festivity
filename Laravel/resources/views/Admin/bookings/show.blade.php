@@ -1,9 +1,9 @@
-<x-adminheader />
-<div class="main-content">
-    <div class="main-content-inner">
-        <div class="main-content-wrap">
-            <div class="tf-section mb-30">
-                <div class="wg-box">
+@extends('layouts.admin')
+
+@section('content')
+<div class="main-content-wrap">
+    <div class="tf-section mb-30">
+        <div class="wg-box">
                     <div class="flex items-center justify-between mb-4">
                         <h5>Booking Details: #{{ $booking->booking_id }}</h5>
                         <a href="{{ route('admin.bookings.index') }}" class="btn btn-light rounded-pill shadow-sm btn-sm">
@@ -129,9 +129,13 @@
                                     <p><strong>Package Description:</strong> {{ $booking->package->description ?? 'N/A' }}</p>
                                     <p><strong>Event Date:</strong> {{ $booking->event_date ? \Carbon\Carbon::parse($booking->event_date)->format('M d, Y') : 'Not specified' }}</p>
                                     @if($booking->package && $booking->package->decorator)
-                                    <p><strong>Decorator:</strong> {{ $booking->package->decorator->name }}</p>
+                                    <p><strong>Decorator:</strong> <span style="color: #1e293b; font-weight: 500;">{{ $booking->package->decorator->name }}</span></p>
                                     <p><strong>Decorator Contact:</strong> {{ $booking->package->decorator->phone }}</p>
                                     <p><strong>Decorator Email:</strong> {{ $booking->package->decorator->email }}</p>
+                                    @elseif($booking->event && isset($booking->event->decorator_id) && $booking->event->decorator)
+                                    <p><strong>Decorator:</strong> <span style="color: #1e293b; font-weight: 500;">{{ $booking->event->decorator->name }}</span></p>
+                                    <p><strong>Decorator Contact:</strong> {{ $booking->event->decorator->phone }}</p>
+                                    <p><strong>Decorator Email:</strong> {{ $booking->event->decorator->email }}</p>
                                     @endif
                                 </div>
                             </div>
@@ -204,4 +208,108 @@
         </div>
     </div>
 </div>
-<x-adminfooter />
+@endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Make sure Bootstrap's dropdown is properly initialized
+        if (typeof bootstrap !== 'undefined') {
+            const dropdownElements = document.querySelectorAll('.dropdown-toggle');
+            dropdownElements.forEach(element => {
+                new bootstrap.Dropdown(element);
+            });
+        }
+        
+        // Form submission handling for status updates and cancellations
+        const statusForms = document.querySelectorAll('.status-update-form');
+        const cancelForms = document.querySelectorAll('.cancel-form');
+        
+        statusForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to update the status?')) {
+                    const button = this.querySelector('button[type="submit"]');
+                    if (button) {
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Updating...';
+                        button.disabled = true;
+                    }
+                    
+                    // Manual form submission
+                    const formData = new FormData(this);
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            console.error('Form submission failed');
+                            alert('An error occurred. Please try again.');
+                            if (button) {
+                                button.innerHTML = button.getAttribute('data-original-text') || '<i class="fas fa-check me-2"></i> Update Status';
+                                button.disabled = false;
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                        if (button) {
+                            button.innerHTML = button.getAttribute('data-original-text') || '<i class="fas fa-check me-2"></i> Update Status';
+                            button.disabled = false;
+                        }
+                    });
+                }
+            });
+        });
+        
+        cancelForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to cancel this booking? This will process a 50% refund.')) {
+                    const button = this.querySelector('button[type="submit"]');
+                    if (button) {
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Processing...';
+                        button.disabled = true;
+                    }
+                    
+                    // Manual form submission
+                    const formData = new FormData(this);
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            console.error('Form submission failed');
+                            alert('An error occurred. Please try again.');
+                            if (button) {
+                                button.innerHTML = button.getAttribute('data-original-text') || '<i class="fas fa-ban me-2"></i> Cancel Booking & Refund';
+                                button.disabled = false;
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                        if (button) {
+                            button.innerHTML = button.getAttribute('data-original-text') || '<i class="fas fa-ban me-2"></i> Cancel Booking & Refund';
+                            button.disabled = false;
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+@endpush

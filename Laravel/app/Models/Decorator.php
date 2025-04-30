@@ -26,7 +26,18 @@ class Decorator extends Authenticatable
 
     protected $hidden = [
         'password',
+        'remember_token',
     ];
+    
+    /**
+     * Get the name of the column used for the "remember me" token.
+     *
+     * @return string
+     */
+    public function getRememberTokenName()
+    {
+        return 'remember_token';
+    }
 
     public function events()
     {

@@ -68,20 +68,10 @@
     <div id="wrapper">
         <div id="page" class="">
             <div class="layout-wrap">
-                <div class="header">
-                    <div class="container">
-                        <div class="logo">
-                            <a href="{{ url('/admin') }}">
-                                <img src="{{ asset('assets/Images/Brand/main_logo_small.png') }}" alt="Festivity Logo" class="img-fluid" style="height: 45px;">
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
                 <x-adminheader />
 
                 <div class="section-main">
-                    <div class="container">
+                    <div class="container-fluid">
                         @yield('content')
                     </div>
                 </div>
