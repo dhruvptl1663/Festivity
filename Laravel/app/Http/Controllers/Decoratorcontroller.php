@@ -200,7 +200,16 @@ class DecoratorController extends Controller
         if ($request->hasFile('image')) {
             $imageFile = $request->file('image');
             $imageName = time() . '.' . $imageFile->getClientOriginalExtension();
-            $imageFile->move(public_path('images/events'), $imageName);
+            
+            // Make sure the directory exists
+            $directory = public_path('images/events');
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+            }
+            
+            $imageFile->move($directory, $imageName);
+            
+            // Store the path as 'images/events/filename.ext'
             $event->image = 'images/events/' . $imageName;
         }
         
@@ -250,7 +259,16 @@ class DecoratorController extends Controller
             
             $imageFile = $request->file('image');
             $imageName = time() . '.' . $imageFile->getClientOriginalExtension();
-            $imageFile->move(public_path('images/events'), $imageName);
+            
+            // Make sure the directory exists
+            $directory = public_path('images/events');
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+            }
+            
+            $imageFile->move($directory, $imageName);
+            
+            // Store the path as 'images/events/filename.ext'
             $event->image = 'images/events/' . $imageName;
         }
         
@@ -297,7 +315,9 @@ class DecoratorController extends Controller
     public function createPackage()
     {
         $decorator = Auth::guard('decorator')->user();
-        $events = Event::where('decorator_id', $decorator->decorator_id)->get();
+        $events = Event::where('decorator_id', $decorator->decorator_id)
+            ->where('is_live', 1) // Only include live events
+            ->get();
         return view('Decorator.Packages.create', compact('events'));
     }
     
@@ -421,6 +441,62 @@ class DecoratorController extends Controller
         $decorator = Auth::guard('decorator')->user();
         $decorator_id = $decorator->decorator_id;
         
+        // Get booking counts by status
+        $pendingCount = Booking::where('status', 'pending')
+            ->where(function($query) use ($decorator_id) {
+                $query->whereHas('event', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                })
+                ->orWhereHas('package', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                });
+            })
+            ->count();
+            
+        $acceptedCount = Booking::where('status', 'accepted')
+            ->where(function($query) use ($decorator_id) {
+                $query->whereHas('event', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                })
+                ->orWhereHas('package', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                });
+            })
+            ->count();
+            
+        $rejectedCount = Booking::where('status', 'rejected')
+            ->where(function($query) use ($decorator_id) {
+                $query->whereHas('event', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                })
+                ->orWhereHas('package', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                });
+            })
+            ->count();
+            
+        $completedCount = Booking::where('status', 'completed')
+            ->where(function($query) use ($decorator_id) {
+                $query->whereHas('event', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                })
+                ->orWhereHas('package', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                });
+            })
+            ->count();
+            
+        $cancelledCount = Booking::where('status', 'cancelled')
+            ->where(function($query) use ($decorator_id) {
+                $query->whereHas('event', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                })
+                ->orWhereHas('package', function($q) use ($decorator_id) {
+                    $q->where('decorator_id', $decorator_id);
+                });
+            })
+            ->count();
+        
         $bookings = Booking::where(function($query) use ($decorator_id) {
                 $query->whereHas('event', function($q) use ($decorator_id) {
                     $q->where('decorator_id', $decorator_id);
@@ -435,7 +511,7 @@ class DecoratorController extends Controller
             ->latest()
             ->paginate(10);
             
-        return view('Decorator.Bookings.index', compact('bookings'));
+        return view('Decorator.Bookings.index', compact('bookings', 'pendingCount', 'acceptedCount', 'rejectedCount', 'completedCount', 'cancelledCount'));
     }
     
     public function showBooking($booking_id)

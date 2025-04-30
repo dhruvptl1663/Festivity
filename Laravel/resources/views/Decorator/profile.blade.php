@@ -1,260 +1,161 @@
-<x-decoratorheader />
+@extends('layouts.decorator')
 
-<!-- Add Bootstrap Icons CSS if not already included in the layout -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+@section('content')
+<div class="main-content-wrap">
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Profile Card -->
+                <div class="card shadow-sm border-0 mb-4" style="border-radius: 16px; overflow: hidden;">
+                    <div class="card-header bg-primary text-white p-4">
+                        <h5 class="mb-0">Decorator Profile</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
 
-<style>
-    .card {
-        transition: all 0.3s ease;
-        overflow: hidden;
-        border-radius: 0.75rem !important;
-    }
+                        @if(session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
 
-    .card:hover {
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-    }
-    
-    .profile-header {
-        padding: 2rem;
-        background-color: #f8f9fa;
-        border-bottom: 1px solid rgba(0,0,0,0.1);
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1.5rem;
-    }
-    
-    .profile-image {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        overflow: hidden;
-        background-color: #e9ecef;
-        border: 3px solid #fff;
-        box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
-        flex-shrink: 0;
-    }
-    
-    .profile-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    
-    .profile-placeholder {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #e9ecef;
-        color: #6c757d;
-        font-size: 3rem;
-    }
-    
-    .profile-details {
-        flex-grow: 1;
-    }
-    
-    .form-section {
-        background-color: #fff;
-        border-radius: 0.75rem;
-        box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
-        overflow: hidden;
-        margin-bottom: 1.5rem;
-    }
-    
-    .section-header {
-        padding: 1rem 1.5rem;
-        background-color: #f8f9fa;
-        border-bottom: 1px solid rgba(0,0,0,0.1);
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-    }
-    
-    .section-header i {
-        margin-right: 0.5rem;
-        color: #6c757d;
-    }
-    
-    .section-body {
-        padding: 1.5rem;
-    }
-    
-    .rating-stars {
-        display: flex;
-        align-items: center;
-        color: #fd7e14;
-        margin-top: 0.5rem;
-    }
-    
-    .rating-stars i {
-        margin-right: 0.25rem;
-    }
-    
-    .btn-icon {
-        width: 38px;
-        height: 38px;
-        padding: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        font-size: 1rem;
-        transition: all 0.2s ease;
-        vertical-align: middle;
-    }
-</style>
-
-<div class="main-content">
-    <div class="main-content-inner">
-        <div class="main-content-wrap">
-            <!-- Header Section -->
-            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-                <div>
-                    <h4 class="mb-1">My Profile</h4>
-                    <p class="text-muted">Manage your decorator profile and account settings</p>
+                        <form action="{{ route('decorator.profile.update') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-3 text-center">
+                                    <!-- Current Profile Image -->
+                                    <div class="mb-3">
+                                        <div class="profile-image-container mx-auto mb-3" style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 2px solid #eee;">
+                                            @if($decorator->decorator_icon)
+                                                <img src="{{ asset($decorator->decorator_icon) }}" alt="{{ $decorator->decorator_name }}" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
+                                            @else
+                                                <div class="d-flex justify-content-center align-items-center bg-light h-100">
+                                                    <i class="bi bi-person-circle text-muted" style="font-size: 3rem;"></i>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <label for="decorator_icon" class="form-label">Profile Image</label>
+                                        <input type="file" class="form-control form-control-sm @error('decorator_icon') is-invalid @enderror" id="decorator_icon" name="decorator_icon" accept="image/*">
+                                        @error('decorator_icon')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <div class="form-text">Maximum file size: 2MB</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-9">
+                                    <!-- Basic Profile Info -->
+                                    <div class="mb-3">
+                                        <label for="decorator_name" class="form-label">Business Name</label>
+                                        <input type="text" class="form-control @error('decorator_name') is-invalid @enderror" id="decorator_name" name="decorator_name" value="{{ old('decorator_name', $decorator->decorator_name) }}" required>
+                                        @error('decorator_name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email Address</label>
+                                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $decorator->email) }}" required>
+                                        @error('email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="border-top pt-4 mt-2">
+                                <h6 class="mb-3">Change Password</h6>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">New Password</label>
+                                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password">
+                                    @error('password')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text">Leave blank to keep your current password</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="password_confirmation" class="form-label">Confirm New Password</label>
+                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="reset" class="btn btn-light me-2">Reset</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Account Information Card -->
+                <div class="card shadow-sm border-0" style="border-radius: 16px; overflow: hidden;">
+                    <div class="card-header bg-light p-4">
+                        <h5 class="mb-0">Account Information</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Email Address</p>
+                                <p class="mb-3">{{ $decorator->email }}</p>
+                                
+                                <p class="text-muted mb-1">Availability Status</p>
+                                <p class="mb-0">{{ $decorator->availability ? 'Available' : 'Unavailable' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Account ID</p>
+                                <p class="mb-3">{{ $decorator->decorator_id }}</p>
+                                
+                                <p class="text-muted mb-1">Account Status</p>
+                                <p class="mb-0">
+                                    <span class="badge bg-success">Active</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            @if(session('success'))
-                <div class="alert alert-success mb-4">
-                    <i class="bi bi-check-circle me-2"></i>
-                    {{ session('success') }}
-                </div>
-            @endif
-            
-            @if(session('error'))
-                <div class="alert alert-danger mb-4">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    {{ session('error') }}
-                </div>
-            @endif
-            
-            <form method="POST" action="{{ route('decorator.profile.update') }}" enctype="multipart/form-data">
-                @csrf
-                
-                <!-- Profile Overview Card -->
-                <div class="card mb-4">
-                    <div class="profile-header">
-                        <div class="profile-image">
-                            @if($decorator->decorator_icon)
-                                <img src="{{ asset($decorator->decorator_icon) }}" alt="{{ $decorator->decorator_name }}">
-                            @else
-                                <div class="profile-placeholder">
-                                    <i class="bi bi-person"></i>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="profile-details">
-                            <h3 class="mb-1">{{ $decorator->decorator_name }}</h3>
-                            <p class="text-muted mb-2"><i class="bi bi-envelope me-2"></i>{{ $decorator->email }}</p>
-                            <div class="rating-stars">
-                                @for($i = 1; $i <= 5; $i++)
-                                    @if($i <= $decorator->rating)
-                                        <i class="bi bi-star-fill"></i>
-                                    @else
-                                        <i class="bi bi-star"></i>
-                                    @endif
-                                @endfor
-                                <span class="ms-2">{{ $decorator->rating }}/5</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Profile Information Card -->
-                <div class="form-section">
-                    <div class="section-header">
-                        <i class="bi bi-person-vcard"></i>
-                        <span>Business Information</span>
-                    </div>
-                    <div class="section-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="decorator_name" class="form-label">Business Name</label>
-                                    <input type="text" class="form-control @error('decorator_name') is-invalid @enderror" id="decorator_name" name="decorator_name" value="{{ old('decorator_name', $decorator->decorator_name) }}" required>
-                                    @error('decorator_name')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="email" class="form-label">Email Address</label>
-                                    <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $decorator->email) }}" required>
-                                    @error('email')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            
-                            <div class="col-12">
-                                <div class="form-group mb-3">
-                                    <label for="decorator_icon" class="form-label">Business Logo</label>
-                                    <input type="file" class="form-control @error('decorator_icon') is-invalid @enderror" id="decorator_icon" name="decorator_icon">
-                                    <div class="form-text"><i class="bi bi-info-circle me-1"></i>Upload a logo for your business (JPEG, PNG, JPG, GIF)</div>
-                                    @error('decorator_icon')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Security Section -->
-                <div class="form-section">
-                    <div class="section-header">
-                        <i class="bi bi-shield-lock"></i>
-                        <span>Security Settings</span>
-                    </div>
-                    <div class="section-body">
-                        <div class="alert alert-light border mb-4">
-                            <i class="bi bi-info-circle me-2"></i>
-                            <span>Leave password fields blank if you don't want to change your password</span>
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="password" class="form-label">New Password</label>
-                                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" minlength="6">
-                                    @error('password')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="password_confirmation" class="form-label">Confirm New Password</label>
-                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" minlength="6">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Submit Button -->
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save me-1"></i> Update Profile
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 </div>
+@endsection
 
-<x-decoratorfooter />
+@push('scripts')
+<script>
+    // Preview uploaded image
+    document.getElementById('decorator_icon').addEventListener('change', function(e) {
+        const fileInput = e.target;
+        const file = fileInput.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            const imageContainer = document.querySelector('.profile-image-container');
+            
+            reader.onload = function(e) {
+                // Clear existing content
+                imageContainer.innerHTML = '';
+                
+                // Create and append new image
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = 'Profile Preview';
+                img.classList.add('img-fluid');
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                
+                imageContainer.appendChild(img);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+@endpush

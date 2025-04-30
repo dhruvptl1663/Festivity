@@ -227,9 +227,10 @@ backdrop-filter: blur(5px);
         <div class="registration-form">
             <div class="header">
                 <label class="title">Decorator Registration</label>
-                <p class="description">Join our platform and start showcasing your event decoration services.</p>
+                <p class="description">Join our platform to showcase your decoration services and grow your business</p>
             </div>
-            <form method="POST" action="{{ route('decorator.register') }}" enctype="multipart/form-data">
+            
+            <form method="POST" action="{{ route('decorator.register.submit') }}" enctype="multipart/form-data">
                 @csrf
 
                 @if ($errors->any())
@@ -245,55 +246,297 @@ backdrop-filter: blur(5px);
                 <div class="form-row">
                     <div class="form-group">
                         <label for="name" class="form-label">Business Name</label>
-                        <input id="name" class="input_field" type="text" name="name" value="{{ old('name') }}"
-                            placeholder="Your business name" required autofocus>
+                        <input id="name" class="input_field" type="text" name="name" value="{{ old('name') }}" required autofocus placeholder="Your decoration business name">
                     </div>
+                    
                     <div class="form-group">
                         <label for="owner_name" class="form-label">Owner Name</label>
-                        <input id="owner_name" class="input_field" type="text" name="owner_name" value="{{ old('owner_name') }}"
-                            placeholder="Your full name" required>
+                        <input id="owner_name" class="input_field" type="text" name="owner_name" value="{{ old('owner_name') }}" required placeholder="Your full name">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="email" class="form-label">Email Address</label>
-                        <input id="email" class="input_field" type="email" name="email" value="{{ old('email') }}"
-                            placeholder="your.email@example.com" required>
+                        <input id="email" class="input_field" type="email" name="email" value="{{ old('email') }}" required placeholder="your.email@example.com">
                     </div>
+                    
                     <div class="form-group">
                         <label for="phone" class="form-label">Phone Number</label>
-                        <input id="phone" class="input_field" type="text" name="phone" value="{{ old('phone') }}"
-                            placeholder="Your contact number" required>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="password" class="form-label">Password</label>
-                        <input id="password" class="input_field" type="password" name="password" 
-                            placeholder="Create a strong password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password_confirmation" class="form-label">Confirm Password</label>
-                        <input id="password_confirmation" class="input_field" type="password" name="password_confirmation" 
-                            placeholder="Confirm your password" required>
+                        <input id="phone" class="input_field" type="text" name="phone" value="{{ old('phone') }}" required placeholder="Your contact number">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="address" class="form-label">Business Address</label>
-                    <input id="address" class="input_field" type="text" name="address" value="{{ old('address') }}"
-                        placeholder="Your business address" required>
+                    <input id="address" class="input_field" type="text" name="address" value="{{ old('address') }}" required placeholder="Your business address">
+                </div>
+
+                <div class="form-group">
+                    <label for="specialization" class="form-label">Specialization</label>
+                    <input id="specialization" class="input_field" type="text" name="specialization" value="{{ old('specialization') }}" placeholder="Wedding, Birthday, Corporate events, etc.">
                 </div>
 
                 <div class="form-group">
                     <label for="description" class="form-label">Business Description</label>
-                    <textarea id="description" class="input_field text_area" name="description" placeholder="Describe your decoration services">{{ old('description') }}</textarea>
+                    <textarea id="description" class="input_field text_area" name="description" placeholder="Describe your decoration services and expertise">{{ old('description') }}</textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="logo" class="form-label">Business Logo</label>
+                    <label for="logo" class="form-label">Business Logo (Optional)</label>
+                    <input id="logo" class="input_field" type="file" name="logo" accept="image/*">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input id="password" class="input_field" type="password" name="password" required placeholder="Create a password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password_confirmation" class="form-label">Confirm Password</label>
+                        <input id="password_confirmation" class="input_field" type="password" name="password_confirmation" required placeholder="Confirm your password">
+                    </div>
+                </div>
+
+                <button class="sign-up_btn" type="submit">
+                    <span>Register as Decorator</span>
+                </button>
+
+                <div class="login-link">
+                    Already have an account? <a href="{{ route('decorator.login') }}">Sign in</a>
+                </div>
+            </form>
+        </div>
+        <div class="testimonial">
+            <div class="decorator-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-brush" viewBox="0 0 16 16" style="margin-right: 5px; vertical-align: text-bottom;">
+                    <path d="M15.825.12a.5.5 0 0 1 .132.584c-1.53 3.43-4.743 8.17-7.095 10.64a6.1 6.1 0 0 1-2.373 1.534c-.018.227-.06.538-.16.868-.201.659-.667 1.479-1.708 1.74a8.1 8.1 0 0 1-3.078.132 4 4 0 0 1-.562-.135 1.4 1.4 0 0 1-.466-.247.7.7 0 0 1-.204-.288.62.62 0 0 1 .004-.443c.095-.245.333-.54.698-.848.363-.309.8-.616 1.292-.848.492-.233.93-.35 1.23-.35.268-.1.583-.046.85-.018a6 6 0 0 0 1.68-.362l.045-.02a6 6 0 0 0 2.063-1.43A61.2 61.2 0 0 0 5.12 5.012a61.2 61.2 0 0 0-2.945-3.777.5.5 0 0 1 .708-.708A61.2 61.2 0 0 0 5.9 3.838c.326.356.75.832 1.23 1.383a133.8 133.8 0 0 1-1.856 2.505.5.5 0 0 1-.8-.6c1.067-1.42 1.725-2.327 2.067-2.83a60.9 60.9 0 0 0-1.635-1.987A61.2 61.2 0 0 0 3.91 1.175a.5.5 0 0 1 .15-.695A59.2 59.2 0 0 0 4.963.708a.5.5 0 0 1 .497 0Z"/>
+                </svg>
+                Decorator Portal
+            </div>
+            <p>"Join our network of professional decorators and grow your business. Showcase your talent and connect with clients looking for your unique decoration services."</p>
+
+            <div style="height: 5px;"></div>
+            <img src="{{ asset('assets/Images/Brand/main_logo_medium.png') }}" alt="Logo"
+                style="width: 150px; max-width: 100%; height: auto; ">
+
+            <div class="user" style="bottom: auto;">
+                <span class="username">Festivity Decorators</span>
+                <span class="occupation">Bringing Events to Life</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-register">
+        <div class="registration-form">
+            <div class="header">
+                <label class="title">Decorator Registration</label>
+                <p class="description">Join our platform to showcase your decoration services and grow your business</p>
+            </div>
+            
+            <form method="POST" action="{{ route('decorator.register.submit') }}" enctype="multipart/form-data">
+                @csrf
+
+                @if ($errors->any())
+                     <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <p style="color: red; margin-bottom: 10px; font-size: 0.7em;">{{ $error }}</p>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Business Name</label>
+                        <input id="name" class="input_field" type="text" name="name" value="{{ old('name') }}" required autofocus placeholder="Your decoration business name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="owner_name" class="form-label">Owner Name</label>
+                        <input id="owner_name" class="input_field" type="text" name="owner_name" value="{{ old('owner_name') }}" required placeholder="Your full name">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input id="email" class="input_field" type="email" name="email" value="{{ old('email') }}" required placeholder="your.email@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input id="phone" class="input_field" type="text" name="phone" value="{{ old('phone') }}" required placeholder="Your contact number">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address" class="form-label">Business Address</label>
+                    <input id="address" class="input_field" type="text" name="address" value="{{ old('address') }}" required placeholder="Your business address">
+                </div>
+
+                <div class="form-group">
+                    <label for="specialization" class="form-label">Specialization</label>
+                    <input id="specialization" class="input_field" type="text" name="specialization" value="{{ old('specialization') }}" placeholder="Wedding, Birthday, Corporate events, etc.">
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">Business Description</label>
+                    <textarea id="description" class="input_field text_area" name="description" placeholder="Describe your decoration services and expertise">{{ old('description') }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="logo" class="form-label">Business Logo (Optional)</label>
+                    <input id="logo" class="input_field" type="file" name="logo" accept="image/*">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input id="password" class="input_field" type="password" name="password" required placeholder="Create a password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password_confirmation" class="form-label">Confirm Password</label>
+                        <input id="password_confirmation" class="input_field" type="password" name="password_confirmation" required placeholder="Confirm your password">
+                    </div>
+                </div>
+
+                <button class="sign-up_btn" type="submit">
+                    <span>Register as Decorator</span>
+                </button>
+
+                <div class="login-link">
+                    Already have an account? <a href="{{ route('decorator.login') }}">Sign in</a>
+                </div>
+            </form>
+        </div>
+        <div class="testimonial">
+            <div class="decorator-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-brush" viewBox="0 0 16 16" style="margin-right: 5px; vertical-align: text-bottom;">
+                    <path d="M15.825.12a.5.5 0 0 1 .132.584c-1.53 3.43-4.743 8.17-7.095 10.64a6.1 6.1 0 0 1-2.373 1.534c-.018.227-.06.538-.16.868-.201.659-.667 1.479-1.708 1.74a8.1 8.1 0 0 1-3.078.132 4 4 0 0 1-.562-.135 1.4 1.4 0 0 1-.466-.247.7.7 0 0 1-.204-.288.62.62 0 0 1 .004-.443c.095-.245.333-.54.698-.848.363-.309.8-.616 1.292-.848.492-.233.93-.35 1.23-.35.268-.1.583-.046.85-.018a6 6 0 0 0 1.68-.362l.045-.02a6 6 0 0 0 2.063-1.43A61.2 61.2 0 0 0 5.12 5.012a61.2 61.2 0 0 0-2.945-3.777.5.5 0 0 1 .708-.708A61.2 61.2 0 0 0 5.9 3.838c.326.356.75.832 1.23 1.383a133.8 133.8 0 0 1-1.856 2.505.5.5 0 0 1-.8-.6c1.067-1.42 1.725-2.327 2.067-2.83a60.9 60.9 0 0 0-1.635-1.987A61.2 61.2 0 0 0 3.91 1.175a.5.5 0 0 1 .15-.695A59.2 59.2 0 0 0 4.963.708a.5.5 0 0 1 .497 0Z"/>
+                </svg>
+                Decorator Portal
+            </div>
+            <p>"Join our network of professional decorators and grow your business. Showcase your talent and connect with clients looking for your unique decoration services."</p>
+
+            <div style="height: 5px;"></div>
+            <img src="{{ asset('assets/Images/Brand/main_logo_medium.png') }}" alt="Logo"
+                style="width: 150px; max-width: 100%; height: auto; ">
+
+            <div class="user" style="bottom: auto;">
+                <span class="username">Festivity Decorators</span>
+                <span class="occupation">Bringing Events to Life</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-register">
+        <div class="registration-form">
+            <div class="header">
+                <label class="title">Decorator Registration</label>
+                <p class="description">Join our platform to showcase your decoration services and grow your business</p>
+            </div>
+            
+            <form method="POST" action="{{ route('decorator.register.submit') }}" enctype="multipart/form-data">
+                @csrf
+
+                @if ($errors->any())
+                     <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <p style="color: red; margin-bottom: 10px; font-size: 0.7em;">{{ $error }}</p>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Business Name</label>
+                        <input id="name" class="input_field" type="text" name="name" value="{{ old('name') }}" required autofocus placeholder="Your decoration business name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="owner_name" class="form-label">Owner Name</label>
+                        <input id="owner_name" class="input_field" type="text" name="owner_name" value="{{ old('owner_name') }}" required placeholder="Your full name">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input id="email" class="input_field" type="email" name="email" value="{{ old('email') }}" required placeholder="your.email@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input id="phone" class="input_field" type="text" name="phone" value="{{ old('phone') }}" required placeholder="Your contact number">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address" class="form-label">Business Address</label>
+                    <input id="address" class="input_field" type="text" name="address" value="{{ old('address') }}" required placeholder="Your business address">
+                </div>
+
+                <div class="form-group">
+                    <label for="specialization" class="form-label">Specialization</label>
+                    <input id="specialization" class="input_field" type="text" name="specialization" value="{{ old('specialization') }}" placeholder="Wedding, Birthday, Corporate events, etc.">
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">Business Description</label>
+                    <textarea id="description" class="input_field text_area" name="description" placeholder="Describe your decoration services and expertise">{{ old('description') }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="logo" class="form-label">Business Logo (Optional)</label>
+                    <input id="logo" class="input_field" type="file" name="logo" accept="image/*">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input id="password" class="input_field" type="password" name="password" required placeholder="Create a password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password_confirmation" class="form-label">Confirm Password</label>
+                        <input id="password_confirmation" class="input_field" type="password" name="password_confirmation" required placeholder="Confirm your password">
+                    </div>
+                </div>
+
+                <button class="sign-up_btn" type="submit">
+                    <span>Register as Decorator</span>
+                </button>
+
+                <div class="login-link">
+                    Already have an account? <a href="{{ route('decorator.login') }}">Sign in</a>
+                </div>
+            </form>
+        </div>
+        <div class="testimonial">
+            <div class="decorator-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-brush" viewBox="0 0 16 16" style="margin-right: 5px; vertical-align: text-bottom;">
+                    <path d="M15.825.12a.5.5 0 0 1 .132.584c-1.53 3.43-4.743 8.17-7.095 10.64a6.1 6.1 0 0 1-2.373 1.534c-.018.227-.06.538-.16.868-.201.659-.667 1.479-1.708 1.74a8.1 8.1 0 0 1-3.078.132 4 4 0 0 1-.562-.135 1.4 1.4 0 0 1-.466-.247.7.7 0 0 1-.204-.288.62.62 0 0 1 .004-.443c.095-.245.333-.54.698-.848.363-.309.8-.616 1.292-.848.492-.233.93-.35 1.23-.35.268-.1.583-.046.85-.018a6 6 0 0 0 1.68-.362l.045-.02a6 6 0 0 0 2.063-1.43A61.2 61.2 0 0 0 5.12 5.012a61.2 61.2 0 0 0-2.945-3.777.5.5 0 0 1 .708-.708A61.2 61.2 0 0 0 5.9 3.838c.326.356.75.832 1.23 1.383a133.8 133.8 0 0 1-1.856 2.505.5.5 0 0 1-.8-.6c1.067-1.42 1.725-2.327 2.067-2.83a60.9 60.9 0 0 0-1.635-1.987A61.2 61.2 0 0 0 3.91 1.175a.5.5 0 0 1 .15-.695A59.2 59.2 0 0 0 4.963.708a.5.5 0 0 1 .497 0Z"/>
+                </svg>
+                Decorator Portal
+            </div>
+            <p>"Join our network of professional decorators and grow your business. Showcase your talent and connect with clients looking for your unique decoration services."</p>
+
+            <div style="height: 5px;"></div>
+            <img src="{{ asset('assets/Images/Brand/main_logo_medium.png') }}" alt="Logo"
+                style="width: 150px; max-width: 100%; height: auto; ">
+
+            <div class="user" style="bottom: auto;">
+                <span class="username">Festivity Decorators</span>
+                <span class="occupation">Bringing Events to Life</span>
+            </div>
+        </div>
+    </div>
                     <input id="logo" class="input_field" type="file" name="logo" accept="image/*">
                 </div>
 
