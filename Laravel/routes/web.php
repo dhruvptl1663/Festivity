@@ -35,6 +35,10 @@ Route::get('/events', [MainController::class, 'events']);
 Route::get('/packages', [MainController::class, 'packages']);
 Route::get('/about', [MainController::class, 'about']);
 Route::get('/profile', [MainController::class, 'profile']);
+Route::get('/contacts', [HomeController::class, 'contacts'])->name('contacts');
+Route::get('/info', function () {
+    return view('info');
+})->name('info');
 Route::get('/contactus', [MainController::class, 'contactus'])->name('contactus');
 Route::post('/contactus', [MainController::class, 'storeContact'])->name('contactus.store');
 Route::get('/login', [MainController::class, 'login']);
@@ -137,14 +141,20 @@ Route::middleware(['auth'])->group(function () {
       // Contact routes
       Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
       Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
-}); // Closing brace for the auth middleware group starting on line 89
-      
+}); 
+
+Route::get('/admin', function() {
+    if (auth()->guard('admin')->check()) {
+        return redirect()->route('admin.dashboard');
+    }
+    return redirect('/admin/login');
+});
+
+
 // Admin routes
 Route::middleware(['web', 'auth:admin'])->prefix('admin')->group(function () {
     // Admin Dashboard
-    Route::get('/', function() {
-        return view('Admin.index');
-    })->name('admin.index');
+    Route::get('/', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.index');
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
     
@@ -216,6 +226,14 @@ Route::middleware(['web', 'auth:admin'])->prefix('admin')->group(function () {
     Route::post('/notifications', [AdminNotificationController::class, 'store'])->name('admin.notifications.store');
     Route::get('/notifications/{notification}', [AdminNotificationController::class, 'show'])->name('admin.notifications.show');
     Route::delete('/notifications/{notification}', [AdminNotificationController::class, 'destroy'])->name('admin.notifications.destroy');
+});
+
+// Route for base decorator URL
+Route::get('/decorator', function() {
+    if (auth()->guard('decorator')->check()) {
+        return redirect()->route('decorator.dashboard');
+    }
+    return redirect()->route('decorator.login');
 });
 
 // Decorator routes

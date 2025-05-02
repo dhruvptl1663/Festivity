@@ -97,4 +97,8 @@ class MainController extends Controller
         return view('cart');
     }
 
+    public function info()
+    {
+        return view('info');
+    }
 }

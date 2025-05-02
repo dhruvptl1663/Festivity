@@ -13,12 +13,19 @@ class Authenticate extends Middleware
     protected function redirectTo(Request $request): ?string
     {
         if (!$request->expectsJson()) {
-            if ($request->is('admin*')) {
-                return route('admin.login');
-            } elseif ($request->is('decorator*')) {
-                return route('decorator.login');
+            // Get the current guard name
+            $guard = null;
+            
+            if ($request->is('admin') || $request->is('admin/*')) {
+                return '/admin/login'; // Use absolute URL to ensure correct redirection
             }
-            return route('login');
+            
+            if ($request->is('decorator') || $request->is('decorator/*')) {
+                return '/decorator/login'; // Use absolute URL to ensure correct redirection
+            }
+            
+            // Default to standard user login
+            return '/login';
         }
         
         return null;
