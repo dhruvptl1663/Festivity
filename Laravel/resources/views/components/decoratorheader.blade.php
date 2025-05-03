@@ -76,48 +76,6 @@
                     <i class="icon-menu-left"></i>
                 </div>
             </div>
-            <div class="header-right">
-                <div class="popup-wrap user type-header">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button"
-                            id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="header-user wg-user">
-                                <span class="image">
-                                    @if(Auth::guard('decorator')->check() && Auth::guard('decorator')->user()->decorator_icon)
-                                        <img src="{{ asset(Auth::guard('decorator')->user()->decorator_icon) }}" alt="{{ Auth::guard('decorator')->user()->decorator_name }}">
-                                    @else
-                                        <img src="{{ asset('dashboard/images/avatar/user-1.png') }}" alt="Default avatar">
-                                    @endif
-                                </span>
-                                <span class="flex flex-column">
-                                    <span class="body-title mb-2">{{ Auth::guard('decorator')->check() ? Auth::guard('decorator')->user()->decorator_name : 'Decorator' }}</span>
-                                    <span class="text-tiny">Decorator</span>
-                                </span>
-                            </span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end has-content"
-                            aria-labelledby="dropdownMenuButton3">
-                            <li>
-                                <a class="dropdown-item" href="{{ route('decorator.profile') }}">
-                                    <i class="fas fa-user-circle"></i> My Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ route('decorator.dashboard') }}">
-                                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                                </a>
-                            </li>
-                            <li>
-                                <form method="POST" action="{{ route('decorator.logout') }}" class="d-inline">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item">
-                                        <i class="fas fa-sign-out-alt"></i> Logout
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            
         </div>
     </div>

@@ -268,9 +268,7 @@
             <div class="flex items-center justify-between">
                 <h5>Recent orders</h5>
                 <div class="dropdown default">
-                    <a class="btn btn-secondary dropdown-toggle" href="#">
-                        <span class="view-all">View all</span>
-                    </a>
+                    
                 </div>
             </div>
             <div class="wg-table table-all-user">
@@ -280,7 +278,6 @@
                             <tr>
                                 <th style="width: 80px">Booking ID</th>
                                 <th>Customer</th>
-                                <th class="text-center">Phone</th>
                                 <th class="text-center">Package Price</th>
                                 <th class="text-center">Discount</th>
                                 <th class="text-center">Total</th>
@@ -296,10 +293,9 @@
                             <tr>
                                 <td class="text-center">{{ $booking->booking_id }}</td>
                                 <td class="text-center">{{ $booking->user->name ?? 'N/A' }}</td>
-                                <td class="text-center">{{ $booking->user->phone_number ?? 'N/A' }}</td>
-                                <td class="text-center">₹{{ number_format(0, 2) }}</td>
-                                <td class="text-center">₹{{ number_format(0, 2) }}</td>
-                                <td class="text-center">₹{{ number_format(0, 2) }}</td>
+                                <td class="text-center">₹{{ $booking->package_id ? number_format($booking->package->price ?? 0, 2) : number_format(0, 2) }}</td>
+                                <td class="text-center">₹{{ number_format($booking->discount ?? 0, 2) }}</td>
+                                <td class="text-center">₹{{ number_format($booking->total_amount ?? 0, 2) }}</td>
                                 <td class="text-center">
                                     <span class="badge bg-{{ 
                                         $booking->status == 'pending' ? 'warning text-dark' : 
@@ -311,8 +307,15 @@
                                     </span>
                                 </td>
                                 <td class="text-center">{{ date('Y-m-d H:i', strtotime($booking->created_at)) }}</td>
-                                <td class="text-center">{{ $booking->event_id ? 1 : 0 }}{{ $booking->package_id ? ' + 1' : '' }}</td>
-                                <td class="text-center">{{ $booking->status == 'completed' ? date('Y-m-d', strtotime($booking->updated_at)) : '-' }}</td>
+                                <td class="text-center">
+                                    @if($booking->event_id)
+                                        <span class="badge bg-primary">{{ $booking->event->name ?? 'Event' }}</span>
+                                    @endif
+                                    @if($booking->package_id)
+                                        <span class="badge bg-info"> {{ $booking->package->name ?? 'Package' }}</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">{{ $booking->status == 'completed' ? date('Y-m-d', strtotime($booking->event_datetime)) : '-' }}</td>
                                 <td class="text-center">
                                     <a href="{{ route('decorator.bookings.show', $booking->booking_id) }}">
                                         <div class="list-icon-function view-icon">

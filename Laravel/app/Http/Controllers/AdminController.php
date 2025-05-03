@@ -10,45 +10,46 @@ class AdminController extends Controller
 {
     public function index()
     {
-        return view('Admin.index');
-    }
-    
-    public function dashboard()
-    {
-        // Fetch booking statistics from database - counts only to avoid column errors
+        // Fetch booking statistics
         $totalOrders = \App\Models\Booking::count();
-        
-        // Get counts by status
         $pendingOrders = \App\Models\Booking::where('status', 'pending')->count();
         $completedOrders = \App\Models\Booking::where('status', 'completed')->count();
         $cancelledOrders = \App\Models\Booking::where('status', 'cancelled')->count();
-        
-        // Use static amounts temporarily for the dashboard display
-        $totalAmount = 0;
-        $pendingAmount = 0;
-        $completedAmount = 0;
-        $cancelledAmount = 0;
-        
-        // Get month-wise booking data for the chart (simpler version to avoid column errors)
-        $monthlyData = $this->getSimpleMonthlyData();
-        
-        // Get recent bookings for the table
+
+        // Get recent bookings
         $recentBookings = \App\Models\Booking::with(['user', 'event', 'package'])
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
-            
+
+        // Calculate total amounts based on advance paid and commissions
+        $totalAmount = \App\Models\Booking::where('status', '!=', 'cancelled')
+            ->sum('advance_paid');
+        
+        $pendingAmount = \App\Models\Booking::where('status', 'pending')
+            ->sum('advance_paid');
+        
+        $completedAmount = \App\Models\Booking::where('status', 'completed')
+            ->sum('advance_paid');
+        
+        $cancelledAmount = \App\Models\Booking::where('status', 'cancelled')
+            ->sum('advance_paid');
+
+        // Get total admin commissions
+        $adminCommissions = \App\Models\AdminCommission::sum('amount');
+
+        // Get monthly booking data
+        $monthlyData = $this->getMonthlyBookingData();
+
         return view('Admin.index', compact(
-            'totalOrders', 'totalAmount', 'pendingOrders', 'pendingAmount',
-            'completedOrders', 'completedAmount', 'cancelledOrders', 'cancelledAmount',
-            'monthlyData', 'recentBookings'
+            'totalOrders', 'pendingOrders', 'completedOrders', 'cancelledOrders',
+            'totalAmount', 'pendingAmount', 'completedAmount', 'cancelledAmount',
+            'recentBookings',
+            'monthlyData'
         ));
     }
     
-    /**
-     * Get simple monthly booking data for charts (based on counts only)
-     */
-    private function getSimpleMonthlyData()
+    private function getMonthlyBookingData()
     {
         $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         $data = [
@@ -61,8 +62,8 @@ class AdminController extends Controller
         // Current year
         $year = date('Y');
         
-        // Get monthly counts by status
-        $bookings = \App\Models\Booking::selectRaw('MONTH(created_at) as month, status, COUNT(*) as count')
+        // Get monthly counts and amounts by status
+        $bookings = \App\Models\Booking::selectRaw('MONTH(created_at) as month, status, COUNT(*) as count, SUM(advance_paid) as amount')
             ->whereRaw('YEAR(created_at) = ?', [$year])
             ->groupBy('month', 'status')
             ->get();
@@ -70,19 +71,16 @@ class AdminController extends Controller
         foreach ($bookings as $booking) {
             $monthIndex = $booking->month - 1; // Convert to 0-based index
             
-            // Use count * 1000 as a placeholder for amounts to visualize data
-            $value = $booking->count * 1000;
+            // Update counts
+            $data['total'][$monthIndex] += $booking->count;
             
-            // Update total amount for this month
-            $data['total'][$monthIndex] += $value;
-            
-            // Update status-specific amount
+            // Update status-specific counts
             if ($booking->status == 'pending') {
-                $data['pending'][$monthIndex] += $value;
+                $data['pending'][$monthIndex] += $booking->count;
             } elseif ($booking->status == 'completed') {
-                $data['completed'][$monthIndex] += $value;
+                $data['completed'][$monthIndex] += $booking->count;
             } elseif ($booking->status == 'cancelled') {
-                $data['cancelled'][$monthIndex] += $value;
+                $data['cancelled'][$monthIndex] += $booking->count;
             }
         }
         
@@ -92,10 +90,21 @@ class AdminController extends Controller
         ];
     }
 
+    public function dashboard()
+    {
+        return redirect()->route('admin.index');
+    }
+
     public function profile()
     {
         $admin = Auth::guard('admin')->user();
         return view('Admin.profile', compact('admin'));
+    }
+
+    public function editProfile()
+    {
+        $admin = Auth::guard('admin')->user();
+        return view('Admin.profile.edit', compact('admin'));
     }
 
     public function updateProfile(Request $request)
@@ -117,6 +126,6 @@ class AdminController extends Controller
 
         $admin->save();
 
-        return redirect()->route('admin.profile')->with('success', 'Profile updated successfully');
+        return redirect()->route('admin.dashboard')->with('success', 'Profile updated successfully');
     }
 }

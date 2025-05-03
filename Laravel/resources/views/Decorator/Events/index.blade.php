@@ -203,7 +203,7 @@
                         {{-- Image Container --}}
                         <div class="event-image-container"> {{-- Applied new class --}}
                              @if($event->image)
-                                <img src="{{ asset($event->image) }}"
+                                <img src="{{ asset('storage/' . $event->image) }}"
                                      alt="{{ $event->title }}"
                                      loading="lazy"> {{-- Added lazy loading --}}
                             @else

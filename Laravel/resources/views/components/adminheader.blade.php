@@ -1,11 +1,3 @@
-<!-- Admin Sidebar and Header Component -->
-
-                <!-- <div id="preload" class="preload-container">
-    <div class="preloading">
-        <span></span>
-    </div>
-</div> -->
-
 
                 <div class="section-menu-left">
                     <div class="box-logo">
@@ -145,7 +137,7 @@
 
                                 <li class="menu-item">
                                     <a href="{{ route('admin.contacts.index') }}" class="">
-                                        <div class="icon"><i class="icon-envelope"></i></div>
+                                        <div class="icon"><i class="icon-mail"></i></div>
                                         <div class="text">Contact Messages</div>
                                     </a>
                                 </li>
@@ -153,65 +145,205 @@
                         </div>
                     </div>
                 </div>
-                <div class="section-content-right">
+<div class="section-content-right">
     <div class="header-dashboard">
         <div class="wrap">
             <div class="header-left">
-                <a href="{{ route('admin.dashboard') }}">
-                    <img class="" id="logo_header_mobile" alt="Festivity Logo" src="{{ asset('assets/Images/Brand/main_logo_small.png') }}"
-                        data-width="154px" data-height="52px">
-                </a>
                 <div class="button-show-hide">
                     <i class="icon-menu-left"></i>
                 </div>
             </div>
-            <div class="header-right">
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="icon-user mr-2"></i> {{ auth()->user()->name ?? 'Admin' }}
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="dropdown-item">Logout</button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-                            <div class="header-grid">
-                                
-                                <div class="popup-wrap user type-header">
-                                    <div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button"
-                                            id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <span class="header-user wg-user">
-                                                <span class="image">
-                                                    <img src="dashboard/images/avatar/user-1.png" alt="">
-                                                </span>
-                                                <span class="flex flex-column">
-                                                    <span class="body-title mb-2">Festivity</span>
-                                                    <span class="text-tiny">Admin</span>
-                                                </span>
-                                            </span>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end has-content"
-                                            aria-labelledby="dropdownMenuButton3">
-                                            
-                                            <li>
-                                            <form method="POST" action="{{ route('logout') }}" class="d-inline" style="margin-left: 100px;">
-                    @csrf
-                    <button type="submit" class="dropdown-item">
-                        {{ __('Logout') }}
-                    </button>
-                </form>
-                                            </li>
-                                        </ul>
-                                    </div>
+            
+            <div class="header-grid">
+                <div class="user-profile">
+                    <div class="profile-container">
+                        <div class="profile-card">
+                            <div class="profile-avatar">
+                                <div class="avatar-initials">
+                                    {{ getInitials(Auth::guard('admin')->user()->name) }}
                                 </div>
-
                             </div>
+                            <div class="profile-meta">
+                                <span class="profile-name">{{ Auth::guard('admin')->user()->name }}</span>
+                                <span class="profile-role">Admin</span>
+                            </div>
+                            <div class="profile-indicator">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+</div>
+                        <div class="profile-dropdown">
+                            <a href="{{ route('admin.profile.edit') }}" class="dropdown-item">
+                                <i class="fas fa-user-cog"></i> Edit Profile
+                            </a>
+                            <form action="{{ route('admin.logout') }}" method="POST" class="logout-form">
+                                @csrf
+                                <button type="submit" class="dropdown-item">
+                                    <i class="fas fa-sign-out-alt"></i> Log Out
+                                </button>
+                            </form>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+:root {
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --background-light: #f8fafc;
+    --text-dark: #1e293b;
+    --text-light: #64748b;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+    --transition-fast: all 0.2s ease;
+}
+
+.profile-container {
+    position: relative;
+    margin-left: auto;
+}
+
+.profile-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    background: white;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-fast);
+    text-decoration: none;
+    color: var(--text-dark);
+}
+
+.profile-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.profile-avatar {
+    position: relative;
+}
+
+.avatar-initials {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #8b5cf6 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 2.2rem;
+}
+
+.profile-meta {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.4;
+}
+
+.profile-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-dark);
+    line-height: 1.2;
+}
+
+.profile-role {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    margin-top: 0.2rem;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: background 0.2s ease;
+}
+
+.profile-indicator {
+    margin-left: 1rem;
+    color: var(--text-light);
+    transition: transform 0.2s ease;
+}
+
+.profile-card:hover .profile-indicator {
+    color: var(--primary-color);
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 220px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: var(--transition-fast);
+    z-index: 1000;
+}
+
+.profile-container:hover .profile-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: background 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background: var(--background-light);
+}
+
+.dropdown-item i {
+    width: 24px;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .profile-meta {
+        display: none;
+    }
+    
+    .profile-card {
+        padding: 0.5rem;
+    }
+    
+    .profile-indicator {
+        display: none;
+    }
+    
+    .profile-dropdown {
+        width: 200px;
+        right: -10px;
+    }
+}
+</style>

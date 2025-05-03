@@ -94,7 +94,7 @@
                                     <label class="form-label">Current Image</label>
                                     <div class="current-image mb-3">
                                         @if($event->image)
-                                            <img src="{{ asset($event->image) }}" alt="{{ $event->title }}" class="img-fluid rounded">
+                                            <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->title }}" class="img-fluid rounded">
                                         @else
                                             <div class="text-center p-3 bg-light rounded">
                                                 <i class="bi bi-image text-muted"></i> No image available

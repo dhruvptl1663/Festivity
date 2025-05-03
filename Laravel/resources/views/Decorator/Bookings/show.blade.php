@@ -232,7 +232,7 @@
                         </li>
                         <li>
                             <span class="detail-label">Phone:</span>
-                            <span class="detail-value">{{ $booking->user->phone ?? 'N/A' }}</span>
+                            <span class="detail-value">{{ $booking->user->phone_number ?? 'N/A' }}</span>
                         </li>
                         <li>
                             <span class="detail-label">Customer Since:</span>
@@ -258,9 +258,9 @@
                             <span class="detail-label">Type:</span>
                             <span class="detail-value">
                                 @if($booking->event_id)
-                                    {{ $booking->event->title ?? 'N/A' }} <span class="badge bg-light text-dark">Event</span>
+                                    {{ $booking->event->name ?? 'N/A' }} <span class="badge bg-light text-dark">Event</span>
                                 @elseif($booking->package_id)
-                                    {{ $booking->package->title ?? 'N/A' }} <span class="badge bg-info bg-opacity-10 text-info">Package</span>
+                                    {{ $booking->package->name ?? 'N/A' }} <span class="badge bg-info bg-opacity-10 text-info">Package</span>
                                 @else
                                     N/A
                                 @endif
@@ -280,11 +280,11 @@
                         @endif
                         <li>
                             <span class="detail-label">Event Date:</span>
-                            <span class="detail-value">{{ $booking->booking_date ? date('M d, Y', strtotime($booking->booking_date)) : 'Not specified' }}</span>
+                            <span class="detail-value">{{ $booking->event_datetime ? date('M d, Y', strtotime($booking->event_datetime)) : 'Not specified' }}</span>
                         </li>
                         <li>
                             <span class="detail-label">Location:</span>
-                            <span class="detail-value">{{ $booking->location ?? 'Not specified' }}</span>
+                            <span class="detail-value">{{ $booking->event ? ($booking->event->location ?? 'Not specified') : 'Not specified' }}</span>
                         </li>
                     </ul>
                 </div>
@@ -299,16 +299,16 @@
                                 </div>
                                 <div class="card-body" style="padding: 20px;">
                                     <div class="row mb-2">
-                                        <div class="col-md-6"><strong>Original Amount:</strong></div>
-                                        <div class="col-md-6">₹{{ $booking->original_amount ? number_format($booking->original_amount, 2) : ($booking->package ? number_format($booking->package->price, 2) : '0.00') }}</div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-md-6"><strong>Discount:</strong></div>
-                                        <div class="col-md-6">₹{{ number_format($booking->discount_amount ?? 0, 2) }}</div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-md-6"><strong>Final Amount:</strong></div>
-                                        <div class="col-md-6 fs-5 text-primary">₹{{ $booking->final_amount ? number_format($booking->final_amount, 2) : ($booking->package ? number_format($booking->package->price, 2) : '0.00') }}</div>
+                                         <div class="col-md-6"><strong>Package Price:</strong></div>
+                                         <div class="col-md-6">₹{{ $booking->package_id ? number_format($booking->package->price ?? 0, 2) : '0.00' }}</div>
+                                     </div>
+                                     <div class="row mb-2">
+                                         <div class="col-md-6"><strong>Discount:</strong></div>
+                                         <div class="col-md-6">₹{{ number_format($booking->discount ?? 0, 2) }}</div>
+                                     </div>
+                                     <div class="row mb-2">
+                                         <div class="col-md-6"><strong>Total Amount:</strong></div>
+                                         <div class="col-md-6 fs-5 text-primary">₹{{ number_format($booking->total_amount ?? 0, 2) }}</div>
                                     </div>
                                     <hr>
                                     <div class="row">

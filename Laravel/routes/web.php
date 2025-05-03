@@ -86,6 +86,12 @@ Route::prefix('user')->middleware(['auth'])->group(function() {
     Route::get('/orders', [OrdersController::class, 'index'])->name('orders');
 });
 
+// Decorator Routes
+Route::prefix('decorator')->middleware(['auth:decorator'])->group(function() {
+    Route::get('/profile', [DecoratorController::class, 'profile'])->name('decorator.profile');
+    Route::post('/profile/update', [DecoratorController::class, 'updateProfile'])->name('decorator.profile.update');
+});
+
 // Feedback and booking management routes
 Route::post('/feedback/store', [FeedbackController::class, 'store'])->name('feedback.store')->middleware('auth');
 Route::post('/bookings/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel')->middleware('auth');
@@ -154,13 +160,14 @@ Route::get('/admin', function() {
 // Admin routes
 Route::middleware(['web', 'auth:admin'])->prefix('admin')->group(function () {
     // Admin Dashboard
-    Route::get('/', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.index');
+    Route::get('/', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
     
-    // Admin Profile Route
+    // Profile routes
     Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
-    Route::post('/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
+    Route::get('/profile/edit', [AdminController::class, 'editProfile'])->name('admin.profile.edit');
+    Route::put('/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
     
     // Admin Management Routes
     Route::get('/admins', [AdminAdminController::class, 'index'])->name('admin.admins.index');

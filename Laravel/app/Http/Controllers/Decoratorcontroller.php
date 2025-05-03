@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DecoratorController extends Controller
 {
@@ -123,39 +124,114 @@ class DecoratorController extends Controller
     
     public function updateProfile(Request $request)
     {
-        $decorator = Auth::guard('decorator')->user();
-        
-        $request->validate([
-            'decorator_name' => 'required|string|max:100',
-            'email' => 'required|email|max:100|unique:decorators,email,' . $decorator->decorator_id . ',decorator_id',
-            'decorator_icon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-        
-        $decorator->decorator_name = $request->decorator_name;
-        $decorator->email = $request->email;
-        
-        if ($request->hasFile('decorator_icon')) {
-            // Delete old icon if exists
-            if ($decorator->decorator_icon && file_exists(public_path($decorator->decorator_icon))) {
-                unlink(public_path($decorator->decorator_icon));
+        try {
+            $decorator = Auth::guard('decorator')->user();
+            
+            // Create a validation array with only the fields that are present in the request
+            $validationRules = [];
+            $updates = [];
+            
+            // Only validate the fields that are being updated
+            if ($request->has('decorator_name')) {
+                $validationRules['decorator_name'] = 'required|string|max:100';
+                $updates['decorator_name'] = $request->decorator_name;
             }
             
-            $iconFile = $request->file('decorator_icon');
-            $iconName = time() . '.' . $iconFile->getClientOriginalExtension();
-            $iconFile->move(public_path('images/decorators'), $iconName);
-            $decorator->decorator_icon = 'images/decorators/' . $iconName;
+            if ($request->has('email')) {
+                $validationRules['email'] = 'required|email|max:100|unique:decorators,email,' . $decorator->decorator_id . ',decorator_id';
+                $updates['email'] = $request->email;
+            }
+            
+            if ($request->hasFile('decorator_icon')) {
+                $validationRules['decorator_icon'] = 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048';
+            } else {
+                // If no new icon is uploaded, preserve the existing one
+                $updates['decorator_icon'] = $decorator->decorator_icon;
+            }
+            
+            if ($request->has('availability')) {
+                $validationRules['availability'] = 'boolean';
+                $updates['availability'] = $request->boolean('availability');
+            }
+            
+            // Separate password validation to handle it properly
+            $passwordUpdated = false;
+            if ($request->filled('password')) {
+                // Only validate if both password and confirmation are provided
+                if ($request->filled('password_confirmation')) {
+                    // Both fields are present, validate them
+                    if ($request->password !== $request->password_confirmation) {
+                        return redirect()->back()
+                            ->withInput()
+                            ->withErrors(['password' => 'The password confirmation does not match.']);
+                    }
+                    
+                    if (strlen($request->password) < 6) {
+                        return redirect()->back()
+                            ->withInput()
+                            ->withErrors(['password' => 'The password must be at least 6 characters.']);
+                    }
+                    
+                    $passwordUpdated = true;
+                } else {
+                    // Password provided but no confirmation
+                    return redirect()->back()
+                        ->withInput()
+                        ->withErrors(['password_confirmation' => 'The password confirmation field is required.']);
+                }
+            }
+            
+            // Validate the request for other fields
+            $request->validate($validationRules);
+            
+            // Apply the updates
+            foreach ($updates as $field => $value) {
+                $decorator->$field = $value;
+            }
+            
+            // Handle icon upload
+            if ($request->hasFile('decorator_icon')) {
+                try {
+                    $file = $request->file('decorator_icon');
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    
+                    // Create the directory if it doesn't exist
+                    $destinationPath = public_path('/images/decorators');
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0755, true);
+                    }
+                    
+                    // Move the file to the public directory (not storage)
+                    $file->move($destinationPath, $filename);
+                    
+                    // Store the relative path in the database
+                    $decorator->decorator_icon = 'images/decorators/' . $filename;
+                    
+                } catch (\Exception $e) {
+                    \Log::error('File upload error: ' . $e->getMessage());
+                    return redirect()->back()
+                        ->withInput()
+                        ->with('error', 'Failed to upload profile icon: ' . $e->getMessage());
+                }
+            }
+            
+            // Handle password update
+            if ($passwordUpdated) {
+                $decorator->password = Hash::make($request->password);
+            }
+            
+            // Save changes
+            $decorator->save();
+            
+            return redirect()->route('decorator.profile')
+                ->with('success', 'Profile updated successfully');
+            
+        } catch (\Exception $e) {
+            \Log::error('Profile update error: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Failed to update profile: ' . $e->getMessage());
         }
-        
-        if ($request->filled('password')) {
-            $request->validate([
-                'password' => 'required|min:6|confirmed',
-            ]);
-            $decorator->password = Hash::make($request->password);
-        }
-        
-        $decorator->save();
-        
-        return redirect()->route('decorator.profile')->with('success', 'Profile updated successfully');
     }
     
     // Event management methods
@@ -201,16 +277,12 @@ class DecoratorController extends Controller
             $imageFile = $request->file('image');
             $imageName = time() . '.' . $imageFile->getClientOriginalExtension();
             
-            // Make sure the directory exists
-            $directory = public_path('images/events');
-            if (!file_exists($directory)) {
-                mkdir($directory, 0755, true);
-            }
-            
-            $imageFile->move($directory, $imageName);
+            // Store the image in storage/app/public/images/events directory
+            // which will be accessible via the public/storage symbolic link
+            $path = $imageFile->storeAs('images/events', $imageName, 'public');
             
             // Store the path as 'images/events/filename.ext'
-            $event->image = 'images/events/' . $imageName;
+            $event->image = $path;
         }
         
         $event->save();
@@ -253,23 +325,19 @@ class DecoratorController extends Controller
         
         if ($request->hasFile('image')) {
             // Delete old image if exists
-            if ($event->image && file_exists(public_path($event->image))) {
-                unlink(public_path($event->image));
+            if ($event->image) {
+                Storage::disk('public')->delete($event->image);
             }
             
             $imageFile = $request->file('image');
             $imageName = time() . '.' . $imageFile->getClientOriginalExtension();
             
-            // Make sure the directory exists
-            $directory = public_path('images/events');
-            if (!file_exists($directory)) {
-                mkdir($directory, 0755, true);
-            }
-            
-            $imageFile->move($directory, $imageName);
+            // Store the image in storage/app/public/images/events directory
+            // which will be accessible via the public/storage symbolic link
+            $path = $imageFile->storeAs('images/events', $imageName, 'public');
             
             // Store the path as 'images/events/filename.ext'
-            $event->image = 'images/events/' . $imageName;
+            $event->image = $path;
         }
         
         $event->save();
@@ -292,8 +360,8 @@ class DecoratorController extends Controller
         }
         
         // Delete image if exists
-        if ($event->image && file_exists(public_path($event->image))) {
-            unlink(public_path($event->image));
+        if ($event->image) {
+            Storage::disk('public')->delete($event->image);
         }
         
         $event->delete();
@@ -317,6 +385,8 @@ class DecoratorController extends Controller
         $decorator = Auth::guard('decorator')->user();
         $events = Event::where('decorator_id', $decorator->decorator_id)
             ->where('is_live', 1) // Only include live events
+            ->with('category') // Eager load the category relationship
+            ->orderBy('created_at', 'desc') // Order by newest first
             ->get();
         return view('Decorator.Packages.create', compact('events'));
     }
