@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PromoCodeSeeder::class
         ]);
+        
         $this->call([
             CompleteDataSeeder::class,
         ]);
