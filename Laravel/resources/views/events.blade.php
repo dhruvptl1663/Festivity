@@ -24,9 +24,14 @@
 <section class="filter">
 
     <div class="category-container">
-        @foreach($categories as $category)
-            <a href="#" class="category" data-category-id="{{ $category->category_id }}">{{ $category->category_name }}</a>
-        @endforeach
+        <div class="categories-wrapper">
+            @foreach($categories as $index => $category)
+                <a href="#" class="category {{ $index >= 5 ? 'hidden-category' : '' }}" data-category-id="{{ $category->category_id }}">{{ $category->category_name }}</a>
+            @endforeach
+            @if(count($categories) > 5)
+                <button class="more-categories-btn">More +</button>
+            @endif
+        </div>
 
         <div class="menu">
             <div class="item">
@@ -134,14 +139,67 @@
 <x-footer/>
 
 <style>
+    .category-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 0 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        gap: 10px;
+    }
+    
+    .categories-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        flex: 1;
+        margin-right: 20px;
+        position: relative;
+    }
+    
     .category {
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
         padding: 8px 20px;
         border-radius: 30px;
-        margin: 0 5px;
+        display: inline-block;
+        white-space: nowrap;
+        margin: 5px 2px;
+        text-align: center;
+        background-color: rgba(var(--primary-rgb), 0.05);
     }
+    
+    .hidden-category {
+        display: none;
+    }
+    
+    .more-categories-btn {
+        background-color: var(--primary-light);
+        color: var(--dark-gray);
+        border: none;
+        padding: 8px 20px;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        margin: 5px 2px;
+    }
+    
+    .more-categories-btn:hover {
+        background-color: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .more-categories-btn.expanded {
+        background-color: var(--primary);
+        color: white;
+    }
+    
     .category::after {
         content: '';
         position: absolute;
@@ -153,6 +211,7 @@
         transition: all 0.3s ease;
         transform: translateX(-50%);
     }
+    
     .category.selected {
         color: var(--black);
         background-color: transparent;
@@ -161,19 +220,28 @@
         font-weight: 600;
         letter-spacing: 0.3px;
     }
+    
     .category.selected::after {
         width: 80%;
     }
+    
     .category:hover {
         transform: translateY(-2px);
         background-color: var(--primary-light);
         color: var(--dark-gray);
     }
+    
     .category:hover::after {
         width: 40%;
     }
+    
     .category:active {
         transform: scale(0.98);
+    }
+    
+    .menu {
+        min-width: 140px;
+        margin-left: auto;
     }
 
     .rating-badge {
@@ -212,6 +280,32 @@ document.addEventListener('DOMContentLoaded', function() {
     const eventsList = document.querySelector('.w-dyn-items');
     const storageUrl = '{{ asset("storage") }}';
     const arrowIconUrl = '{{ asset("assets/Images/Icons/66a5f61b61b9f0a48636ca35_arrow_outward.svg") }}';
+
+    // More categories button functionality
+    const moreButton = document.querySelector('.more-categories-btn');
+    if (moreButton) {
+        moreButton.addEventListener('click', function() {
+            // Get all categories beyond the first 5
+            const allCategories = document.querySelectorAll('.category');
+            const categoriesToToggle = Array.from(allCategories).filter((_, index) => index >= 5);
+            
+            if (this.textContent === 'More +') {
+                // Show more categories
+                categoriesToToggle.forEach(category => {
+                    category.classList.remove('hidden-category');
+                });
+                this.textContent = 'Less -';
+                this.classList.add('expanded');
+            } else {
+                // Hide categories beyond the first 5
+                categoriesToToggle.forEach(category => {
+                    category.classList.add('hidden-category');
+                });
+                this.textContent = 'More +';
+                this.classList.remove('expanded');
+            }
+        });
+    }
 
     // Star SVG icon
     const starIcon = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

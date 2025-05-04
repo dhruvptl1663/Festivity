@@ -630,10 +630,7 @@ class DecoratorController extends Controller
         $oldStatus = $booking->status;
         $booking->status = $request->status;
         
-        // If status changed to completed, mark it as completed
-        if ($request->status == 'completed') {
-            $booking->is_completed = 1;
-        }
+        // Status is now updated to the requested status - no need for is_completed column
         
         $booking->save();
         

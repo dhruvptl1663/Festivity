@@ -195,16 +195,15 @@
                                         <a href="{{ route('decorator.bookings.show', $booking->booking_id) }}" class="btn btn-sm btn-primary rounded-pill shadow-sm">
                                             <i class="fas fa-eye me-1"></i> View Details
                                         </a>
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-light rounded-pill shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <div class="dropdown action-dropdown">
+                                            <button class="btn btn-sm btn-light rounded-pill shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="fas fa-ellipsis-h me-1"></i> Actions
                                             </button>
-                                            <ul class="dropdown-menu dropdown-menu-end">
+                                            <ul class="dropdown-menu dropdown-menu-end" data-bs-popper="static">
                                                 @if($booking->status != 'pending')
                                                 <li>
                                                     <form action="{{ route('decorator.bookings.status', $booking->booking_id) }}" method="POST" class="status-update-form">
                                                         @csrf
-                                                        @method('PUT')
                                                         <input type="hidden" name="status" value="pending">
                                                         <button type="submit" class="dropdown-item"><i class="fas fa-clock me-2"></i> Mark as Pending</button>
                                                     </form>
@@ -215,7 +214,6 @@
                                                 <li>
                                                     <form action="{{ route('decorator.bookings.status', $booking->booking_id) }}" method="POST" class="status-update-form">
                                                         @csrf
-                                                        @method('PUT')
                                                         <input type="hidden" name="status" value="accepted">
                                                         <button type="submit" class="dropdown-item"><i class="fas fa-check me-2"></i> Mark as Accepted</button>
                                                     </form>
@@ -226,7 +224,6 @@
                                                 <li>
                                                     <form action="{{ route('decorator.bookings.status', $booking->booking_id) }}" method="POST" class="status-update-form">
                                                         @csrf
-                                                        @method('PUT')
                                                         <input type="hidden" name="status" value="rejected">
                                                         <button type="submit" class="dropdown-item"><i class="fas fa-times me-2"></i> Mark as Rejected</button>
                                                     </form>
@@ -237,7 +234,6 @@
                                                 <li>
                                                     <form action="{{ route('decorator.bookings.status', $booking->booking_id) }}" method="POST" class="status-update-form">
                                                         @csrf
-                                                        @method('PUT')
                                                         <input type="hidden" name="status" value="completed">
                                                         <button type="submit" class="dropdown-item"><i class="fas fa-check-circle me-2"></i> Mark as Completed</button>
                                                     </form>
@@ -378,6 +374,41 @@
         background-color: rgba(249, 250, 251, 0.7);
     }
     
+    /* Bootstrap dropdown quick fix */
+    .dropdown-menu {
+        position: absolute !important;
+        left: auto !important;
+        right: 0 !important;
+        z-index: 9999 !important;
+    }
+    
+    /* Fix for stacking contexts */
+    .action-dropdown {
+        position: relative !important;
+    }
+    
+    /* Make the dropdown's parent container have a higher z-index */
+    .order-card-footer {
+        position: relative;
+        z-index: 10 !important; /* Higher than the card itself */
+    }
+    
+    /* Move all dropdowns to top layer */
+    .dropdown-menu[data-bs-popper="static"] {
+        transform: none !important;
+    }
+    
+    /* Create a higher stacking context for the entire page */
+    body {
+        overflow-x: hidden;
+    }
+    
+    .order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1);
+        border-bottom: 3px solid #3b82f6;
+    }
+    
     /* Badge Styling */
     .badge {
         font-size: 0.75rem;
@@ -411,13 +442,58 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Make sure Bootstrap's dropdown is properly initialized
-        if (typeof bootstrap !== 'undefined') {
-            const dropdownElements = document.querySelectorAll('.dropdown-toggle');
-            dropdownElements.forEach(element => {
-                new bootstrap.Dropdown(element);
+        // Aggressive fix for dropdown menus that appear under cards
+        // This works by actually detaching the dropdown menu and appending it to the body
+        // when the dropdown is opened, then moving it back when closed
+        const dropdownToggles = document.querySelectorAll('.action-dropdown .dropdown-toggle');
+        
+        dropdownToggles.forEach(function(toggle) {
+            toggle.addEventListener('click', function() {
+                const dropdown = this.nextElementSibling;
+                if (!dropdown) return;
+                
+                // Store original parent for later
+                const originalParent = dropdown.parentNode;
+                const originalNextSibling = dropdown.nextSibling;
+                
+                // Save position information
+                const rect = toggle.getBoundingClientRect();
+                const bodyRect = document.body.getBoundingClientRect();
+                
+                // Move dropdown to body to avoid z-index issues
+                document.body.appendChild(dropdown);
+                
+                // Set absolute position related to body
+                dropdown.style.position = 'absolute';
+                dropdown.style.top = (rect.bottom + window.scrollY) + 'px';
+                dropdown.style.left = (rect.right - dropdown.offsetWidth + window.scrollX) + 'px';
+                dropdown.style.zIndex = '9999';
+                
+                // Show dropdown
+                dropdown.classList.add('show');
+                
+                // Function to handle click outside
+                const handleOutsideClick = function(e) {
+                    if (!dropdown.contains(e.target) && e.target !== toggle) {
+                        dropdown.classList.remove('show');
+                        
+                        // Move dropdown back to original parent
+                        if (originalNextSibling) {
+                            originalParent.insertBefore(dropdown, originalNextSibling);
+                        } else {
+                            originalParent.appendChild(dropdown);
+                        }
+                        
+                        document.removeEventListener('click', handleOutsideClick);
+                    }
+                };
+                
+                // Add click event with slight delay to allow current click to finish
+                setTimeout(() => {
+                    document.addEventListener('click', handleOutsideClick);
+                }, 0);
             });
-        }
+        });
         
         // Filter functionality
         const filterButtons = document.querySelectorAll('.btn-filter');

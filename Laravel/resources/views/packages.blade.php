@@ -25,17 +25,22 @@
     <div class="line"></div>
 
     <div class="category-container">
-            @foreach($eventCounts as $eventCount)
-                <a class="category {{ request('event_count') == $eventCount['id'] ? 'selected' : '' }}" href="{{ route('packages.index', ['event_count' => $eventCount['id']]) }}" class="event-filter-link {{ request('event_count') == $eventCount['id'] ? 'active' : '' }}">
+        <div class="categories-wrapper">
+            @foreach($eventCounts as $index => $eventCount)
+                <a class="category {{ request('event_count') == $eventCount['id'] ? 'selected' : '' }} {{ $index >= 5 ? 'hidden-category' : '' }}" href="{{ route('packages.index', ['event_count' => $eventCount['id']]) }}">
                     {{ $eventCount['name'] }}
                 </a>
             @endforeach
+            @if(count($eventCounts) > 5)
+                <button class="more-categories-btn">More +</button>
+            @endif
+        </div>
 
-            <div class="menu">
-        <div class="item">
-            <a href="#" class="link">
-                <span>Sort - Featured</span>
-                <svg viewBox="0 0 360 360" xml:space="preserve">
+        <div class="menu">
+            <div class="item">
+                <a href="#" class="link">
+                    <span>Sort - Featured</span>
+                    <svg viewBox="0 0 360 360" xml:space="preserve">
                         <g id="SVGRepo_iconCarrier">
                             <path id="XMLID_225_" d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393
                             c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393
@@ -43,23 +48,23 @@
                             </path>
                         </g>
                     </svg>
-            </a>
-            <div class="submenu">
-                <div class="submenu-item">
-                    <a href="{{ route('packages.index', ['sort' => 'price_high']) }}" class="submenu-link {{ request('sort') == 'price_high' ? 'active' : '' }}">Price: High to Low</a>
-                </div>
-                <div class="submenu-item">
-                    <a href="{{ route('packages.index', ['sort' => 'price_low']) }}" class="submenu-link {{ request('sort') == 'price_low' ? 'active' : '' }}">Price: Low to High</a>
-                </div>
-                <div class="submenu-item">
-                    <a href="{{ route('packages.index', ['sort' => 'newest']) }}" class="submenu-link {{ request('sort') == 'newest' ? 'active' : '' }}">Newest</a>
-                </div>
-                <div class="submenu-item">
-                    <a href="{{ route('packages.index', ['sort' => 'rating']) }}" class="submenu-link {{ request('sort') == 'rating' ? 'active' : '' }}">Customer Review</a>
+                </a>
+                <div class="submenu">
+                    <div class="submenu-item">
+                        <a href="{{ route('packages.index', ['sort' => 'price_high']) }}" class="submenu-link {{ request('sort') == 'price_high' ? 'active' : '' }}">Price: High to Low</a>
+                    </div>
+                    <div class="submenu-item">
+                        <a href="{{ route('packages.index', ['sort' => 'price_low']) }}" class="submenu-link {{ request('sort') == 'price_low' ? 'active' : '' }}">Price: Low to High</a>
+                    </div>
+                    <div class="submenu-item">
+                        <a href="{{ route('packages.index', ['sort' => 'newest']) }}" class="submenu-link {{ request('sort') == 'newest' ? 'active' : '' }}">Newest</a>
+                    </div>
+                    <div class="submenu-item">
+                        <a href="{{ route('packages.index', ['sort' => 'rating']) }}" class="submenu-link {{ request('sort') == 'rating' ? 'active' : '' }}">Customer Review</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </section>
 <!-- Filter Ends -->
@@ -144,6 +149,32 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // More categories button functionality
+    const moreButton = document.querySelector('.more-categories-btn');
+    if (moreButton) {
+        moreButton.addEventListener('click', function() {
+            // Get all categories beyond the first 5
+            const allCategories = document.querySelectorAll('.category');
+            const categoriesToToggle = Array.from(allCategories).filter((_, index) => index >= 5);
+            
+            if (this.textContent === 'More +') {
+                // Show more categories
+                categoriesToToggle.forEach(category => {
+                    category.classList.remove('hidden-category');
+                });
+                this.textContent = 'Less -';
+                this.classList.add('expanded');
+            } else {
+                // Hide categories beyond the first 5
+                categoriesToToggle.forEach(category => {
+                    category.classList.add('hidden-category');
+                });
+                this.textContent = 'More +';
+                this.classList.remove('expanded');
+            }
+        });
+    }
+
     const swipers = document.querySelectorAll('.package-swiper');
     swipers.forEach(swiperElement => {
         new Swiper(swiperElement, {
@@ -183,6 +214,84 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
+/* Category styling */
+.category-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 0 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 10px;
+}
+
+.categories-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex: 1;
+    margin-right: 20px;
+}
+
+.category {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    padding: 8px 20px;
+    border-radius: 30px;
+    display: inline-block;
+    white-space: nowrap;
+    margin: 5px 2px;
+    text-align: center;
+    background-color: rgba(var(--primary-rgb), 0.05);
+}
+
+.category::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.category.selected {
+    color: var(--black);
+    background-color: transparent;
+    transform: scale(1.05);
+    border: 1.5px solid var(--primary);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.category.selected::after {
+    width: 80%;
+}
+
+.category:hover {
+    transform: translateY(-2px);
+    background-color: var(--primary-light);
+    color: var(--dark-gray);
+}
+
+.category:hover::after {
+    width: 40%;
+}
+
+.category:active {
+    transform: scale(0.98);
+}
+
+.menu {
+    min-width: 140px;
+    margin-left: auto;
+}
+
+/* Swiper styling */
 .swiper {
     width: 100%;
     height: 100%;
