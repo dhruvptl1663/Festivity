@@ -88,7 +88,9 @@
             >
         </div>
 
-        <button style="
+        <button 
+            onclick="addToCartAndRedirect({{ $event->event_id }}, 'event')"
+            style="
             width: 300.56px;
             height: 57.38px;
             background: #DBFFDE;
@@ -376,6 +378,47 @@ function toggleCart(icon) {
     .catch(error => {
         console.error('Cart toggle error:', error);
         showAlert(error.message || 'Failed to update cart. Please try again.', false);
+    });
+}
+
+// Function to add to cart and redirect to cart page
+function addToCartAndRedirect(itemId, itemType) {
+    if (!{{ auth()->check() ? 'true' : 'false' }}) {
+        window.location.href = "{{ route('login') }}";
+        return;
+    }
+
+    const payload = {};
+    
+    if (itemType === 'event') {
+        payload.event_id = itemId;
+    } else if (itemType === 'package') {
+        payload.package_id = itemId;
+    }
+
+    fetch("{{ route('cart.toggle') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.message || 'Server error occurred.');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Redirect to cart page regardless of response (as long as it's successful)
+        window.location.href = "{{ route('cart') }}";
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert(error.message || 'Error adding item to cart', false);
     });
 }
 
