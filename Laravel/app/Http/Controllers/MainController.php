@@ -6,14 +6,28 @@ use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Bookmark;
 use App\Models\Cart;
-use App\Models\Contact; // Add this line
+use App\Models\Contact;
+use App\Models\Package;
+use App\Models\Booking;
 
 class MainController extends Controller
 {
     //
     public function index()
     {
-        return view('index');
+        // Get the 2 most booked events
+        $popularEvents = Event::withCount('bookings')
+            ->orderBy('bookings_count', 'desc')
+            ->limit(2)
+            ->get();
+            
+        // Get the 2 most booked packages
+        $popularPackages = Package::withCount('bookings')
+            ->orderBy('bookings_count', 'desc')
+            ->limit(2)
+            ->get();
+            
+        return view('index', compact('popularEvents', 'popularPackages'));
     }
 
     public function events()

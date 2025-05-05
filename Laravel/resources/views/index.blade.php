@@ -223,68 +223,53 @@
             <div class="space-4rem"></div>
             <div class="slide-up-animation w-dyn-list">
                 <div role="list" class="posts-flex w-dyn-items">
-                    <div role="listitem" class="w-dyn-item"><a href="post/guide-to-keeping-your-home-spotless.html"
-                            class="posts-card w-inline-block">
-                            <div class="latest-image-wrapper"><img width="Auto" height="Auto" alt=""
-                                    src="assets/Images/HomePage/wedding_showcase.png" loading="eager"
+                    @foreach($popularEvents as $event)
+                    <div role="listitem" class="w-dyn-item">
+                        <a href="{{ route('eventdetails.show', $event->event_id) }}" class="posts-card w-inline-block">
+                            <div class="latest-image-wrapper">
+                                @if($event->rating)
+                                    <div class="rating-badge">
+                                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                        </svg>
+                                        {{ number_format($event->rating, 1) }}
+                                    </div>
+                                @endif
+                                <img width="Auto" height="Auto" alt="{{ $event->title }}"
+                                    src="{{ asset('storage/' . $event->image) }}" loading="eager"
                                     sizes="(max-width: 479px) 80vw, (max-width: 767px) 432px, (max-width: 991px) 540.796875px, 38vw"
-                                    srcset="assets/Images/HomePage/wedding_showcase.png 500w, assets/Images/HomePage/wedding_showcase.png 800w, assets/Images/HomePage/wedding_showcase.png 1080w, assets/Images/HomePage/wedding_showcase.png 1152w"
+                                    srcset="{{ asset('storage/' . $event->image) }} 500w, {{ asset('storage/' . $event->image) }} 800w, {{ asset('storage/' . $event->image) }} 1080w, {{ asset('storage/' . $event->image) }} 1152w"
                                     class="image-absolute">
-                                <div class="posts-arrow-wrapper"><img width="24" height="24" alt=""
+                                <div class="posts-arrow-wrapper">
+                                    <img width="24" height="24" alt=""
                                         src="assets/Images/Icons/66a5f61b61b9f0a48636ca35_arrow_outward.svg"
-                                        loading="eager" class="arrow"></div>
+                                        loading="eager" class="arrow">
+                                </div>
                             </div>
                             <div class="latest-posts-details-flex">
                                 <div class="posts-category-date-flex">
                                     <div class="badge-post">
-                                        <h5 class="no-wrap font-black">Baby Shower</h5>
+                                        <h5 class="no-wrap font-black">{{ $event->category->category_name ?? 'Event' }}</h5>
                                     </div>
-                                    <h5 class="no-wrap">Rs. 3500</h5>
+                                    <h5 class="no-wrap">₹{{ number_format($event->price, 0) }}</h5>
                                 </div>
                                 <div class="horizontal-line"></div>
                                 <div class="posts-avatar-flex">
-                                    <div class="avatar-wrapper"><img width="Auto" height="Auto" alt=""
-                                            src="assets/Images/Other/66e59195adf8275599ab7092_Team2.jpg"
-                                            loading="eager"></div>
+                                    <div class="avatar-wrapper">
+                                        <img width="Auto" height="Auto" alt=""
+                                            src="{{ asset('storage/' . $event->decorator->decorator_icon) }}"
+                                            loading="eager">
+                                    </div>
                                     <div class="avatar-text-block">
-                                        <h5 class="no-wrap">Alex Wayne</h5>
+                                        <h5 class="no-wrap">{{ $event->decorator->decorator_name ?? 'Unknown Decorator' }}</h5>
                                         <div class="avatar-line"></div>
                                     </div>
                                 </div>
                             </div>
-                            <h4>Baby Shower Bliss: Make Memories Together!</h4>
-                        </a></div>
-                    <div role="listitem" class="w-dyn-item"><a href="post/keep-your-office-clean-for-productivity.html"
-                            class="posts-card w-inline-block">
-                            <div class="latest-image-wrapper"><img width="Auto" height="Auto" alt=""
-                                    src="event img\Mehandi\m1.jpg" loading="eager"
-                                    sizes="(max-width: 479px) 80vw, (max-width: 767px) 432px, (max-width: 991px) 540.796875px, 38vw"
-                                    srcset="assets/Images/Other/6706104d4f29e916e4cae39b_office room.webp 500w, assets/Images/Other/6706104d4f29e916e4cae39b_office room.webp 800w, assets/Images/Other/6706104d4f29e916e4cae39b_office room.webp 1080w, assets/Images/Other/6706104d4f29e916e4cae39b_office room.webp 1440w"
-                                    class="image-absolute">
-                                <div class="posts-arrow-wrapper"><img width="24" height="24" alt=""
-                                        src="assets/Images/Icons/66a5f61b61b9f0a48636ca35_arrow_outward.svg"
-                                        loading="eager" class="arrow"></div>
-                            </div>
-                            <div class="latest-posts-details-flex">
-                                <div class="posts-category-date-flex">
-                                    <div class="badge-post">
-                                        <h5 class="no-wrap font-black">Mehandi</h5>
-                                    </div>
-                                    <h5 class="no-wrap">Rs. 3000</h5>
-                                </div>
-                                <div class="horizontal-line"></div> 
-                                <div class="posts-avatar-flex">
-                                    <div class="avatar-wrapper"><img width="Auto" height="Auto" alt=""
-                                            src="assets/Images/Other/6706104d4f29e916e4cae2da_Team3.jpg"
-                                            loading="eager"></div>
-                                    <div class="avatar-text-block">
-                                        <h5 class="no-wrap">Sara Smith</h5>
-                                        <div class="avatar-line"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <h4>Mehandi Bliss:Dulhan Ki Mehndi Diary</h4>
-                        </a></div>
+                            <h4>{{ $event->title }}</h4>
+                        </a>
+                    </div>
+                    @endforeach
                 </div>
             </div>
             <div class="space-4rem"></div>
@@ -312,68 +297,61 @@
             <div class="space-4rem"></div>
             <div class="slide-up-animation w-dyn-list">
                 <div role="list" class="posts-flex w-dyn-items">
-                    <div role="listitem" class="w-dyn-item"><a href="post/guide-to-keeping-your-home-spotless.html"
-                            class="posts-card w-inline-block">
-                            <div class="latest-image-wrapper"><img width="Auto" height="Auto" alt=""
-                                    src="assets/Images/HomePage/wedding_showcase.png" loading="eager"
-                                    sizes="(max-width: 479px) 80vw, (max-width: 767px) 432px, (max-width: 991px) 540.796875px, 38vw"
-                                    srcset="assets/Images/HomePage/wedding_showcase.png 500w, assets/Images/HomePage/wedding_showcase.png 800w, assets/Images/HomePage/wedding_showcase.png 1080w, assets/Images/HomePage/wedding_showcase.png 1152w"
-                                    class="image-absolute">
-                                <div class="posts-arrow-wrapper"><img width="24" height="24" alt=""
-                                        src="assets/Images/Icons/66a5f61b61b9f0a48636ca35_arrow_outward.svg"
-                                        loading="eager" class="arrow"></div>
+                    @foreach($popularPackages as $package)
+                    <div role="listitem" class="w-dyn-item">
+                        <a href="{{ route('packagedetails', $package->package_id) }}" class="posts-card w-inline-block">
+                            <div class="latest-image-wrapper">
+                                @if($package->rating)
+                                    <div class="rating-badge">
+                                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                        </svg>
+                                        {{ number_format($package->rating, 1) }}
+                                    </div>
+                                @endif
+                                <div class="swiper package-swiper">
+                                    <div class="swiper-wrapper">
+                                        @foreach($package->packageEvents as $packageEvent)
+                                            @if($packageEvent->event->image)
+                                                <div class="swiper-slide">
+                                                    <img width="Auto" height="Auto"
+                                                        alt="{{ $packageEvent->event->title }}"
+                                                        src="{{ asset('storage/' . $packageEvent->event->image) }}"
+                                                        loading="eager"
+                                                        class="image-absolute">
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                    <div class="swiper-pagination"></div>
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-button-next"></div>
+                                </div>
                             </div>
                             <div class="latest-posts-details-flex">
                                 <div class="posts-category-date-flex">
                                     <div class="badge-post">
-                                        <h5 class="no-wrap font-black">Baby Shower</h5>
+                                        <h5 class="no-wrap font-black">{{ $package->packageEvents->count() }} Events</h5>
                                     </div>
-                                    <h5 class="no-wrap">Rs. 3500</h5>
+                                    <h5 class="no-wrap">₹{{ number_format($package->price, 0) }}</h5>
                                 </div>
                                 <div class="horizontal-line"></div>
                                 <div class="posts-avatar-flex">
-                                    <div class="avatar-wrapper"><img width="Auto" height="Auto" alt=""
-                                            src="assets/Images/Other/66e59195adf8275599ab7092_Team2.jpg"
-                                            loading="eager"></div>
+                                    <div class="avatar-wrapper">
+                                        <img width="Auto" height="Auto" alt=""
+                                            src="{{ asset('storage/' . $package->decorator->decorator_icon) }}"
+                                            loading="eager">
+                                    </div>
                                     <div class="avatar-text-block">
-                                        <h5 class="no-wrap">Alex Wayne</h5>
+                                        <h5 class="no-wrap">{{ $package->decorator->decorator_name ?? 'Unknown Decorator' }}</h5>
                                         <div class="avatar-line"></div>
                                     </div>
                                 </div>
                             </div>
-                            <h4>Baby Shower Bliss: Make Memories Together!</h4>
-                        </a></div>
-                    <div role="listitem" class="w-dyn-item"><a href="post/keep-your-office-clean-for-productivity.html"
-                            class="posts-card w-inline-block">
-                            <div class="latest-image-wrapper"><img width="Auto" height="Auto" alt=""
-                                    src="event img/haldi/h1.jpg" loading="eager"
-                                    sizes="(max-width: 479px) 80vw, (max-width: 767px) 432px, (max-width: 991px) 540.796875px, 38vw"
-                                    srcset="assets/Images/Other/6706104d4f29e916e4cae39b_office room.webp 500w, assets/Images/Other/6706104d4f29e916e4cae39b_office room.webp 800w, assets/Images/Other/6706104d4f29e916e4cae39b_office room.webp 1080w, assets/Images/Other/6706104d4f29e916e4cae39b_office room.webp 1440w"
-                                    class="image-absolute">
-                                <div class="posts-arrow-wrapper"><img width="24" height="24" alt=""
-                                        src="assets/Images/Icons/66a5f61b61b9f0a48636ca35_arrow_outward.svg"
-                                        loading="eager" class="arrow"></div>
-                            </div>
-                            <div class="latest-posts-details-flex">
-                                <div class="posts-category-date-flex">
-                                    <div class="badge-post">
-                                        <h5 class="no-wrap font-black">Haldi</h5>
-                                    </div>
-                                    <h5 class="no-wrap"> RS. 4000 </h5>
-                                </div>
-                                <div class="horizontal-line"></div>
-                                <div class="posts-avatar-flex">
-                                    <div class="avatar-wrapper"><img width="Auto" height="Auto" alt=""
-                                            src="assets/Images/Other/6706104d4f29e916e4cae2da_Team3.jpg"
-                                            loading="eager"></div>
-                                    <div class="avatar-text-block">
-                                        <h5 class="no-wrap">Sara Smith</h5>
-                                        <div class="avatar-line"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <h4>Pehli Rasam, Pehli Muskurahat !</h4>
-                        </a></div>
+                            <h4>{{ $package->title }}</h4>
+                        </a>
+                    </div>
+                    @endforeach
                 </div>
             </div>
             <div class="space-4rem"></div>
@@ -408,12 +386,10 @@
                                             src="assets/Images/Other/6706104d4f29e916e4cae488_img_3P5u.webp"
                                             loading="eager" class="reviews-image-circle">
                                         <div class="reviews-block">
-                                            <p>“Clean Office, Happy Team! We’ve received nothing but compliments from
-                                                both staff and clients on how clean and organized our office. It’s made
-                                                such a difference in our workplace morale.”</p>
+                                            <p>"The wedding decoration was absolutely breathtaking! Every detail was perfect and exactly what we had envisioned. Our guests couldn't stop complimenting how beautiful everything looked. Festivity made our special day truly magical!"</p>
                                             <div class="reviews-name-block">
-                                                <h5>John DOE</h5>
-                                                <h6>Tech Global Co.</h6>
+                                                <h5>Arjun Sharma</h5>
+                                                <h6>Wedding Event</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -424,12 +400,10 @@
                                             src="assets/Images/Other/6706104d4f29e916e4cae486_img_KsHd.webp"
                                             loading="eager" class="reviews-image-circle">
                                         <div class="reviews-block">
-                                            <p>“Stress-Free and Sparkling Clean! I have never been more impressed with a
-                                                cleaning service! It feels amazing to come home to a clean house without
-                                                having to worry about it!”</p>
+                                            <p>"The mehendi ceremony decorations exceeded my expectations! The vibrant colors and intricate details created such a festive atmosphere. The decorator took care of everything, allowing me to enjoy my pre-wedding celebrations without worry!"</p>
                                             <div class="reviews-name-block">
-                                                <h5>jane peterson</h5>
-                                                <h6>home owner</h6>
+                                                <h5>Priya Patel</h5>
+                                                <h6>Mehendi Ceremony</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -440,12 +414,10 @@
                                             src="assets/Images/Other/6706104d4f29e916e4cae484_img_PeBB.webp"
                                             loading="eager" class="reviews-image-circle">
                                         <div class="reviews-block">
-                                            <p>“Professional and Detailed! Our office has never looked better! The
-                                                cleaners are punctual, and their attention to high-traffic areas is
-                                                exactly what we needed. Great value and service!”</p>
+                                            <p>"We booked the complete wedding package and couldn't be happier! From the sangeet night to the reception, every event was perfectly coordinated. The decorators were professional, punctual, and their attention to detail made our celebrations truly memorable!"</p>
                                             <div class="reviews-name-block">
-                                                <h5>Carlo martinez</h5>
-                                                <h6>Innovate Group</h6>
+                                                <h5>Vikram Malhotra</h5>
+                                                <h6>Wedding Package</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -457,49 +429,43 @@
                                 <div class="space-4rem"></div>
                                 <div data-w-id="ed6b4b2d-b27d-77e9-573d-2eab35824b4b" class="reviews-listing-wrapper">
                                     <div class="reviews-card"><img sizes="(max-width: 991px) 96px, 7vw"
-                                            srcset="assets/Images/Other/6706104d4f29e916e4cae482_img_1g1assets/Images/Other/6706104d4f29e916e4cae482_img_1g1assets/Images/Other/6706104d4f29e916e4cae482_img_1g1nassets/Images/Other/6706104d4f29e916e4cae482_img_1g1n.webp/6706104d4f29e916e4cae482_img_1g1n.webp 1440w"
+                                            srcset="assets/Images/Other/6706104d4f29e916e4cae482_img_1g1n.webp 500w, assets/Images/Other/6706104d4f29e916e4cae482_img_1g1n.webp 800w, assets/Images/Other/6706104d4f29e916e4cae482_img_1g1n.webp 1080w, assets/Images/Other/6706104d4f29e916e4cae482_img_1g1n.webp 1440w"
                                             alt="woman wearing eyeglass"
                                             src="assets/Images/Other/6706104d4f29e916e4cae482_img_1g1n.webp"
                                             loading="eager" class="reviews-image-circle">
                                         <div class="reviews-block">
-                                            <p>“Impeccable Service! We’ve been using this cleaning service for our
-                                                office for over a year now, and the results are always impressive.
-                                                Highly recommend!”</p>
+                                            <p>"Our baby shower was a dream come true! The pastel theme decorations and attention to small details made the event so special. The decorator understood exactly what we wanted and delivered beyond our expectations. Highly recommend Festivity!"</p>
                                             <div>
-                                                <h5>jane roberts</h5>
-                                                <h6>brightech co.</h6>
+                                                <h5>Neha Reddy</h5>
+                                                <h6>Baby Shower</h6>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="reviews-card background-secondary"><img
                                             sizes="(max-width: 991px) 96px, 7vw"
-                                            srcset="assets/Images/Other/6706104d4f29e916e4cae481_img_ORsassets/Images/Other/6706104d4f29e916e4cae481_img_ORsassets/Images/Other/6706104d4f29e916e4cae481_img_ORsOassets/Images/Other/6706104d4f29e916e4cae481_img_ORsO.webp/6706104d4f29e916e4cae481_img_ORsO.webp 1440w"
+                                            srcset="assets/Images/Other/6706104d4f29e916e4cae481_img_ORsO.webp 500w, assets/Images/Other/6706104d4f29e916e4cae481_img_ORsO.webp 800w, assets/Images/Other/6706104d4f29e916e4cae481_img_ORsO.webp 1080w, assets/Images/Other/6706104d4f29e916e4cae481_img_ORsO.webp 1440w"
                                             alt="man wearing eyeglass"
                                             src="assets/Images/Other/6706104d4f29e916e4cae481_img_ORsO.webp"
                                             loading="eager" class="reviews-image-circle">
                                         <div class="reviews-block">
-                                            <p>&quot;A Life-Changer for Our Home! As a busy dad, keeping up with the
-                                                housework can be overwhelming, but this cleaning service has been a
-                                                lifesaver and the team is so friendly and respectful.”</p>
+                                            <p>"As a busy professional, planning my daughter's birthday party was overwhelming. Festivity took care of everything! The princess-themed decorations were stunning, and the event setup was flawless. My daughter felt like royalty, and guests were amazed!"</p>
                                             <div>
-                                                <h5>mark harrison</h5>
-                                                <h6>home owner</h6>
+                                                <h5>Rajesh Khanna</h5>
+                                                <h6>Birthday Party</h6>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="reviews-card background-primary"><img
                                             sizes="(max-width: 991px) 96px, 7vw"
-                                            srcset="assets/Images/Other/6706104d4f29e916e4cae483_img_RTHassets/Images/Other/6706104d4f29e916e4cae483_img_RTHassets/Images/Other/6706104d4f29e916e4cae483_img_RTH7assets/Images/Other/6706104d4f29e916e4cae483_img_RTH7.webp/6706104d4f29e916e4cae483_img_RTH7.webp 1440w"
+                                            srcset="assets/Images/Other/6706104d4f29e916e4cae483_img_RTH7.webp 500w, assets/Images/Other/6706104d4f29e916e4cae483_img_RTH7.webp 800w, assets/Images/Other/6706104d4f29e916e4cae483_img_RTH7.webp 1080w, assets/Images/Other/6706104d4f29e916e4cae483_img_RTH7.webp 1440w"
                                             alt="woman wearing eyeglass"
                                             src="assets/Images/Other/6706104d4f29e916e4cae483_img_RTH7.webp"
                                             loading="eager" class="reviews-image-circle">
                                         <div class="reviews-block">
-                                            <p>“Thorough and Trustworthy! I was hesitant to hire a cleaning service, but
-                                                after seeing the results, I’m so glad I did. They take care of my house
-                                                with such care.”</p>
+                                            <p>"We were nervous about organizing our Haldi ceremony remotely, but Festivity made it stress-free! The decorators were prompt in communication, flexible with changes, and created a vibrant traditional setup that perfectly captured the essence of our celebration."</p>
                                             <div>
-                                                <h5>Rachel Davis</h5>
-                                                <h6>home owner</h6>
+                                                <h5>Anjali Desai</h5>
+                                                <h6>Haldi Ceremony</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -552,7 +518,7 @@
                     <div class="dropdown-answer">
                         <p> Booking an event is simple! Browse our event categories, select your preferred package, 
                             fill in the required details, and proceed with payment. 
-                            You’ll receive a confirmation email once your booking is successful.</p>
+                            You'll receive a confirmation email once your booking is successful.</p>
                     </div>
                     <div class="space-1rem"></div>
                 </div>
@@ -629,8 +595,128 @@
                     </div>
                     <div class="space-1rem"></div>
                     <div class="dropdown-answer">
-                        <p></p> Absolutely! We provide professional event managers to ensure your occasion runs smoothly.
-                         You can add this service during your booking or request it later.
+                        <p>Absolutely! We provide professional event managers to ensure your occasion runs smoothly.
+                         You can add this service during your booking or request it later.</p>
+                    </div>
+                    <div class="space-1rem"></div>
+                </div>
+            </div>
+            <div class="faq-dropdown">
+                <div data-w-id="bcae8680-5e02-f900-6795-af73bd37b600" class="dropdown-toggle">
+                    <div class="space-1rem"></div>
+                    <div class="faq-flex">
+                        <h4 class="faq-question">How does the decorator rating system work?</h4>
+                        <div data-is-ix2-target="1" class="faq-icon"
+                            data-w-id="bcae8680-5e02-f900-6795-af73bd37b601" data-animation-type="lottie"
+                            data-src="https://cdn.prod.website-files.com/66e57311172b9a6012d4d709/66e57311172b9a6012d4d789_FAQ%20icon.json"
+                            data-loop="0" data-direction="1" data-autoplay="0" data-renderer="svg"
+                            data-default-duration="0.5" data-duration="0" data-ix2-initial-state="0"></div>
+                    </div>
+                    <div class="space-1rem"></div>
+                    <div class="dropdown-answer">
+                        <p>After your event is completed, you'll be prompted to leave feedback and a star rating for your decorator. 
+                           These ratings help maintain quality service standards and assist other users in making informed choices 
+                           when selecting decorators for their events.</p>
+                    </div>
+                    <div class="space-1rem"></div>
+                </div>
+            </div>
+            <div class="faq-dropdown">
+                <div data-w-id="bcae8680-5e02-f900-6795-af73bd37b602" class="dropdown-toggle">
+                    <div class="space-1rem"></div>
+                    <div class="faq-flex">
+                        <h4 class="faq-question">Can I use discount coupons for my bookings?</h4>
+                        <div data-is-ix2-target="1" class="faq-icon"
+                            data-w-id="bcae8680-5e02-f900-6795-af73bd37b603" data-animation-type="lottie"
+                            data-src="https://cdn.prod.website-files.com/66e57311172b9a6012d4d709/66e57311172b9a6012d4d789_FAQ%20icon.json"
+                            data-loop="0" data-direction="1" data-autoplay="0" data-renderer="svg"
+                            data-default-duration="0.5" data-duration="0" data-ix2-initial-state="0"></div>
+                    </div>
+                    <div class="space-1rem"></div>
+                    <div class="dropdown-answer">
+                        <p>Yes! We regularly offer promotional coupons for various events and packages. 
+                           You can apply these coupons during checkout to receive discounts on your bookings. 
+                           Keep an eye on your notifications or email for exclusive coupon offers.</p>
+                    </div>
+                    <div class="space-1rem"></div>
+                </div>
+            </div>
+            <div class="faq-dropdown">
+                <div data-w-id="bcae8680-5e02-f900-6795-af73bd37b604" class="dropdown-toggle">
+                    <div class="space-1rem"></div>
+                    <div class="faq-flex">
+                        <h4 class="faq-question">How do I track my booking status?</h4>
+                        <div data-is-ix2-target="1" class="faq-icon"
+                            data-w-id="bcae8680-5e02-f900-6795-af73bd37b605" data-animation-type="lottie"
+                            data-src="https://cdn.prod.website-files.com/66e57311172b9a6012d4d709/66e57311172b9a6012d4d789_FAQ%20icon.json"
+                            data-loop="0" data-direction="1" data-autoplay="0" data-renderer="svg"
+                            data-default-duration="0.5" data-duration="0" data-ix2-initial-state="0"></div>
+                    </div>
+                    <div class="space-1rem"></div>
+                    <div class="dropdown-answer">
+                        <p>You can track your booking status by logging into your account and visiting the 'My Orders' page. 
+                           Each booking displays its current status (pending, accepted, completed, rejected, or cancelled) 
+                           along with all relevant details. You'll also receive notifications when your booking status changes.</p>
+                    </div>
+                    <div class="space-1rem"></div>
+                </div>
+            </div>
+            <div class="faq-dropdown">
+                <div data-w-id="bcae8680-5e02-f900-6795-af73bd37b606" class="dropdown-toggle">
+                    <div class="space-1rem"></div>
+                    <div class="faq-flex">
+                        <h4 class="faq-question">What is the difference between events and packages?</h4>
+                        <div data-is-ix2-target="1" class="faq-icon"
+                            data-w-id="bcae8680-5e02-f900-6795-af73bd37b607" data-animation-type="lottie"
+                            data-src="https://cdn.prod.website-files.com/66e57311172b9a6012d4d709/66e57311172b9a6012d4d789_FAQ%20icon.json"
+                            data-loop="0" data-direction="1" data-autoplay="0" data-renderer="svg"
+                            data-default-duration="0.5" data-duration="0" data-ix2-initial-state="0"></div>
+                    </div>
+                    <div class="space-1rem"></div>
+                    <div class="dropdown-answer">
+                        <p>Events are specific occasions (like weddings, birthdays, corporate events) that you can book with various decorators. 
+                           Packages are pre-designed decoration sets offered by decorators that include specific themes, items, and services 
+                           at a bundled price. You can browse both options and choose what best suits your needs.</p>
+                    </div>
+                    <div class="space-1rem"></div>
+                </div>
+            </div>
+            <div class="faq-dropdown">
+                <div data-w-id="bcae8680-5e02-f900-6795-af73bd37b608" class="dropdown-toggle">
+                    <div class="space-1rem"></div>
+                    <div class="faq-flex">
+                        <h4 class="faq-question">How can I contact a decorator directly?</h4>
+                        <div data-is-ix2-target="1" class="faq-icon"
+                            data-w-id="bcae8680-5e02-f900-6795-af73bd37b609" data-animation-type="lottie"
+                            data-src="https://cdn.prod.website-files.com/66e57311172b9a6012d4d709/66e57311172b9a6012d4d789_FAQ%20icon.json"
+                            data-loop="0" data-direction="1" data-autoplay="0" data-renderer="svg"
+                            data-default-duration="0.5" data-duration="0" data-ix2-initial-state="0"></div>
+                    </div>
+                    <div class="space-1rem"></div>
+                    <div class="dropdown-answer">
+                        <p>When viewing a decorator's profile, events, or packages, you'll find contact information or 
+                           a messaging feature to reach out directly. For ongoing bookings, you can communicate through 
+                           our platform's messaging system to discuss any specific requirements or changes.</p>
+                    </div>
+                    <div class="space-1rem"></div>
+                </div>
+            </div>
+            <div class="faq-dropdown">
+                <div data-w-id="bcae8680-5e02-f900-6795-af73bd37b610" class="dropdown-toggle">
+                    <div class="space-1rem"></div>
+                    <div class="faq-flex">
+                        <h4 class="faq-question">What is your refund policy for cancelled bookings?</h4>
+                        <div data-is-ix2-target="1" class="faq-icon"
+                            data-w-id="bcae8680-5e02-f900-6795-af73bd37b611" data-animation-type="lottie"
+                            data-src="https://cdn.prod.website-files.com/66e57311172b9a6012d4d709/66e57311172b9a6012d4d789_FAQ%20icon.json"
+                            data-loop="0" data-direction="1" data-autoplay="0" data-renderer="svg"
+                            data-default-duration="0.5" data-duration="0" data-ix2-initial-state="0"></div>
+                    </div>
+                    <div class="space-1rem"></div>
+                    <div class="dropdown-answer">
+                        <p>For cancelled bookings, we offer a 50% refund of your payment. Please note that cancellation policies 
+                           may vary based on how close to the event date you cancel and the specific terms of the decorator. 
+                           We recommend reviewing the cancellation policy details before finalizing your booking.</p>
                     </div>
                     <div class="space-1rem"></div>
                 </div>
@@ -641,120 +727,150 @@
 </section>
 <!-- Questions Ends -->
 
-    <!-- Free Quote Starts -->
-    <!-- <section class="section">
-        <div class="space-7rem"></div>
-        <div class="space-7rem"></div>
-        <div class="space-7rem"></div>
-        <div class="w-layout-blockcontainer cta-container w-container">
-            <div class="cta-wrapper">
-                <div class="w-layout-hflex cta-card slide-down-animation">
-                    <h2 class="cta-title">Request a <span class="italics">Free Quote</span></h2>
-                    <div class="space-1rem"></div>
-                    <p class="max-width-30rem">Find out how affordable clean can be — Request your free quote today!</p>
-                    <div class="space-2rem"></div>
-                    <div class="sign-up-form w-form">
-                        <form id="wf-form-Subscribe-To-Newsletter" name="wf-form-Subscribe-To-Newsletter"
-                            data-name="Subscribe To Newsletter" method="get" class="sign-up-form-container"
-                            data-wf-page-id="6706104d4f29e916e4cae2b1"
-                            data-wf-element-id="d2f74130-cfa6-9378-383c-8bf2dd17b6f4"><input
-                                class="sign-up-text-field w-input" maxlength="256" name="Newsletter-Email"
-                                data-name="Newsletter Email" aria-label="Enter your email"
-                                placeholder="Enter your email" type="email" id="Newsletter-Email-2" required=""><input
-                                type="submit" data-wait="Please wait..." class="button-subscribe w-button" value="→">
-                        </form>
-                        <div class="success-message-sign-up-form w-form-done">
-                            <div>Thank you! Your submission has been received!</div>
-                        </div>
-                        <div class="error-message w-form-fail">
-                            <div class="red-font">Oops! Something went wrong while submitting the form.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
-    <!-- Free Quote Ends -->
-
-
-    <!-- Footer Starts -->
-    <!-- <section class="section background-primary">
-        <div class="w-layout-blockcontainer container padding-4-5rem w-container">
-            <div class="space-2rem"></div>
-            <div data-w-id="fa36639f-bc34-8f1a-4024-d088998077f8" class="footer-top">
-                <div class="footer-block"><a href="index.htm" aria-current="page"
-                        class="footer-logo-link-wrapper w-nav-brand w--current"><img width="Auto" height="Auto"
-                            alt="Logo" src="assets/Images/Brand/main_logo_big.png" loading="eager"
-                            srcset="assets/Images/Brand/main_logo_small.png 500w, assets/Images/Brand/main_logo_medium.png 800w, assets/Images/Brand/main_logo_big.png 1015w"
-                            sizes="(max-width: 479px) 140.53125px, (max-width: 991px) 124.921875px, 9vw"
-                            class="footer-logo"></a>
-                    <div class="socials-wrapper"><a href="https://www.youtube.com/" target="_blank"
-                            class="w-inline-block"><img width="Auto" height="Auto" alt=""
-                                src="assets/Images/Icons/ic_youtube.png" loading="eager"
-                                srcset="assets/Images/Icons/ic_youtuassets/Images/Icons/ic_youtube.pngc_youtube.png 512w"
-                                sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
-                                class="social-icon smaller"></a><a href="https://www.instagram.com/" target="_blank"
-                            class="w-inline-block"><img width="Auto" height="Auto" alt=""
-                                src="assets/Images/Icons/ic_instagram.png" loading="eager"
-                                srcset="assets/Images/Icons/ic_instagrassets/Images/Icons/ic_instagram.pnginstagram.png 512w"
-                                sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
-                                class="social-icon smaller"></a><a href="https://www.tiktok.com/en/" target="_blank"
-                            class="w-inline-block"><img width="Auto" height="Auto" alt=""
-                                src="assets/Images/Icons/ic_tiktok.png" loading="eager"
-                                srcset="assets/Images/Icons/ic_tiktassets/Images/Icons/ic_tiktok.pngic_tiktok.png 512w"
-                                sizes="(max-width: 767px) 16px, (max-width: 991px) 2vw, 1vw"
-                                class="social-icon smaller"></a></div>
-                    <p class="max-width-17vw">Efficient Cleaning, Exceptional Results.</p>
-                </div>
-                <div class="footer-right-flex">
-                    <div class="footer-wrapper">
-                        <h5>Main</h5>
-                        <div class="footer-link-wrapper"><a href="index.htm" aria-current="page"
-                                class="footer-link w--current">Home</a><a href="index.htm" aria-current="page"
-                                class="footer-link move-down w--current">Home</a></div>
-                        <div class="footer-link-wrapper"><a href="about.html" class="footer-link">About</a><a
-                                href="about.html" class="footer-link move-down">About</a></div>
-                        <div class="footer-link-wrapper"><a href="services.html" class="footer-link">Services</a><a
-                                href="services.html" class="footer-link move-down">Services</a></div>
-                        <div class="footer-link-wrapper"><a href="events.html" class="footer-link">Blog</a><a
-                                href="events.html" class="footer-link move-down">Blog</a></div>
-                    </div>
-                    <div class="footer-wrapper">
-                        <h5>Pages</h5>
-                        <div class="footer-link-wrapper"><a href="contact.html" class="footer-link">Contact</a><a
-                                href="contact.html" class="footer-link move-down">Contact</a></div>
-                        <div class="footer-link-wrapper"><a href="terms-conditions.html" class="footer-link">Terms &amp;
-                                Conditions</a><a href="terms-conditions.html" class="footer-link move-down">Terms &amp;
-                                Conditions</a></div>
-                        <div class="footer-link-wrapper"><a href="privacy-policy.html" class="footer-link">Privacy
-                                Policy</a><a href="privacy-policy.html" class="footer-link move-down">Privacy Policy</a>
-                        </div>
-                    </div>
-                    <div class="footer-wrapper">
-                        <h5>Utilities</h5>
-                        <div class="footer-link-wrapper"><a href="utilties/style-guide.html" class="footer-link">Style
-                                Guide</a><a href="utilties/style-guide.html" class="footer-link move-down">Style
-                                Guide</a></div>
-                        <div class="footer-link-wrapper"><a href="utilties/instructions.html"
-                                class="footer-link">Instructions</a><a href="utilties/instructions.html"
-                                class="footer-link move-down">Instructions</a></div>
-                        <div class="footer-link-wrapper"><a href="utilties/licenses.html"
-                                class="footer-link">Licenses</a><a href="utilties/licenses.html"
-                                class="footer-link move-down">Licenses</a></div>
-                        <div class="footer-link-wrapper"><a href="utilties/changelog.html"
-                                class="footer-link">Changelog</a><a href="utilties/changelog.html"
-                                class="footer-link move-down">Changelog</a></div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section> -->
-  <x-footer />
+<x-footer />
     <script src="js/jquery-3.5.1.min.dc5e7f18c8.js?site=6706104d4f29e916e4cae2ad" type="text/javascript"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <script src="assets/js/mainScript.js" type="text/javascript"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Swiper for package cards
+            const packageSwipers = document.querySelectorAll('.package-swiper');
+            packageSwipers.forEach(function(swiperElement) {
+                new Swiper(swiperElement, {
+                    slidesPerView: 1,
+                    spaceBetween: 0,
+                    loop: true,
+                    autoplay: {
+                        delay: 5000,
+                        disableOnInteraction: false,
+                    },
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                });
+            });
+            
+            // Hide all FAQ answers except the first ones that are working correctly
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(function(toggle) {
+                // Get the data-w-id attribute
+                const dataId = toggle.getAttribute('data-w-id');
+                
+                // Check if this is one of the new FAQ items (IDs we added start with bcae8680-5e02-f900-6795-af73bd37b6)
+                if (dataId && dataId.startsWith('bcae8680-5e02-f900-6795-af73bd37b6')) {
+                    const answer = toggle.querySelector('.dropdown-answer');
+                    if (answer) {
+                        answer.style.display = 'none';
+                    }
+                    
+                    // Add click event listener to toggle visibility
+                    toggle.addEventListener('click', function() {
+                        const answer = this.querySelector('.dropdown-answer');
+                        if (answer) {
+                            if (answer.style.display === 'none') {
+                                answer.style.display = 'block';
+                            } else {
+                                answer.style.display = 'none';
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+    <style>
+        /* Swiper Styles */
+        .swiper {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 12px;
+        }
+        
+        .swiper-slide {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .swiper-slide img.image-absolute {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: #fff;
+            background: rgba(0, 0, 0, 0.3);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+        
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: scale(1.1);
+        }
+        
+        .swiper-button-next:after,
+        .swiper-button-prev:after {
+            font-size: 15px;
+        }
+        
+        .swiper-pagination-bullet {
+            background: #fff;
+            opacity: 0.7;
+        }
+        
+        .swiper-pagination-bullet-active {
+            background: var(--primary);
+            opacity: 1;
+        }
+        
+        .posts-card:hover .swiper-button-next,
+        .posts-card:hover .swiper-button-prev {
+            opacity: 1;
+        }
+        
+        .rating-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--black);
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+        
+        .rating-badge svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--black);
+        }
+    </style>
 </body>
 
 </html>
-
