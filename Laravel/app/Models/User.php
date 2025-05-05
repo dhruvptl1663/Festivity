@@ -23,6 +23,11 @@ class User extends Authenticatable
 
     protected $hidden = [
         'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
     ];
 
     public function feedback()
@@ -33,7 +38,7 @@ class User extends Authenticatable
     // User has many bookmarks
     public function bookmarks()
     {
-        return $this->hasMany(\App\Models\Bookmark::class, 'user_id');
+        return $this->hasMany(Bookmark::class, 'user_id');
     }
 
     public function notifications()
@@ -45,5 +50,27 @@ class User extends Authenticatable
     public function bookings()
     {
         return $this->hasMany(Booking::class, 'user_id');
+    }
+
+    // User has many cart items
+    public function cartItems()
+    {
+        return $this->hasMany(Cart::class, 'user_id');
+    }
+
+    // User has many cancellations through bookings
+    public function cancellations()
+    {
+        return $this->hasManyThrough(BookingCancellation::class, Booking::class, 'user_id', 'booking_id', 'user_id', 'booking_id');
+    }
+
+    /**
+     * Get the name of the column used for the "remember me" token.
+     *
+     * @return string
+     */
+    public function getRememberTokenName()
+    {
+        return 'remember_token';
     }
 }

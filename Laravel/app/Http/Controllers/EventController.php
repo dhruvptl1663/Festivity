@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Category;
 use App\Models\Feedback;
+use App\Models\Decorator;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -12,7 +13,40 @@ class EventController extends Controller
 
     public function index(Request $request)
     {
-        $query = Event::query();
+        $query = Event::query()->with(['category', 'decorator', 'feedback']);
+
+        // Filter by category
+        if ($request->has('category_id') && $request->category_id != 'all') {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Filter by decorators
+        if ($request->has('decorator_id') && $request->decorator_id != 'all') {
+            $query->where('decorator_id', $request->decorator_id);
+        }
+
+        // Filter by price range
+        if ($request->has('min_price') && is_numeric($request->min_price)) {
+            $query->where('price', '>=', $request->min_price);
+        }
+
+        if ($request->has('max_price') && is_numeric($request->max_price)) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        // Filter by minimum rating
+        if ($request->has('min_rating') && is_numeric($request->min_rating)) {
+            $query->where('rating', '>=', $request->min_rating);
+        }
+
+        // Search by keyword (in title and description)
+        if ($request->has('keyword') && !empty($request->keyword)) {
+            $keyword = $request->keyword;
+            $query->where(function($q) use ($keyword) {
+                $q->where('title', 'like', "%{$keyword}%")
+                  ->orWhere('description', 'like', "%{$keyword}%");
+            });
+        }
 
         // Apply sorting
         switch ($request->sort) {
@@ -39,7 +73,19 @@ class EventController extends Controller
         });
 
         $categories = Category::all();
-        return view('events', compact('events', 'categories'));
+        $decorators = Decorator::all();
+        
+        // Get min and max prices for the range slider
+        $minPrice = Event::min('price') ?: 0;
+        $maxPrice = Event::max('price') ?: 10000;
+
+        return view('events', compact(
+            'events', 
+            'categories', 
+            'decorators', 
+            'minPrice', 
+            'maxPrice'
+        ));
     }
 
     public function store(Request $request)

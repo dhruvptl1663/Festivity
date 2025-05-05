@@ -20,6 +20,10 @@ class Decorator extends Authenticatable
         'password',
         'rating',
         'availability',
+        'description',
+        'location',
+        'contact_number',
+        'profile_image',
     ];
 
     public $timestamps = false;
@@ -27,6 +31,12 @@ class Decorator extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+    
+    protected $casts = [
+        'availability' => 'boolean',
+        'rating' => 'float',
+        'email_verified_at' => 'datetime',
     ];
     
     /**
@@ -52,5 +62,57 @@ class Decorator extends Authenticatable
     public function feedback()
     {
         return $this->hasMany(Feedback::class, 'decorator_id');
+    }
+    
+    /**
+     * Get all bookings associated with this decorator (either directly or through events/packages)
+     */
+    public function bookings()
+    {
+        // First get direct associations if decorator_id is directly on bookings
+        $directBookings = Booking::where('decorator_id', $this->decorator_id);
+        
+        // Get event IDs for this decorator
+        $eventIds = $this->events()->pluck('event_id');
+        
+        // Get package IDs for this decorator
+        $packageIds = $this->packages()->pluck('package_id');
+        
+        // Build a query to get all bookings that reference this decorator's events or packages
+        return Booking::where('decorator_id', $this->decorator_id)
+            ->orWhereIn('event_id', $eventIds)
+            ->orWhereIn('package_id', $packageIds);
+    }
+    
+    /**
+     * Get all carts associated with this decorator (either directly or through events/packages)
+     */
+    public function carts()
+    {
+        // Get event IDs for this decorator
+        $eventIds = $this->events()->pluck('event_id');
+        
+        // Get package IDs for this decorator
+        $packageIds = $this->packages()->pluck('package_id');
+        
+        return Cart::where('decorator_id', $this->decorator_id)
+            ->orWhereIn('event_id', $eventIds)
+            ->orWhereIn('package_id', $packageIds);
+    }
+    
+    /**
+     * Get all bookmarks for this decorator (either directly or through events/packages)
+     */
+    public function bookmarks()
+    {
+        // Get event IDs for this decorator
+        $eventIds = $this->events()->pluck('event_id');
+        
+        // Get package IDs for this decorator
+        $packageIds = $this->packages()->pluck('package_id');
+        
+        return Bookmark::where('decorator_id', $this->decorator_id)
+            ->orWhereIn('event_id', $eventIds)
+            ->orWhereIn('package_id', $packageIds);
     }
 }

@@ -20,9 +20,27 @@ class Package extends Model
         'price',
         'rating',
         'status',
+        'image',
+        'discounted_price',
+        'is_featured',
     ];
 
     public $timestamps = false; //to prevent error with timestamps column
+    
+    protected $casts = [
+        'price' => 'float',
+        'discounted_price' => 'float',
+        'rating' => 'float',
+        'is_featured' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    // Scope for active packages
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'approved');
+    }
 
     public function decorator()
     {
@@ -54,5 +72,39 @@ class Package extends Model
     public function feedback()
     {
         return $this->hasMany(Feedback::class, 'package_id');
+    }
+    
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class, 'package_id');
+    }
+    
+    public function cartItems()
+    {
+        return $this->hasMany(Cart::class, 'package_id');
+    }
+    
+    /**
+     * Get the total bookings count for this package
+     */
+    public function getBookingsCountAttribute()
+    {
+        return $this->bookings()->count();
+    }
+    
+    /**
+     * Get the total revenue from this package
+     */
+    public function getRevenueAttribute()
+    {
+        return $this->bookings()->where('status', 'completed')->sum('final_amount');
+    }
+    
+    /**
+     * Get the effective price (discounted or original)
+     */
+    public function getEffectivePriceAttribute()
+    {
+        return $this->discounted_price > 0 ? $this->discounted_price : $this->price;
     }
 }
