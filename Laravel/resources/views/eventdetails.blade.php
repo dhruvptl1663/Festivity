@@ -48,16 +48,18 @@
 
     <!-- Decorator Information Section -->
     <div style="left: 577.5px; top: 320px; position: absolute; display: flex; align-items: center; gap: 15px;">
-        <div class="posts-avatar-flex">
-            <div class="avatar-wrapper">
-                <img width="Auto" height="Auto" alt=""
-                     src="{{ asset('storage/' . $event->decorator->decorator_icon) }}"
-                     loading="eager">
+        <a href="{{ route('decoratordetails.show', ['id' => $event->decorator->decorator_id]) }}" style="text-decoration: none; color: inherit;">
+            <div class="posts-avatar-flex">
+                <div class="avatar-wrapper">
+                    <img width="Auto" height="Auto" alt=""
+                         src="{{ asset('storage/' . $event->decorator->decorator_icon) }}"
+                         loading="eager">
+                </div>
+                <div class="avatar-text-block">
+                    <h5 class="no-wrap">{{ $event->decorator->decorator_name ?? 'Unknown Decorator' }}</h5>
+                </div>
             </div>
-            <div class="avatar-text-block">
-                <h5 class="no-wrap">{{ $event->decorator->decorator_name ?? 'Unknown Decorator' }}</h5>
-            </div>
-        </div>
+        </a>
     </div>
 
     <div style="position: absolute; top: 459.56px; right: 37.5px; display: flex; align-items: center; gap: 15px;">

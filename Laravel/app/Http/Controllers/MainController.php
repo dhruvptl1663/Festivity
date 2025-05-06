@@ -9,6 +9,8 @@ use App\Models\Cart;
 use App\Models\Contact;
 use App\Models\Package;
 use App\Models\Booking;
+use App\Models\Decorator;
+use App\Models\Feedback;
 
 class MainController extends Controller
 {
@@ -114,5 +116,66 @@ class MainController extends Controller
     public function info()
     {
         return view('info');
+    }
+
+    public function decoratordetails($id)
+    {
+        $decorator = Decorator::findOrFail($id);
+        
+        // Get events for this decorator with limit
+        $events = Event::where('decorator_id', $id)
+            ->withCount(['feedback as rating_count'])
+            ->withAvg('feedback as rating', 'rating')
+            ->limit(3)
+            ->get();
+            
+        // Get packages for this decorator with limit
+        $packages = Package::where('decorator_id', $id)
+            ->with('packageEvents.event')
+            ->withCount(['feedback as rating_count'])
+            ->withAvg('feedback as rating', 'rating')
+            ->limit(3)
+            ->get();
+            
+        // Get feedbacks for this decorator
+        $feedbacks = Feedback::where('decorator_id', $id)
+            ->with(['user', 'event', 'package'])
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
+            
+        // Count statistics
+        $totalEvents = Event::where('decorator_id', $id)->count();
+        $totalPackages = Package::where('decorator_id', $id)->count();
+        
+        // Count completed bookings by checking bookings for this decorator's events and packages
+        $eventIds = Event::where('decorator_id', $id)->pluck('event_id')->toArray();
+        $packageIds = Package::where('decorator_id', $id)->pluck('package_id')->toArray();
+        
+        $completedBookings = Booking::where(function($query) use ($eventIds, $packageIds) {
+                if (!empty($eventIds)) {
+                    $query->whereIn('event_id', $eventIds);
+                }
+            })
+            ->orWhere(function($query) use ($packageIds) {
+                if (!empty($packageIds)) {
+                    $query->whereIn('package_id', $packageIds);
+                }
+            })
+            ->where('status', 'completed')
+            ->count();
+            
+        $totalFeedbacks = Feedback::where('decorator_id', $id)->count();
+        
+        return view('decoratordetails', compact(
+            'decorator', 
+            'events', 
+            'packages', 
+            'feedbacks',
+            'totalEvents',
+            'totalPackages',
+            'completedBookings',
+            'totalFeedbacks'
+        ));
     }
 }

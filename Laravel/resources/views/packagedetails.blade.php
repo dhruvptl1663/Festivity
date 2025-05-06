@@ -87,16 +87,18 @@
 
     <!-- Decorator Information -->
     <div style="left: 577.5px; top: 360px; /* Adjusted top slightly */ position: absolute; display: flex; align-items: center; gap: 15px;">
-        <div class="posts-avatar-flex">
-            <div class="avatar-wrapper">
-                <img width="Auto" height="Auto" alt=""
-                     src="{{ asset('storage/' . $package->decorator->decorator_icon) }}"
-                     loading="eager">
+        <a href="{{ route('decoratordetails.show', ['id' => $package->decorator->decorator_id]) }}" style="text-decoration: none; color: inherit;">
+            <div class="posts-avatar-flex">
+                <div class="avatar-wrapper">
+                    <img width="Auto" height="Auto" alt=""
+                         src="{{ asset('storage/' . $package->decorator->decorator_icon) }}"
+                         loading="eager">
+                </div>
+                <div class="avatar-text-block">
+                    <h5 class="no-wrap">{{ $package->decorator->decorator_name ?? 'Unknown Decorator' }}</h5>
+                </div>
             </div>
-            <div class="avatar-text-block">
-                <h5 class="no-wrap">{{ $package->decorator->decorator_name ?? 'Unknown Decorator' }}</h5>
-            </div>
-        </div>
+        </a>
     </div>
 
     <!-- Action Buttons (Bookmark, Cart, Book) -->

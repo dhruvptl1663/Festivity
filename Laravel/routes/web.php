@@ -45,6 +45,7 @@ Route::get('/login', [MainController::class, 'login']);
 Route::get('/signup', [MainController::class, 'signup']);
 Route::get('/event/{id}', [EventController::class, 'show'])->name('event.show');
 Route::get('/eventdetails/{id}', [MainController::class, 'eventdetails'])->name('eventdetails.show');
+Route::get('/decoratordetails/{id}', [MainController::class, 'decoratordetails'])->name('decoratordetails.show');
 
 // Auth Routes
 Auth::routes();
