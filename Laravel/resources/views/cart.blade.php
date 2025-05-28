@@ -1,6 +1,7 @@
 @include('components.header')
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <!-- Flatpickr for Date/Time Picker -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -92,14 +93,25 @@
                     <span>₹{{ number_format($total, 0, '', ',') }}</span>
                 </div>
             </div>
-            <button class="checkout-btn" id="checkoutBtn" type="button">
-    Proceed to Checkout
-    <svg class="arrow-icon" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-        <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-    </svg>
-</button>
+            <div class="checkout-btn-container">
+                <button class="checkout-btn" id="checkoutBtn" type="button" data-total="{{ $total }}">
+                    Proceed to Checkout
+                    <svg class="arrow-icon" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                        <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                    </svg>
+                </button>
+            </div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Set up Razorpay config data from PHP
+    const cartData = {
+        total: {{ Illuminate\Support\Js::from($total) }},
+        userId: {{ Illuminate\Support\Js::from(Auth::id()) }},
+        userName: {{ Illuminate\Support\Js::from(Auth::user()->name) }},
+        userEmail: {{ Illuminate\Support\Js::from(Auth::user()->email) }},
+        userPhone: {{ Illuminate\Support\Js::from(Auth::user()->phone ?? '') }}
+    };
+    
     // Initialize date/time pickers for all items in cart
     const datePickers = document.querySelectorAll('.event-datetime-picker');
     
@@ -175,8 +187,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Handle checkout button click
-    document.getElementById('checkoutBtn').addEventListener('click', async function(e) {
-        e.preventDefault(); // Prevent default form submission
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    
+    // Remove any existing event listeners to prevent duplicates
+    const newBtn = checkoutBtn.cloneNode(true);
+    checkoutBtn.parentNode.replaceChild(newBtn, checkoutBtn);
+    
+    // Add new click handler
+    newBtn.addEventListener('click', async function(e) {
+        // Prevent any default behavior
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        // Prevent multiple clicks while processing
+        if (newBtn.disabled) return;
+        newBtn.disabled = true;
 
         // Validate dates first
         const validation = validateDatesAndGetSelections();
@@ -188,14 +214,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon: 'warning',
                 allowOutsideClick: false,
                 confirmButtonText: 'OK'
-            });
+            }); 0
             return;
         }
 
         // Show loading state
         const loading = Swal.fire({
             title: 'Processing...',
-            text: 'Please wait while we process your booking',
+            text: 'Please wait while we prepare your payment',
             allowOutsideClick: false,
             showConfirmButton: false,
             willOpen: () => {
@@ -211,11 +237,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Get CSRF token from meta tag
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             
-            // Use the validated selections
+            // Store the selected date/time information with each item
             const dateTimeSelections = validation.selections;
-
-            // Send checkout request
-            const response = await fetch('/checkout/submit', {
+            
+            // Prepare data for Razorpay
+            const paymentInitiationResponse = await fetch('/payment/initiate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -223,26 +249,135 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
+                    amount: cartData.total,
                     promo_code: promoCode,
                     date_time_selections: dateTimeSelections
                 })
             });
 
-            // Parse response
-            const data = await response.json();
-
+            // Parse payment initiation response
+            const paymentData = await paymentInitiationResponse.json();
+            
             // Close loading dialog
             loading.close();
+            
+            // Re-enable the button after processing
+            newBtn.disabled = false;
 
-            if (data.success) {
-                window.location.href = "/congratulations";
-            } else {
-                throw new Error(data.message || 'An error occurred during checkout');
+            if (paymentData.status !== 'success') {
+                throw new Error(paymentData.message || 'Failed to initiate payment');
             }
+
+            console.log('Payment data received:', paymentData);  
+
+            // Open Razorpay payment form
+            const options = {
+                key: paymentData.key,
+                amount: paymentData.amount,
+                currency: paymentData.currency,
+                name: 'Festivity',
+                description: 'Event & Package Booking',
+                order_id: paymentData.order_id,
+                handler: async function (response) {
+                    // Show processing payment message
+                    const processingPayment = Swal.fire({
+                        title: 'Processing Payment...',
+                        text: 'Please wait while we confirm your payment',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    try {
+                        // Verify payment with our server
+                        const verifyResponse = await fetch('/payment/verify', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_signature: response.razorpay_signature,
+                                amount: paymentData.amount / 100, // Convert back from paise to rupees
+                                promo_code: promoCode,
+                                discount_amount: paymentData.discount_amount || 0,
+                                date_time_selections: dateTimeSelections
+                            })
+                        });
+
+                        const verifyData = await verifyResponse.json();
+                        
+                        // Close processing payment dialog
+                        processingPayment.close();
+
+                        if (verifyData.status === 'success') {
+                            console.log('Payment verification successful', verifyData);  
+
+                            // Payment verified successfully - redirect to the congratulations page
+                            if (verifyData.redirect) {
+                                window.location.href = verifyData.redirect;
+                            } else {
+                                // Fallback to orders page if no redirect URL is provided
+                                window.location.href = '{{ route('orders') }}';
+                            }
+                        } else {
+                            throw new Error(verifyData.message || 'Payment verification failed');
+                        }
+                    } catch (error) {
+                        console.error('Payment verification error:', error);
+                        processingPayment.close();
+                        
+                        Swal.fire({
+                            title: 'Payment Verification Failed',
+                            text: error.message || 'There was a problem verifying your payment. Please contact support.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                },
+                prefill: {
+                    name: cartData.userName,
+                    email: cartData.userEmail,
+                    contact: cartData.userPhone
+                },
+                theme: {
+                    color: '#2962FF'
+                },
+                modal: {
+                    ondismiss: function() {
+                        Swal.fire({
+                            title: 'Payment Cancelled',
+                            text: 'You have cancelled the payment. Your booking is not confirmed.',
+                            icon: 'info',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                }
+            };
+
+            console.log('Initializing Razorpay with options:', options);  
+
+            const razorpayPayment = new Razorpay(options);
+            
+            // Delay opening the payment modal slightly to ensure it works properly
+            setTimeout(() => {
+                razorpayPayment.open();
+            }, 100);   
+            
         } catch (error) {
             console.error('Error:', error);
-            // Close loading dialog
-            loading.close();
+            // Close loading dialog and re-enable button
+            if (typeof loading.close === 'function') {
+                loading.close();
+            }
+            if (newBtn) {
+                newBtn.disabled = false;
+            }
             
             // Show error message
             Swal.fire({

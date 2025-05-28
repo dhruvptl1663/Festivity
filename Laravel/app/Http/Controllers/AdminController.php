@@ -41,11 +41,15 @@ class AdminController extends Controller
         // Get monthly booking data
         $monthlyData = $this->getMonthlyBookingData();
 
+        // Count bookings by type for pie chart
+        $eventBookingsCount = \App\Models\Booking::whereNotNull('event_id')->count();
+        $packageBookingsCount = \App\Models\Booking::whereNotNull('package_id')->count();
+
         return view('Admin.index', compact(
             'totalOrders', 'pendingOrders', 'completedOrders', 'cancelledOrders',
             'totalAmount', 'pendingAmount', 'completedAmount', 'cancelledAmount',
-            'recentBookings',
-            'monthlyData'
+            'recentBookings', 'monthlyData',
+            'eventBookingsCount', 'packageBookingsCount'
         ));
     }
     

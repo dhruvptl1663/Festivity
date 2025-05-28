@@ -85,16 +85,32 @@ class DecoratorController extends Controller
             ->sum('advance_paid');
             
         // Get recent bookings
-        $recentBookings = Booking::whereHas('event', function($q) use ($decorator_id) {
+        $recentBookings = Booking::where(function($query) use ($decorator_id) {
+            // Filter bookings that have either an event or package belonging to this decorator
+            $query->whereHas('event', function($q) use ($decorator_id) {
                 $q->where('decorator_id', $decorator_id);
-            })
-            ->orWhereHas('package', function($q) use ($decorator_id) {
+            })->orWhereHas('package', function($q) use ($decorator_id) {
                 $q->where('decorator_id', $decorator_id);
-            })
-            ->with(['user', 'event', 'package'])
-            ->latest()
-            ->take(5)
-            ->get();
+            });
+        })
+        ->with(['user', 'event', 'package'])
+        ->latest()
+        ->take(10)
+        ->get();
+        
+        // Ensure all related data is loaded and total_amount is calculated
+        foreach ($recentBookings as $booking) {
+            if ($booking->package_id && isset($booking->package)) {
+                $price = $booking->package->price;
+            } elseif ($booking->event_id && isset($booking->event)) {
+                $price = $booking->event->price;
+            } else {
+                $price = 0;
+            }
+            
+            $discount = $booking->discount ?? 0;
+            $booking->total_amount = $price - $discount;
+        }
         
         // Get recent feedback
         $recentFeedback = Feedback::where('decorator_id', $decorator_id)
@@ -607,46 +623,66 @@ class DecoratorController extends Controller
         return view('Decorator.Bookings.show', compact('booking', 'feedback'));
     }
     
-    public function updateBookingStatus(Request $request, $booking_id)
+    public function updateBookingStatus(Request $request, $booking)
     {
-        $request->validate([
-            'status' => 'required|in:pending,accepted,rejected,completed,cancelled',
-        ]);
-        
-        $decorator = Auth::guard('decorator')->user();
-        $decorator_id = $decorator->decorator_id;
-        
-        $booking = Booking::where('booking_id', $booking_id)
-            ->where(function($query) use ($decorator_id) {
-                $query->whereHas('event', function($q) use ($decorator_id) {
-                    $q->where('decorator_id', $decorator_id);
-                })
-                ->orWhereHas('package', function($q) use ($decorator_id) {
-                    $q->where('decorator_id', $decorator_id);
-                });
-            })
-            ->firstOrFail();
-        
-        $oldStatus = $booking->status;
-        $booking->status = $request->status;
-        
-        // Status is now updated to the requested status - no need for is_completed column
-        
-        $booking->save();
-        
-        // If cancelling the booking, create a cancellation record
-        if ($request->status == 'cancelled' && $oldStatus != 'cancelled') {
-            DB::table('booking_cancellations')->insert([
-                'booking_id' => $booking_id,
-                'cancelled_by' => 'decorator',
-                'reason' => $request->get('reason', 'Cancelled by decorator'),
-                'refund_amount' => $booking->advance_paid * 0.5, // 50% refund policy
-                'cancelled_at' => now()
+        try {
+            $request->validate([
+                'status' => 'required|in:pending,accepted,rejected,completed,cancelled',
             ]);
+            
+            $decorator = Auth::guard('decorator')->user();
+            $decorator_id = $decorator->decorator_id;
+            
+            $booking = Booking::where('booking_id', $booking)
+                ->where(function($query) use ($decorator_id) {
+                    $query->whereHas('event', function($q) use ($decorator_id) {
+                        $q->where('decorator_id', $decorator_id);
+                    })
+                    ->orWhereHas('package', function($q) use ($decorator_id) {
+                        $q->where('decorator_id', $decorator_id);
+                    });
+                })
+                ->firstOrFail();
+                
+            $booking_id = $booking->booking_id;
+            $oldStatus = $booking->status;
+            $booking->status = $request->status;
+            $booking->save();
+            
+            // If cancelling the booking, create a cancellation record
+            if ($request->status == 'cancelled' && $oldStatus != 'cancelled') {
+                DB::table('booking_cancellations')->insert([
+                    'booking_id' => $booking->booking_id,
+                    'cancelled_by' => 'decorator',
+                    'reason' => $request->get('reason', 'Cancelled by decorator'),
+                    'refund_amount' => $booking->advance_paid * 0.5, // 50% refund policy
+                    'cancelled_at' => now()
+                ]);
+            }
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Booking status updated successfully',
+                    'redirect' => route('decorator.bookings.show', $booking_id)
+                ]);
+            }
+            
+            return redirect()->route('decorator.bookings.show', $booking_id)
+                ->with('success', 'Booking status updated successfully');
+                
+        } catch (\Exception $e) {
+            \Log::error('Error updating booking status: ' . $e->getMessage());
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to update booking status: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return back()->with('error', 'Failed to update booking status: ' . $e->getMessage());
         }
-        
-        return redirect()->route('decorator.bookings.show', $booking_id)
-            ->with('success', 'Booking status updated successfully');
     }
     
     // Feedback methods

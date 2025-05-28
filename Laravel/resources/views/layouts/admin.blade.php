@@ -93,6 +93,8 @@
     <script src="{{ asset('dashboard/js/parallax.min.js') }}"></script>
     <script src="{{ asset('dashboard/js/progressbar.min.js') }}"></script>
     <script src="{{ asset('dashboard/js/wow.min.js') }}"></script>
+    <!-- ApexCharts for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="{{ asset('dashboard/js/main.js') }}"></script>
     <script src="{{ asset('dashboard/js/sweetalert.min.js') }}"></script>
     <script src="{{ asset('dashboard/js/custom.js') }}"></script>

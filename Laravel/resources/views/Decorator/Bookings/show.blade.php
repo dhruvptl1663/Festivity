@@ -11,6 +11,59 @@
         padding-left: 3rem;
         padding-right: 3rem;
         margin-top: 60px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Fix dropdown z-index and positioning */
+    .dropdown-menu {
+        z-index: 1070 !important; /* Higher than most elements */
+        position: absolute !important;
+        will-change: transform;
+        top: 100% !important;
+        left: 0 !important;
+        transform: none !important;
+        margin-top: 0.125rem;
+        min-width: 10rem;
+        padding: 0.5rem 0;
+        font-size: 0.875rem;
+        color: #212529;
+        text-align: left;
+        list-style: none;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 0.375rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .dropdown-item {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 1.5rem;
+        clear: both;
+        font-weight: 400;
+        color: #212529;
+        text-align: inherit;
+        text-decoration: none;
+        white-space: nowrap;
+        background-color: transparent;
+        border: 0;
+    }
+    
+    .dropdown-item:hover, .dropdown-item:focus {
+        color: #1e2125;
+        background-color: #e9ecef;
+    }
+    
+    .btn-group {
+        position: relative;
+        z-index: 1000;
+    }
+    
+    /* Ensure the dropdown is not cut off by parent containers */
+    .card, .card-body, .booking-detail-card {
+        overflow: visible !important;
     }
     
     .booking-detail-card {
@@ -155,7 +208,6 @@
                                     <li>
                                         <form action="{{ route('decorator.bookings.status', $booking->booking_id) }}" method="POST" class="status-update-form">
                                             @csrf
-                                            @method('PUT')
                                             <input type="hidden" name="status" value="pending">
                                             <button type="submit" class="dropdown-item"><i class="bi bi-hourglass me-2"></i> Mark as Pending</button>
                                         </form>
@@ -166,7 +218,6 @@
                                     <li>
                                         <form action="{{ route('decorator.bookings.status', $booking->booking_id) }}" method="POST" class="status-update-form">
                                             @csrf
-                                            @method('PUT')
                                             <input type="hidden" name="status" value="accepted">
                                             <button type="submit" class="dropdown-item"><i class="bi bi-check-circle me-2"></i> Mark as Accepted</button>
                                         </form>
@@ -177,7 +228,6 @@
                                     <li>
                                         <form action="{{ route('decorator.bookings.status', $booking->booking_id) }}" method="POST" class="status-update-form">
                                             @csrf
-                                            @method('PUT')
                                             <input type="hidden" name="status" value="rejected">
                                             <button type="submit" class="dropdown-item"><i class="bi bi-x-circle me-2"></i> Mark as Rejected</button>
                                         </form>
@@ -188,7 +238,6 @@
                                     <li>
                                         <form action="{{ route('decorator.bookings.status', $booking->booking_id) }}" method="POST" class="status-update-form">
                                             @csrf
-                                            @method('PUT')
                                             <input type="hidden" name="status" value="completed">
                                             <button type="submit" class="dropdown-item"><i class="bi bi-trophy me-2"></i> Mark as Completed</button>
                                         </form>
@@ -198,11 +247,10 @@
                                     @if($booking->status != 'cancelled')
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form action="{{ route('decorator.bookings.status', $booking->booking_id) }}" method="POST" class="cancel-form" onsubmit="return confirm('Are you sure you want to cancel this booking? This may process a refund based on your policies.')">
+                                        <form action="{{ route('decorator.bookings.status', $booking->booking_id) }}" method="POST" class="cancel-form" onsubmit="return confirm('Are you sure you want to cancel this booking? This will process a 50% refund.')">
                                             @csrf
-                                            @method('PUT')
                                             <input type="hidden" name="status" value="cancelled">
-                                            <button type="submit" class="dropdown-item text-danger"><i class="bi bi-slash-circle me-2"></i> Cancel Booking</button>
+                                            <button type="submit" class="dropdown-item text-danger"><i class="bi bi-x-circle me-2"></i> Cancel Booking (50% Refund)</button>
                                         </form>
                                     </li>
                                     @endif
@@ -258,11 +306,13 @@
                             <span class="detail-label">Type:</span>
                             <span class="detail-value">
                                 @if($booking->event_id)
-                                    {{ $booking->event->name ?? 'N/A' }} <span class="badge bg-light text-dark">Event</span>
+                                    {{ $booking->event->title ?? 'Custom Event' }}
+                                    <span class="badge bg-light text-dark">Event</span>
                                 @elseif($booking->package_id)
-                                    {{ $booking->package->name ?? 'N/A' }} <span class="badge bg-info bg-opacity-10 text-info">Package</span>
+                                    {{ $booking->package->title ?? 'Custom Package' }}
+                                    <span class="badge bg-info bg-opacity-10 text-info">Package</span>
                                 @else
-                                    N/A
+                                    Custom Booking
                                 @endif
                             </span>
                         </li>
@@ -272,10 +322,10 @@
                             <span class="detail-value">{{ $booking->event->category->category_name ?? 'N/A' }}</span>
                         </li>
                         @endif
-                        @if($booking->package_id)
+                        @if($booking->package_id && !empty($booking->package->description))
                         <li>
                             <span class="detail-label">Package Description:</span>
-                            <span class="detail-value">{{ $booking->package->description ?? 'N/A' }}</span>
+                            <span class="detail-value">{{ $booking->package->description }}</span>
                         </li>
                         @endif
                         <li>
@@ -298,17 +348,34 @@
                                     <h6 class="mb-0" style="color: #1e293b; font-weight: 600;"><i class="icon-credit-card me-2"></i>Payment Information</h6>
                                 </div>
                                 <div class="card-body" style="padding: 20px;">
+                                    @php
+                                        $originalAmount = $booking->original_amount ?? ($booking->package->price ?? 0);
+                                        $discountAmount = $booking->discount_amount ?? 0;
+                                        $finalAmount = $booking->final_amount ?? 0;
+                                        
+                                        // Calculate final amount if not set
+                                        if ($finalAmount <= 0) {
+                                            $finalAmount = max(0, $originalAmount - $discountAmount);
+                                        }
+                                    @endphp
+                                    
+                                    @if($originalAmount > 0)
                                     <div class="row mb-2">
-                                         <div class="col-md-6"><strong>Package Price:</strong></div>
-                                         <div class="col-md-6">₹{{ $booking->package_id ? number_format($booking->package->price ?? 0, 2) : '0.00' }}</div>
-                                     </div>
-                                     <div class="row mb-2">
-                                         <div class="col-md-6"><strong>Discount:</strong></div>
-                                         <div class="col-md-6">₹{{ number_format($booking->discount ?? 0, 2) }}</div>
-                                     </div>
-                                     <div class="row mb-2">
-                                         <div class="col-md-6"><strong>Total Amount:</strong></div>
-                                         <div class="col-md-6 fs-5 text-primary">₹{{ number_format($booking->total_amount ?? 0, 2) }}</div>
+                                        <div class="col-md-6"><strong>Package Price:</strong></div>
+                                        <div class="col-md-6">₹{{ number_format($originalAmount, 2) }}</div>
+                                    </div>
+                                    @endif
+                                    
+                                    @if($discountAmount > 0)
+                                    <div class="row mb-2">
+                                        <div class="col-md-6"><strong>Discount:</strong></div>
+                                        <div class="col-md-6 text-danger">- ₹{{ number_format($discountAmount, 2) }}</div>
+                                    </div>
+                                    @endif
+                                    
+                                    <div class="row mb-2">
+                                        <div class="col-md-6"><strong>Total Amount:</strong></div>
+                                        <div class="col-md-6 fs-5 text-primary">₹{{ number_format($finalAmount, 2) }}</div>
                                     </div>
                                     <hr>
                                     <div class="row">
@@ -387,30 +454,125 @@
                     
                     // Manual form submission
                     const formData = new FormData(this);
-                    fetch(this.action, {
+                    const url = this.action;
+                    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                    const token = csrfMeta ? csrfMeta.getAttribute('content') : '';
+                    
+                    if (!token) {
+                        console.error('CSRF token not found');
+                        alert('Security token missing. Please refresh the page and try again.');
+                        return;
+                    }
+                    
+                    // Show loading state
+                    const originalButtonText = button ? button.innerHTML : '';
+                    if (button) {
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Updating...';
+                        button.disabled = true;
+                    }
+                    
+                    console.log('Submitting form to:', url);
+                    console.log('Form data:', Object.fromEntries(formData));
+                    
+                    // Add loading state to all buttons in the form
+                    const formButtons = this.querySelectorAll('button[type="submit"]');
+                    formButtons.forEach(btn => {
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Updating...';
+                    });
+
+                    fetch(url, {
                         method: 'POST',
-                        body: formData,
                         headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
+                            'X-CSRF-TOKEN': token,
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams(formData).toString(),
+                        credentials: 'same-origin'
                     })
-                    .then(response => {
-                        if (response.ok) {
-                            window.location.reload();
-                        } else {
-                            console.error('Form submission failed');
-                            alert('An error occurred. Please try again.');
-                            if (button) {
-                                button.innerHTML = button.getAttribute('data-original-text') || '<i class="fas fa-check me-2"></i> Update Status';
-                                button.disabled = false;
+                    .then(async response => {
+                        const responseText = await response.text();
+                        console.log('Response status:', response.status);
+                        console.log('Response headers:', Object.fromEntries([...response.headers]));
+                        console.log('Response text:', responseText);
+                        
+                        let responseData;
+                        try {
+                            responseData = responseText ? JSON.parse(responseText) : {};
+                        } catch (e) {
+                            console.error('Failed to parse JSON response:', e);
+                            throw new Error('Invalid response from server. Please try again.');
+                        }
+                        
+                        if (!response.ok) {
+                            console.error('Server responded with error:', responseData);
+                            throw new Error(responseData.message || 'Failed to update status. Server returned ' + response.status);
+                        }
+                        
+                        return responseData;
+                    })
+                    .then(data => {
+                        console.log('Success response:', data);
+                        if (data.redirect) {
+                            window.location.href = data.redirect;
+                        } else if (data.success) {
+                            // Show success message and reload after a short delay
+                            const alertDiv = document.createElement('div');
+                            alertDiv.className = 'alert alert-success alert-dismissible fade show mt-3';
+                            alertDiv.role = 'alert';
+                            alertDiv.innerHTML = `
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                ${data.message || 'Status updated successfully'}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            `;
+                            
+                            // Insert the alert after the status card
+                            const statusCard = document.querySelector('.booking-detail-card');
+                            if (statusCard) {
+                                statusCard.parentNode.insertBefore(alertDiv, statusCard.nextSibling);
+                                // Scroll to show the alert
+                                setTimeout(() => alertDiv.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
                             }
+                            
+                            // Reload the page after a short delay
+                            setTimeout(() => window.location.reload(), 1500);
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        alert('An error occurred. Please try again.');
+                        let errorMessage = 'An error occurred while updating the status.';
+                        
+                        if (error.message) {
+                            errorMessage = error.message;
+                        }
+                        
+                        // Show error message in a more user-friendly way
+                        const alertDiv = document.createElement('div');
+                        alertDiv.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                        alertDiv.role = 'alert';
+                        alertDiv.innerHTML = `
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            ${errorMessage}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        `;
+                        
+                        // Insert the alert after the status card
+                        const statusCard = document.querySelector('.booking-detail-card');
+                        if (statusCard) {
+                            statusCard.parentNode.insertBefore(alertDiv, statusCard.nextSibling);
+                        } else {
+                            document.body.appendChild(alertDiv);
+                        }
+                        
+                        // Scroll to the error message
+                        alertDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    })
+                    .finally(() => {
+                        // Reset button state
                         if (button) {
-                            button.innerHTML = button.getAttribute('data-original-text') || '<i class="fas fa-check me-2"></i> Update Status';
+                            button.innerHTML = originalButtonText;
                             button.disabled = false;
                         }
                     });

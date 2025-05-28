@@ -124,18 +124,92 @@
                                     <h6 class="mb-0" style="color: #1e293b; font-weight: 600;"><i class="icon-calendar me-2"></i>Event Information</h6>
                                 </div>
                                 <div class="card-body" style="padding: 20px;">
-                                    <p><strong>Event Type:</strong> {{ $booking->event->name ?? 'N/A' }}</p>
-                                    <p><strong>Package:</strong> {{ $booking->package->name ?? 'N/A' }}</p>
-                                    <p><strong>Package Description:</strong> {{ $booking->package->description ?? 'N/A' }}</p>
-                                    <p><strong>Event Date:</strong> {{ $booking->event_date ? \Carbon\Carbon::parse($booking->event_date)->format('M d, Y') : 'Not specified' }}</p>
-                                    @if($booking->package && $booking->package->decorator)
-                                    <p><strong>Decorator:</strong> <span style="color: #1e293b; font-weight: 500;">{{ $booking->package->decorator->name }}</span></p>
-                                    <p><strong>Decorator Contact:</strong> {{ $booking->package->decorator->phone }}</p>
-                                    <p><strong>Decorator Email:</strong> {{ $booking->package->decorator->email }}</p>
-                                    @elseif($booking->event && isset($booking->event->decorator_id) && $booking->event->decorator)
-                                    <p><strong>Decorator:</strong> <span style="color: #1e293b; font-weight: 500;">{{ $booking->event->decorator->name }}</span></p>
-                                    <p><strong>Decorator Contact:</strong> {{ $booking->event->decorator->phone }}</p>
-                                    <p><strong>Decorator Email:</strong> {{ $booking->event->decorator->email }}</p>
+                                    @php
+                                        $decorator = null;
+                                        $decoratorName = 'N/A';
+                                        $decoratorEmail = 'N/A';
+                                        $decoratorPhone = 'N/A';
+                                        
+                                        // First check if decorator is directly assigned to booking
+                                        if ($booking->decorator) {
+                                            $decorator = $booking->decorator;
+                                        } 
+                                        // Then check if booking has an event with decorator
+                                        elseif ($booking->event && $booking->event->decorator) {
+                                            $decorator = $booking->event->decorator;
+                                        } 
+                                        // Finally check if booking has a package with decorator
+                                        elseif ($booking->package && $booking->package->decorator) {
+                                            $decorator = $booking->package->decorator;
+                                        }
+                                        
+                                        if ($decorator) {
+                                            $decoratorName = $decorator->decorator_name ?? 'N/A';
+                                            $decoratorEmail = $decorator->email ?? 'N/A';
+                                            $decoratorPhone = $decorator->contact_number ?? 'N/A';
+                                        }
+                                    @endphp
+                                    
+                                    <div class="mb-3">
+                                        @php
+                                            $eventType = 'Custom Event';
+                                            $eventTitle = '';
+                                            $categoryName = 'N/A';
+                                            $isPackage = false;
+                                            
+                                            // Check if this is an event or package booking
+                                            if ($booking->event) {
+                                                $eventTitle = $booking->event->title ?? '';
+                                                $eventType = $eventTitle ?: 'Custom Event';
+                                                if (isset($booking->event->category)) {
+                                                    $categoryName = $booking->event->category->name ?? 'N/A';
+                                                }
+                                            } elseif ($booking->package) {
+                                                $isPackage = true;
+                                                $eventTitle = $booking->package->title ?? '';
+                                                $eventType = $eventTitle ?: 'Custom Package';
+                                                if (isset($booking->package->category)) {
+                                                    $categoryName = $booking->package->category->name ?? 'N/A';
+                                                }
+                                            }
+                                        @endphp
+                                        
+                                        <p class="mb-1">
+                                            <strong>Type:</strong> 
+                                            @if($isPackage)
+                                                Package: {{ $eventType }}
+                                            @else
+                                                {{ $eventType }}
+                                            @endif
+                                        </p>
+                                        @if($categoryName !== 'N/A')
+                                            <p class="mb-1"><strong>Category:</strong> {{ $categoryName }}</p>
+                                        @endif
+                                        
+                                        @if(!empty($booking->event_date))
+                                            <p class="mb-1">
+                                                <strong>Event Date:</strong> 
+                                                {{ \Carbon\Carbon::parse($booking->event_date)->format('M d, Y') }}
+                                            </p>
+                                        @endif
+                                        
+                                        @if(!empty($booking->event_location))
+                                            <p class="mb-0">
+                                                <strong>Location:</strong> 
+                                                {{ $booking->event_location }}
+                                            </p>
+                                        @endif
+                                    </div>
+                                    
+                                    @if($decoratorName !== 'N/A')
+                                    <div class="mt-3 pt-3 border-top">
+                                        <h6 class="mb-2">Decorator Information:</h6>
+                                        <p class="mb-1"><strong>Name:</strong> {{ $decoratorName }}</p>
+                                        <p class="mb-1"><strong>Email:</strong> {{ $decoratorEmail }}</p>
+                                        @if($decoratorPhone !== 'N/A')
+                                            <p class="mb-0"><strong>Phone:</strong> {{ $decoratorPhone }}</p>
+                                        @endif
+                                    </div>
                                     @endif
                                 </div>
                             </div>
@@ -148,22 +222,81 @@
                                     <h6 class="mb-0" style="color: #1e293b; font-weight: 600;"><i class="icon-credit-card me-2"></i>Payment Information</h6>
                                 </div>
                                 <div class="card-body" style="padding: 20px;">
-                                    <div class="row mb-2">
-                                        <div class="col-md-6"><strong>Original Amount:</strong></div>
-                                        <div class="col-md-6">₹{{ $booking->original_amount ? number_format($booking->original_amount, 2) : ($booking->package ? number_format($booking->package->price, 2) : '0.00') }}</div>
+                                    <div class="mb-3">
+                                        @php
+                                            // Get amounts from booking or set defaults
+                                            $originalAmount = $booking->original_amount ?? 0;
+                                            $discountAmount = $booking->discount_amount ?? 0;
+                                            $finalAmount = $booking->final_amount ?? 0;
+                                            
+                                            // Ensure we have positive values
+                                            $originalAmount = max(0, (float)$originalAmount);
+                                            $discountAmount = max(0, (float)$discountAmount);
+                                            
+                                            // Calculate final amount if not set or invalid
+                                            if ($finalAmount <= 0 || $finalAmount < ($originalAmount - $discountAmount)) {
+                                                $finalAmount = max(0, $originalAmount - $discountAmount);
+                                            } else {
+                                                $finalAmount = max(0, (float)$finalAmount);
+                                            }
+                                        @endphp
+                                        
+                                        @if($originalAmount > 0)
+                                            <div class="row mb-2">
+                                                <div class="col-md-6"><strong>Package Price:</strong></div>
+                                                <div class="col-md-6">₹{{ number_format($originalAmount, 2) }}</div>
+                                            </div>
+                                        @endif
+                                        
+                                        @if($discountAmount > 0)
+                                            <div class="row mb-2">
+                                                <div class="col-md-6"><strong>Discount:</strong></div>
+                                                <div class="col-md-6 text-danger">- ₹{{ number_format($discountAmount, 2) }}</div>
+                                            </div>
+                                        @endif
+                                        
+                                        <div class="row mb-2 fw-bold">
+                                            <div class="col-md-6"><strong>Total Amount:</strong></div>
+                                            <div class="col-md-6">₹{{ number_format($finalAmount, 2) }}</div>
+                                        </div>
+                                        <hr>
+                                        <div class="row mb-2">
+                                            <div class="col-md-6"><strong>Advance Paid:</strong></div>
+                                            <div class="col-md-6">₹{{ number_format($booking->advance_paid ?? 0, 2) }}</div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-md-6"><strong>Payment Status:</strong></div>
+                                            <div class="col-md-6">
+                                                @if($booking->advance_paid > 0)
+                                                    <span class="badge bg-success">Paid</span>
+                                                @else
+                                                    <span class="badge bg-warning">Pending</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        @if($booking->payment_id)
+                                        <div class="row mb-2">
+                                            <div class="col-md-6"><strong>Payment ID:</strong></div>
+                                            <div class="col-md-6">{{ $booking->payment_id }}</div>
+                                        </div>
+                                        @endif
+                                        <div class="row mb-0">
+                                            <div class="col-md-6"><strong>Booking Date:</strong></div>
+                                            <div class="col-md-6">{{ \Carbon\Carbon::parse($booking->created_at)->format('M d, Y H:i A') }}</div>
+                                        </div>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-md-6"><strong>Discount:</strong></div>
-                                        <div class="col-md-6">₹{{ number_format($booking->discount_amount ?? 0, 2) }}</div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-md-6"><strong>Final Amount:</strong></div>
-                                        <div class="col-md-6 fs-5 text-primary">₹{{ $booking->final_amount ? number_format($booking->final_amount, 2) : ($booking->package ? number_format($booking->package->price, 2) : '0.00') }}</div>
-                                    </div>
-                                    <hr>
                                     <div class="row">
-                                        <div class="col-md-6"><strong>Booking Date:</strong></div>
-                                        <div class="col-md-6">{{ \Carbon\Carbon::parse($booking->created_at)->format('M d, Y H:i A') }}</div>
+                                        <div class="col-md-6"><strong>Booking Status:</strong></div>
+                                        <div class="col-md-6">
+                                            <span class="badge {{ 
+                                                $booking->status == 'pending' ? 'bg-warning' : 
+                                                ($booking->status == 'accepted' ? 'bg-success' : 
+                                                ($booking->status == 'rejected' ? 'bg-danger' : 
+                                                ($booking->status == 'completed' ? 'bg-primary' : 'bg-secondary'))) 
+                                            }}">
+                                                {{ ucfirst($booking->status) }}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -209,6 +342,61 @@
     </div>
 </div>
 @endsection
+
+@push('styles')
+<style>
+    /* Fix dropdown z-index and positioning */
+    .dropdown-menu {
+        z-index: 1070 !important; /* Higher than most elements */
+        position: absolute !important;
+        will-change: transform;
+        top: 100% !important;
+        left: 0 !important;
+        transform: none !important;
+        margin-top: 0.125rem;
+        min-width: 10rem;
+        padding: 0.5rem 0;
+        font-size: 0.875rem;
+        color: #212529;
+        text-align: left;
+        list-style: none;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 0.375rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .dropdown-item {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 1.5rem;
+        clear: both;
+        font-weight: 400;
+        color: #212529;
+        text-align: inherit;
+        text-decoration: none;
+        white-space: nowrap;
+        background-color: transparent;
+        border: 0;
+    }
+    
+    .dropdown-item:hover, .dropdown-item:focus {
+        color: #1e2125;
+        background-color: #e9ecef;
+    }
+    
+    .btn-group {
+        position: relative;
+        z-index: 1000;
+    }
+    
+    /* Ensure the dropdown is not cut off by parent containers */
+    .card, .card-body {
+        overflow: visible !important;
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>

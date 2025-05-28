@@ -293,9 +293,17 @@
                             <tr>
                                 <td class="text-center">{{ $booking->booking_id }}</td>
                                 <td class="text-center">{{ $booking->user->name ?? 'N/A' }}</td>
-                                <td class="text-center">₹{{ $booking->package_id ? number_format($booking->package->price ?? 0, 2) : number_format(0, 2) }}</td>
+                                <td class="text-center">
+                                    @if($booking->package_id && isset($booking->package))
+                                        ₹{{ number_format($booking->package->price, 2) }}
+                                    @elseif($booking->event_id && isset($booking->event))
+                                        ₹{{ number_format($booking->event->price, 2) }}
+                                    @else
+                                        ₹{{ number_format(0, 2) }}
+                                    @endif
+                                </td>
                                 <td class="text-center">₹{{ number_format($booking->discount ?? 0, 2) }}</td>
-                                <td class="text-center">₹{{ number_format($booking->total_amount ?? 0, 2) }}</td>
+                                <td class="text-center">₹{{ number_format($booking->total_amount, 2) }}</td>
                                 <td class="text-center">
                                     <span class="badge bg-{{ 
                                         $booking->status == 'pending' ? 'warning text-dark' : 
@@ -308,14 +316,29 @@
                                 </td>
                                 <td class="text-center">{{ date('Y-m-d H:i', strtotime($booking->created_at)) }}</td>
                                 <td class="text-center">
-                                    @if($booking->event_id)
-                                        <span class="badge bg-primary">{{ $booking->event->name ?? 'Event' }}</span>
+                                    @if($booking->event_id && isset($booking->event))
+                                        <span class="badge bg-primary">Event: {{ $booking->event->name }}</span>
                                     @endif
-                                    @if($booking->package_id)
-                                        <span class="badge bg-info"> {{ $booking->package->name ?? 'Package' }}</span>
+                                    @if($booking->package_id && isset($booking->package))
+                                        <span class="badge bg-info">Package: {{ $booking->package->name }}</span>
+                                    @endif
+                                    @if((!$booking->event_id || !isset($booking->event)) && (!$booking->package_id || !isset($booking->package)))
+                                        <span class="badge bg-secondary">No items</span>
                                     @endif
                                 </td>
-                                <td class="text-center">{{ $booking->status == 'completed' ? date('Y-m-d', strtotime($booking->event_datetime)) : '-' }}</td>
+                                <td class="text-center">
+                                    @if($booking->status == 'completed')
+                                        @if($booking->event_datetime)
+                                            {{ date('Y-m-d', strtotime($booking->event_datetime)) }}
+                                        @elseif($booking->completed_at)
+                                            {{ date('Y-m-d', strtotime($booking->completed_at)) }}
+                                        @else
+                                            {{ date('Y-m-d', strtotime($booking->updated_at)) }}
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td class="text-center">
                                     <a href="{{ route('decorator.bookings.show', $booking->booking_id) }}">
                                         <div class="list-icon-function view-icon">

@@ -28,6 +28,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DecoratorAuthController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminBookingController;
+use App\Http\Controllers\PaymentController;
 
 // Public Routes
 Route::get('/', [MainController::class, 'index']);
@@ -124,6 +125,8 @@ Route::middleware(['auth'])->group(function () {
     
     // Checkout routes
     Route::post('/checkout/submit', [CheckoutController::class, 'submit'])->name('checkout.submit');
+    
+    // Show congratulations page after successful payment
     Route::get('/congratulations', function () {
         return view('congratulations');
     })->name('congratulations');

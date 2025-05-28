@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta name="author" content="themesflat.com">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <!-- Add your admin CSS files -->
     <link rel="stylesheet" type="text/css" href="{{ asset('dashboard/css/animate.min.css') }}">
@@ -83,23 +84,39 @@
         </div>
     </div>
 
-    <!-- Add your admin JS files -->
-    <script src="{{ asset('dashboard/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/bootstrap-select.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.easing.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.scrollUp.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.waypoints.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.counterup.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.magnific-popup.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/jquery.slicknav.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/owl.carousel.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/parallax.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/progressbar.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/wow.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/main.js') }}"></script>
-    <script src="{{ asset('dashboard/js/sweetalert.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/custom.js') }}"></script>
+    <!-- Core JS Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/js/bootstrap-select.min.js"></script>
+    
+    <!-- SweetAlert for alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Load essential local scripts -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load essential scripts
+        const loadScript = (src) => {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = () => {
+                    console.warn('Failed to load script:', src);
+                    resolve(); // Resolve even if script fails to prevent blocking
+                };
+                document.body.appendChild(script);
+            });
+        };
+
+        // Load custom scripts
+        Promise.all([
+            loadScript('{{ asset('dashboard/js/custom.js') }}')
+        ]).then(() => {
+            console.log('All scripts loaded successfully');
+        });
+    });
+    </script>
 
     @stack('scripts')
 </body>

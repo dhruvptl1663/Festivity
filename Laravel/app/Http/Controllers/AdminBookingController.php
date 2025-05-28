@@ -36,7 +36,25 @@ class AdminBookingController extends Controller
      */
     public function show($id)
     {
-        $booking = Booking::with(['user', 'event.decorator', 'package.decorator', 'feedback', 'event.category'])->findOrFail($id);
+        $booking = Booking::with([
+            'user', 
+            'event' => function($query) {
+                $query->with(['decorator', 'category']);
+            },
+            'package' => function($query) {
+                $query->with(['decorator']);
+            },
+            'feedback'
+        ])->findOrFail($id);
+        
+        // Debug information - you can remove this after confirming it works
+        \Log::info('Booking details:', [
+            'booking' => $booking->toArray(),
+            'event' => $booking->event ? $booking->event->toArray() : null,
+            'package' => $booking->package ? $booking->package->toArray() : null,
+            'user' => $booking->user ? $booking->user->toArray() : null
+        ]);
+        
         return view('Admin.bookings.show', compact('booking'));
     }
 
