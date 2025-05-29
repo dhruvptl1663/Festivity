@@ -49,7 +49,7 @@ class AdminAdminController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:100',
-            'email' => 'required|email|unique:admins,email,' . $admin->admin_id,
+            'email' => 'required|email|unique:admins,email,' . $admin->admin_id . ',admin_id',
             'password' => 'nullable|string|min:8',
         ]);
 

@@ -98,6 +98,18 @@ class DecoratorController extends Controller
         ->take(10)
         ->get();
         
+        // Get monthly booking data for charts
+        $monthlyData = $this->getMonthlyBookingData($decorator_id);
+        
+        // Get event vs package distribution
+        $eventBookingsCount = Booking::whereHas('event', function($q) use ($decorator_id) {
+            $q->where('decorator_id', $decorator_id);
+        })->count();
+        
+        $packageBookingsCount = Booking::whereHas('package', function($q) use ($decorator_id) {
+            $q->where('decorator_id', $decorator_id);
+        })->count();
+        
         // Ensure all related data is loaded and total_amount is calculated
         foreach ($recentBookings as $booking) {
             if ($booking->package_id && isset($booking->package)) {
@@ -128,8 +140,86 @@ class DecoratorController extends Controller
             'cancelledBookings',
             'totalEarnings',
             'recentBookings',
+            'monthlyData',
+            'eventBookingsCount',
+            'packageBookingsCount',
             'recentFeedback'
         ));
+    }
+    
+    /**
+     * Generate monthly booking data for charts
+     * 
+     * @param int $decorator_id The decorator ID
+     * @return array Monthly data for charts
+     */
+    private function getMonthlyBookingData($decorator_id)
+    {
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        $data = [
+            'total' => array_fill(0, 12, 0),
+            'pending' => array_fill(0, 12, 0),
+            'completed' => array_fill(0, 12, 0),
+            'cancelled' => array_fill(0, 12, 0)
+        ];
+        
+        // Current year
+        $year = date('Y');
+        
+        // Get monthly counts by status for events
+        $eventBookings = Booking::selectRaw('MONTH(created_at) as month, status, COUNT(*) as count, SUM(advance_paid) as amount')
+            ->whereRaw('YEAR(created_at) = ?', [$year])
+            ->whereHas('event', function($q) use ($decorator_id) {
+                $q->where('decorator_id', $decorator_id);
+            })
+            ->groupBy('month', 'status')
+            ->get();
+            
+        foreach ($eventBookings as $booking) {
+            $monthIndex = $booking->month - 1; // Convert to 0-based index
+            
+            // Update counts
+            $data['total'][$monthIndex] += $booking->amount ?: 0;
+            
+            // Update status-specific counts
+            if ($booking->status == 'pending') {
+                $data['pending'][$monthIndex] += $booking->amount ?: 0;
+            } elseif ($booking->status == 'completed') {
+                $data['completed'][$monthIndex] += $booking->amount ?: 0;
+            } elseif ($booking->status == 'cancelled') {
+                $data['cancelled'][$monthIndex] += $booking->amount ?: 0;
+            }
+        }
+        
+        // Get monthly counts by status for packages
+        $packageBookings = Booking::selectRaw('MONTH(created_at) as month, status, COUNT(*) as count, SUM(advance_paid) as amount')
+            ->whereRaw('YEAR(created_at) = ?', [$year])
+            ->whereHas('package', function($q) use ($decorator_id) {
+                $q->where('decorator_id', $decorator_id);
+            })
+            ->groupBy('month', 'status')
+            ->get();
+            
+        foreach ($packageBookings as $booking) {
+            $monthIndex = $booking->month - 1; // Convert to 0-based index
+            
+            // Update counts
+            $data['total'][$monthIndex] += $booking->amount ?: 0;
+            
+            // Update status-specific counts
+            if ($booking->status == 'pending') {
+                $data['pending'][$monthIndex] += $booking->amount ?: 0;
+            } elseif ($booking->status == 'completed') {
+                $data['completed'][$monthIndex] += $booking->amount ?: 0;
+            } elseif ($booking->status == 'cancelled') {
+                $data['cancelled'][$monthIndex] += $booking->amount ?: 0;
+            }
+        }
+        
+        return [
+            'months' => $months,
+            'data' => $data
+        ];
     }
     
     public function profile()

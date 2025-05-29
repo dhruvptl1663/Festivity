@@ -1,7 +1,20 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="main-content-wrap" style="margin-top:100px; margin-left:50px;">
+<!-- Admin Dashboard Header -->
+<div class="admin-header" style=" margin-top: 80px; margin-bottom: 00px; margin-left: 50px;">
+    <div class="admin-label-container" style="display: flex; align-items: center; background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%); border-radius: 15px; padding: 15px 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); width: fit-content;">
+        <div style="background: rgba(255,255,255,0.2); border-radius: 12px; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; margin-right: 15px;">
+            <i class="icon-shield" style="font-size: 24px; color: white;"></i>
+        </div>
+        <div>
+            <h2 style="margin: 0; font-size: 24px; font-weight: 700; color: white; letter-spacing: 0.5px;">Admin Dashboard</h2>
+            <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 14px;">Welcome back, {{ Auth::guard('admin')->user()->name ?? 'Administrator' }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="main-content-wrap" style="margin-top:40px; margin-left:50px;">
     <div class="tf-section-2 mb-30">
         <div class="flex gap20 flex-wrap-mobile">
             <div class="w-half">
@@ -253,9 +266,9 @@
                             formatter: function(val) {
                                 // Format large numbers properly with clear suffix
                                 if (val >= 100000) {
-                                    return "₹" + (val/100000).toFixed(1) + ' Lakh';
+                                    return "₹" + (val/100000).toFixed(1) + 'L';
                                 } else if (val >= 1000) {
-                                    return "₹" + (val/1000).toFixed(1) + ' K';
+                                    return "₹" + (val/1000).toFixed(1) + 'K';
                                 } else {
                                     return "₹" + val.toFixed(0);
                                 }
@@ -268,7 +281,7 @@
                         min: function(min) { return 0; },
                         forceNiceScale: true,
                         title: {
-                            text: 'Amount (₹)',
+                            text: 'Amount (₹) in Lakhs',
                             style: {
                                 fontSize: '14px',
                                 fontWeight: 600,
@@ -309,11 +322,11 @@
                             formatter: function (val) {
                                 // Format large numbers properly in tooltip
                                 if (val >= 100000) {
-                                    return "₹" + (val/100000).toFixed(2) + ' Lakh';
+                                    return "₹" + (val/100000).toFixed(2) + 'L';
                                 } else if (val >= 1000) {
-                                    return "₹" + (val/1000).toFixed(2) + ' Thousand';
+                                    return "₹" + (val/1000).toFixed(2) + 'K';
                                 } else {
-                                    return "₹" + val.toFixed(2);
+                                    return "₹" + val.toFixed(0);
                                 }
                             }
                         },

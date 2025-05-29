@@ -89,8 +89,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/js/bootstrap-select.min.js"></script>
     
-    <!-- SweetAlert for alerts -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- ApexCharts for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     
     <!-- Load essential local scripts -->
     <script>
@@ -110,14 +110,15 @@
         };
 
         // Load custom scripts
-        Promise.all([
-            loadScript('{{ asset('dashboard/js/custom.js') }}')
-        ]).then(() => {
+        loadScript('{{ asset('dashboard/js/custom.js') }}').then(() => {
             console.log('All scripts loaded successfully');
         });
     });
     </script>
 
+    <!-- SweetAlert for alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     @stack('scripts')
 </body>
 </html>
