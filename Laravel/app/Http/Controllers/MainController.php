@@ -34,7 +34,23 @@ class MainController extends Controller
 
     public function events()
     {
-        return view('events');
+        // Get events in random order
+        $events = Event::with(['category', 'decorator'])
+            ->withAvg('feedback as rating', 'rating')
+            ->inRandomOrder() // This randomizes the order of events
+            ->get();
+        
+        // Get categories for filter
+        $categories = \App\Models\Category::all();
+        
+        // Get decorators for filter
+        $decorators = Decorator::all();
+        
+        // Get min and max prices for price filter
+        $minPrice = Event::min('price') ?: 0;
+        $maxPrice = Event::max('price') ?: 10000;
+        
+        return view('events', compact('events', 'categories', 'decorators', 'minPrice', 'maxPrice'));
     }
 
     public function packages()

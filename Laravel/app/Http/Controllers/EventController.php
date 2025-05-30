@@ -63,7 +63,8 @@ class EventController extends Controller
                 $query->orderBy('rating', 'desc');
                 break;
             default:
-                $query->latest();
+                // When no specific sort is requested, show events in random order
+                $query->inRandomOrder();
         }
 
         $events = $query->get()->map(function ($event) {
