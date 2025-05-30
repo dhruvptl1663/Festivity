@@ -349,9 +349,10 @@
                                 </div>
                                 <div class="card-body" style="padding: 20px;">
                                     @php
-                                        $originalAmount = $booking->original_amount ?? ($booking->package->price ?? 0);
+                                        // Get amounts from booking
+                                        $originalAmount = $booking->original_amount ?? ($booking->package ? $booking->package->price : ($booking->event ? $booking->event->price : 0));
                                         $discountAmount = $booking->discount_amount ?? 0;
-                                        $finalAmount = $booking->final_amount ?? 0;
+                                        $finalAmount = $booking->final_amount ?? $booking->advance_paid ?? 0;
                                         
                                         // Calculate final amount if not set
                                         if ($finalAmount <= 0) {
@@ -359,10 +360,18 @@
                                         }
                                     @endphp
                                     
-                                    @if($originalAmount > 0)
                                     <div class="row mb-2">
-                                        <div class="col-md-6"><strong>Package Price:</strong></div>
+                                        <div class="col-md-6"><strong>{{ $booking->event_id ? 'Event' : 'Package' }} Price:</strong></div>
                                         <div class="col-md-6">₹{{ number_format($originalAmount, 2) }}</div>
+                                    </div>
+                                    
+                                    @if(isset($appliedPromo) && $appliedPromo)
+                                    <div class="row mb-2">
+                                        <div class="col-md-6"><strong>Coupon Applied:</strong></div>
+                                        <div class="col-md-6">
+                                            <span class="badge bg-success">{{ $appliedPromo->code }}</span>
+                                            <span class="ms-1 small">({{ $appliedPromo->discount_percentage }}% off)</span>
+                                        </div>
                                     </div>
                                     @endif
                                     
@@ -376,6 +385,24 @@
                                     <div class="row mb-2">
                                         <div class="col-md-6"><strong>Total Amount:</strong></div>
                                         <div class="col-md-6 fs-5 text-primary">₹{{ number_format($finalAmount, 2) }}</div>
+                                    </div>
+                                    
+                                    <div class="row mb-2">
+                                        <div class="col-md-6"><strong>Amount Paid:</strong></div>
+                                        <div class="col-md-6">₹{{ number_format($booking->advance_paid ?? $finalAmount, 2) }}</div>
+                                    </div>
+                                    <hr>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6"><strong>Payment ID:</strong></div>
+                                        <div class="col-md-6">{{ $booking->payment_id ?? 'Not available' }}</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6"><strong>Payment Method:</strong></div>
+                                        <div class="col-md-6">{{ $booking->payment_id ? 'Razorpay' : 'Not specified' }}</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6"><strong>Payment Status:</strong></div>
+                                        <div class="col-md-6"><span class="badge {{ $booking->payment_id ? 'bg-success' : 'bg-warning' }}">{{ $booking->payment_id ? 'Paid' : 'Pending' }}</span></div>
                                     </div>
                                     <hr>
                                     <div class="row">

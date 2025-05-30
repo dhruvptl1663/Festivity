@@ -709,8 +709,34 @@ class DecoratorController extends Controller
             
         // Get feedback for this booking if exists
         $feedback = Feedback::where('booking_id', $booking_id)->first();
+        
+        // Get applied promo code information
+        $appliedPromo = DB::table('applied_promo_codes')
+            ->join('promo_codes', 'applied_promo_codes.promo_id', '=', 'promo_codes.promo_id')
+            ->where('applied_promo_codes.booking_id', $booking_id)
+            ->select('promo_codes.code', 'promo_codes.discount_percentage', 'applied_promo_codes.discount_applied')
+            ->first();
+        
+        // Calculate amounts if they are missing
+        if (!$booking->original_amount || $booking->original_amount <= 0) {
+            if ($booking->event_id && $booking->event) {
+                $booking->original_amount = $booking->event->price;
+            } elseif ($booking->package_id && $booking->package) {
+                $booking->original_amount = $booking->package->price;
+            }
+        }
+        
+        // Set discount amount from applied promo if not already set
+        if (!$booking->discount_amount && $appliedPromo) {
+            $booking->discount_amount = $appliedPromo->discount_applied;
+        }
+        
+        // Calculate final amount if not set
+        if (!$booking->final_amount) {
+            $booking->final_amount = $booking->advance_paid ?: ($booking->original_amount - ($booking->discount_amount ?: 0));
+        }
             
-        return view('Decorator.Bookings.show', compact('booking', 'feedback'));
+        return view('Decorator.Bookings.show', compact('booking', 'feedback', 'appliedPromo'));
     }
     
     public function updateBookingStatus(Request $request, $booking)
